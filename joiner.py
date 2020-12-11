@@ -1,13 +1,7 @@
 """
-Provides the GameJoiner class, a subclass of Dialog and BroadcastConnector which returns a
-Messenger object already connected to another player over the network.
-
-Message transport selection is up to you!
-You must import Message from one of the cable_car message modules, i.e.:
-
-	from cable_car.json_messages import *
-	from cable_car.byte_messages import *
-
+Provides the GameJoiner class, a subclass of Dialog and BroadcastConnector
+which returns a Messenger object already connected to another player over the
+network.
 """
 
 import importlib
@@ -18,13 +12,20 @@ from cable_car.messenger import Messenger
 
 
 class GameJoiner(Dialog, BroadcastConnector):
-	"""A dialog which allows the user to announce availabiity to play a game over the network and
-	invite or accept an invitation from others.
-	You must pass the class definition of your selected Message class to the constuctor, i.e.:
-		from cable_car.byte_messages import *
-		.
-		.
-		joiner = GameJoiner(Message) # <- no quotes!
+	"""
+	A dialog which allows the user to announce availabiity to play a game over the network and
+	then invite or accept an invitation from others.
+
+	You must pass the name of your selected "transport" to the constuctor. Currently, the
+	cable_car Messenger supports two transports; "json" or "byte". The "json" transport is a lot
+	easier to implement, but requires more network bandwidth and may be slow for very busy
+	network games. In contrast, the "byte" transport is very lightweight, but requires that you
+	write message encoding and decoding routines yourself.
+
+	Example:
+
+		joiner = GameJoiner("byte")
+
 	"""
 
 	transport					= "json"
@@ -97,7 +98,8 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 	def on_connect(self, sock):
 		"""
-		Called when a socket connection is made, creates a new Messenger from new socket and appends it to "messengers"
+		Called when a socket connection is made, creates a new Messenger from new
+		socket and appends it to the "messengers" list
 		"""
 		msgr = Messenger(sock, self.transport)
 		# These properties of the Messenger are only relevant when the user
@@ -114,55 +116,53 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 	def loop_end(self):
 		"""
-		Function called each time through Dialog._main_loop(), updates the buttons, statusbar, and messengers.
+		Function called each time through Dialog._main_loop(), updates the buttons,
+		statusbar, and messengers.
 		"""
 
-		self.statusbar.text = "Connecting ..." if self.broadcast_enable \
-			else "Connected." if self.selected_messenger \
-			else "Cancelled."
+		if self.broadcast_enable:
+			# Determine what to display on the associated button:
+			for idx in range(len(self.messengers)):
+				msgr = self.messengers[idx]
+				button = self.address_buttons[idx]
+				if msgr.closed:
+					button.text = "Connection to %s closed" % (msgr.remote_ip)
+					button.disabled = True
+					continue
+				if not msgr.id_sent:
+					button.text = "Connected to %s" % (msgr.remote_ip)
+					msgr.send(MsgIdentify())
+					msgr.id_sent = True
+				msgr.xfer()
+				# Handle responses from this Messenger
+				action = msgr.get()
+				if action is not None:
+					if isinstance(action, MsgIdentify):
+						msgr.id_received = True
+						msgr.remote_hostname = action.hostname
+						msgr.remote_user = action.username
+						button.text = "%s on %s (click to invite)" % (msgr.remote_user, msgr.remote_hostname)
+						button.disabled = False
+					elif isinstance(action, MsgJoin):
+						if msgr.was_invited:
+							# Player which was invited accepted invitation - select
+							button.text = "%s on %s accepted!" % (msgr.remote_user, msgr.remote_hostname)
+							self._select(msgr)
+						else:
+							msgr.invited_me = True
+							button.text = "%s on %s wants to play (click to accept)" % (msgr.remote_user, msgr.remote_hostname)
+					else:
+						raise Exception("Messenger received an unexpected action: " + action.__class__.__name__)
 
-
-		if self.selected_messenger:
+		else:
+			self.statusbar.text = "Connected." if self.selected_messenger else "Cancelled."
 			if self.delay_exit:
 				if self.quitting_time is None:
 					self.quitting_time = time() + 1.2
 				elif time() >= self.quitting_time:
 					return self.close()
 			else:
-				return self.close()
-
-		# Determine what to display on the associated button:
-		for idx in range(len(self.messengers)):
-			msgr = self.messengers[idx]
-			button = self.address_buttons[idx]
-			if msgr.closed:
-				button.text = "Connection to %s closed" % (msgr.remote_ip)
-				button.disabled = True
-				continue
-			if not msgr.id_sent:
-				button.text = "Connected to %s" % (msgr.remote_ip)
-				msgr.send(MsgIdentify())
-				msgr.id_sent = True
-			msgr.xfer()
-			# Handle responses from this Messenger
-			action = msgr.get()
-			if action is not None:
-				if isinstance(action, MsgIdentify):
-					msgr.id_received = True
-					msgr.remote_hostname = action.hostname
-					msgr.remote_user = action.username
-					button.text = "%s on %s (click to invite)" % (msgr.remote_user, msgr.remote_hostname)
-					button.disabled = False
-				elif isinstance(action, MsgJoin):
-					if msgr.was_invited:
-						# Player which was invited accepted invitation - select
-						button.text = "%s on %s accepted!" % (msgr.remote_user, msgr.remote_hostname)
-						self._select(msgr)
-					else:
-						msgr.invited_me = True
-						button.text = "%s on %s wants to play (click to accept)" % (msgr.remote_user, msgr.remote_hostname)
-				else:
-					raise Exception("Messenger received an unexpected action: " + action.__class__.__name__)
+				self.close()
 
 
 	def _button_click(self, button):
