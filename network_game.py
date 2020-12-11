@@ -13,9 +13,9 @@ Message classes which are included in these files (all take no arguments):
 
 """
 
-import importlib
+import importlib, cable_car
 from time import time
-from legame.game import *
+from legame.game import Game, GameState
 from legame.network_game_joiner import GameJoiner
 from cable_car.messenger import Messenger
 
@@ -24,15 +24,12 @@ class NetworkGame(Game):
 
 	udp_port		= 8222
 	tcp_port		= 8223
-	transport		= "json"
 	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
 
-	allow_loopback	= False
 
-
-	def __init__(self, transport=None):
-		if transport is not None:
-			self.transport = transport
+	def __init__(self, transport="json", allow_loopback=False):
+		self.transport = transport
+		self.allow_loopback = allow_loopback
 		if not "Message" in dir():
 			try:
 				messages = importlib.import_module("cable_car.%s_messages" % self.transport)
@@ -55,33 +52,22 @@ class NetworkGame(Game):
 			Game.run(self)
 
 
-	def loop_end(self):
+	def _end_loop(self):
+		"""
+		Called at the end of the _main_loop(), this function handles message transfer.
+		"""
+		self._state.loop_end()
 		if time() >= self._next_xfer:
 			self._next_xfer = time() + self.xfer_interval
 			self.messenger.xfer()
 			message = self.messenger.get()
 			while message is not None:
-				if isinstance(message, MsgQuit):
-					GSOpponentQuit()
-				else:
-					self._state.handle_message(message)
+				self._state.handle_message(message)
 				message = self.messenger.get()
 
 
 
-# Game states:
-
-class GSOpponentQuit(GSExiting):
-
-	image = "bye-bye.png"
-
-	def enter_state(self):
-		Game.current.statusbar.write("%s quit :(" % Game.current.messenger.remote_user)
-		ExitAnimation(self.image)
-
-
-# Dynamically append methods to GameState class which are only used by NetworkGame.
-# This greately simplifies code which uses GameState:
+# Dynamically append methods to GameState class which are only used by NetworkGame:
 
 def _net_handle_message(self, message):
 	pass

@@ -6,7 +6,8 @@ import random
 from legame.game import *
 from legame.board_game import *
 from legame.flipper import *
-from legame.network_game import NetworkGame, GSOpponentQuit
+from legame.network_game import NetworkGame
+from legame.examples.exit_states import GSQuit
 from cable_car.json_messages import Message, MsgIdentify, MsgJoin, MsgRetry, MsgQuit
 
 

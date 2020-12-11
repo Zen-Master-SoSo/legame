@@ -174,7 +174,7 @@ class BoardGameState(GameState):
 
 	def loop_end(self):
 		"""
-		Cyclical function called at the end of Game.main_loop()
+		Cyclical function called at the end of Game._main_loop()
 		Sets the mouse cursor based on the state of the "may_click" flag.
 		"""
 		if self.may_click:

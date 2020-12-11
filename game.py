@@ -97,7 +97,7 @@ class Game:
 			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
 			pygame.mixer.init()
 		self.sprites = pygame.sprite.LayeredUpdates()
-		self.__event_handlers = {
+		self._event_handlers = {
 			ACTIVEEVENT:		self._activeevent,		# 1
 			KEYDOWN:			self._keydown,			# 2
 			KEYUP:				self._keyup,			# 3
@@ -115,7 +115,7 @@ class Game:
 		}
 		# Fill-in the remaining timer events:
 		for event_type in range(USEREVENT, NUMEVENTS+1):
-			self.__event_handlers[event_type] = self._timer_event
+			self._event_handlers[event_type] = self._timer_event
 		self.__timer_callbacks = [None for x in range(8)]
 		self.__timer_arguments = [None for x in range(8)]
 		self.__timer_recur_flag = [None for x in range(8)]
@@ -139,12 +139,12 @@ class Game:
 		self.show()
 		self._state = self.initial_state()
 		self._state.enter_state()
-		self.main_loop()
+		self._main_loop()
 
 
 	def show(self):
 		"""
-		Initilizes the screen and shows the initial background. Does not start the game state or begin the main_loop.
+		Initilizes the screen and shows the initial background. Does not start the game state or begin the _main_loop.
 		It is safe to call this function separately, multiple times, and to allow it to be started by Game.run().
 		"""
 		display_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
@@ -169,20 +169,20 @@ class Game:
 
 	def shutdown(self):
 		"""
-		Triggers the main_loop to exit. The main_loop will finish its current iteration before doing so.
+		Triggers the _main_loop to exit. The _main_loop will finish its current iteration before doing so.
 		"""
 		self._stay_in_loop = False
 
 
 	##### MAIN LOOP #####
 
-	def main_loop(self):
+	def _main_loop(self):
 		self.clock = pygame.time.Clock()
 		self._next_state = None
 		while self._stay_in_loop:
 			self._state.loop_start()
-			for event in pygame.event.get(): self.__event_handlers[event.type](event)
-			self._state.loop_end()
+			for event in pygame.event.get(): self._event_handlers[event.type](event)
+			self._end_loop()
 			self.sprites.update()
 			self.sprites.clear(self.screen, self.background)
 			pygame.display.update(self.sprites.draw(self.screen))
@@ -197,9 +197,18 @@ class Game:
 				cls.exit_loop(self)
 
 
+	def _end_loop(self):
+		"""
+		Called at the end of the _main_loop().
+		The default implementation is to call "loop_end()" on the current GameState.
+		This behaviour is overridden in NetworkGame in order to handle message transfer.
+		"""
+		self._state.loop_end()
+
+
 	def exit_loop(self):
 		"""
-		Called when main_loop() exits, after the final round of moving sprites and updating the display.
+		Called when _main_loop() exits, after the final round of moving sprites and updating the display.
 		"""
 		pass
 
@@ -356,11 +365,11 @@ class GameState:
 		pass
 
 
-	# Early / late Game.main_loop() events:
+	# Early / late Game._main_loop() events:
 
 	def loop_start(self):
 		"""
-		Called at the beginning of main_loop() each time through, before processing events.
+		Called at the beginning of _main_loop() each time through, before processing events.
 		The event loop looks like this:
 		1. loop_start()                              <-- you are here
 		2. event handling (keyboard, mouse, timers)
@@ -374,7 +383,7 @@ class GameState:
 
 	def loop_end(self):
 		"""
-		Called at the end of main_loop() each time through.
+		Called at the end of _main_loop() each time through.
 		The event loop looks like this:
 		1. loop_start()
 		2. event handling (keyboard, mouse, timers)
@@ -386,7 +395,7 @@ class GameState:
 		pass
 
 
-	# Event handlers called from Game.main_loop():
+	# Event handlers called from Game._main_loop():
 
 	def activeevent(self, event):
 		"""
@@ -506,3 +515,6 @@ class GameStateFinal(GameState):
 	See examples/exit_states.py for an example.
 	"""
 	pass
+
+
+

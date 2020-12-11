@@ -11,7 +11,7 @@ You must import Message from one of the cable_car message modules, i.e.:
 """
 
 import importlib
-from pygame_dialog import *
+from pygame_dialog import Dialog, Button, Label, ALIGN_LEFT
 from time import time
 from cable_car.broadcast_connector import BroadcastConnector
 from cable_car.messenger import Messenger
@@ -84,7 +84,7 @@ class GameJoiner(Dialog, BroadcastConnector):
 	def show(self):
 		self.initialize_display()
 		self._start_connector_threads()
-		self.main_loop()
+		self._main_loop()
 		self.stop_broadcasting()
 		self.join_threads()
 		if self.__close_thread:
@@ -114,7 +114,7 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 	def loop_end(self):
 		"""
-		Function called each time through the main_loop, updates the buttons, statusbar, and messengers.
+		Function called each time through the _main_loop, updates the buttons, statusbar, and messengers.
 		"""
 
 		self.statusbar.text = "Connecting ..." if self.broadcast_enable \
