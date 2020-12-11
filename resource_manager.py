@@ -267,7 +267,7 @@ class ImageSet:
 
 
 	def __getitem__(self, key):
-		return self.variants[key] if key in self.variants else self.images[key]
+		raise DeprecationWarning("use variant() or access ImageSet.images")
 
 
 	def dump(self):

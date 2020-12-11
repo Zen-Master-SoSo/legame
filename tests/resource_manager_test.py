@@ -40,11 +40,11 @@ def test_image_set(rm):
 
 def test_subset(rm):
 	imgset = rm.image_set("Block")
-	imgset = imgset["b"]
+	imgset = imgset.variant("b")
 	assert(isinstance(imgset, ImageSet))
 	assert(imgset.count == 1)
 	assert(imgset.last_index == 0)
-	imgset = imgset["enter"]
+	imgset = imgset.variant("enter")
 	assert(isinstance(imgset, ImageSet))
 	assert(imgset.count == 3)
 	assert(imgset.last_index == 2)
@@ -52,7 +52,7 @@ def test_subset(rm):
 	assert(os.path.isfile(imgset.images[0]))
 	assert(os.path.isfile(imgset.images[2]))
 	imgset = rm.image_set("Block")
-	imgset = imgset["b"]["enter"]
+	imgset = imgset.variant("b/enter")
 	assert(isinstance(imgset, ImageSet))
 	assert(imgset.count == 3)
 	assert(os.path.isfile(imgset.images[0]))

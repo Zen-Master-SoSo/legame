@@ -56,7 +56,7 @@ class Flipper:
 		"""
 		Appends a single ImageCycle object to the queue.
 		"""
-		cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set[cycler.variant]
+		cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set.variant(cycler.variant)
 		self._cycler_queue.append(cycler)
 
 
@@ -65,7 +65,7 @@ class Flipper:
 		Appends a list of ImageCycle objects to the queue.
 		"""
 		for cycler in cyclers:
-			cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set[cycler.variant]
+			cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set.variant(cycler.variant)
 		self._cycler_queue.extend(cyclers)
 
 
