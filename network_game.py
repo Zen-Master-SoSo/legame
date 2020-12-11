@@ -49,7 +49,9 @@ class NetworkGame(Game):
 			self.messenger = self.__joiner.selected_messenger
 			self._next_xfer = time()
 			del self.__joiner
-			Game.run(self)
+			return Game.run(self)
+		else:
+			return 1
 
 
 	def _end_loop(self):

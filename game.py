@@ -140,6 +140,7 @@ class Game:
 		self._state = self.initial_state()
 		self._state.enter_state()
 		self._main_loop()
+		return 0
 
 
 	def show(self):
