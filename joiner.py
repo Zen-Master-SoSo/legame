@@ -114,7 +114,7 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 	def loop_end(self):
 		"""
-		Function called each time through the _main_loop, updates the buttons, statusbar, and messengers.
+		Function called each time through Dialog._main_loop(), updates the buttons, statusbar, and messengers.
 		"""
 
 		self.statusbar.text = "Connecting ..." if self.broadcast_enable \

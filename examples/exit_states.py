@@ -40,6 +40,7 @@ class ExitAnimation(Sprite):
 	anim_duration		= 0.33
 	game_over_delay		= 777
 
+
 	def __init__(self, image):
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_OVERLAY)
@@ -49,6 +50,7 @@ class ExitAnimation(Sprite):
 		self.rect.centerx = Game.current.screen_rect.centerx
 		self.__frame_step = (Game.current.screen_rect.centery - self.rect.centery) \
 			// self.anim_duration // Game.current.clock.get_fps()
+
 
 	def update(self):
 		if self.rect.centery < Game.current.background.get_rect().centery:

@@ -19,8 +19,10 @@ class TestGame(BoardGame, NetworkGame):
 		Game.__init__(self, options=None)
 		NetworkGame.__init__(self)
 
+
 	def get_board(self):
 		return GameBoard(4, 4)
+
 
 	def initial_state(self):
 		global board, statusbar, send, me, my_opponent
@@ -38,9 +40,11 @@ class MsgAdd(Message):
 	def __init__(self, pos=None):
 		self.pos = pos
 
+
 	def rotate(self):
 		self.pos = Game.current.board.rotate(self.pos)
 		return self
+
 
 
 class MsgPickAColor(Message):
@@ -66,17 +70,21 @@ class GSBase(GameState):
 			GSQuit()
 
 
+
 class GSWhoGoesFirst(GSBase):
 
 	may_click	= False
 
+
 	def enter_state(self):
 		self.pick_a_color()
+
 
 	def pick_a_color(self):
 		self.picked = MsgPickAColor()
 		send(self.picked)
 		statusbar.write("Sent MsgPickAColor (%s:%d)" % (self.picked.color, self.picked.number))
+
 
 	def handle_message(self, message):
 		if isinstance(message, MsgPickAColor):
@@ -89,15 +97,20 @@ class GSWhoGoesFirst(GSBase):
 					GSMyMove()
 				else:
 					GSWaitYourTurn()
+		elif isinstance(message, MsgQuit):
+			GSQuit()
 		else:
 			raise Exception("Unexpected message: %s" % message)
 
 
+
 class GSMyMove(GSBase):
+
 
 	def enter_state(self):
 		statusbar.write("GSMyMove")
 		Game.current.set_timeout(self.timeout, 250)
+
 
 	def timeout(self, args):
 		for x in range(board.columns):
@@ -111,15 +124,20 @@ class GSMyMove(GSBase):
 		GSQuit()
 
 
+
 class GSWaitYourTurn(GSBase):
+
 
 	def enter_state(self):
 		statusbar.write("GSWaitYourTurn")
+
 
 	def handle_message(self, message):
 		if isinstance(message, MsgAdd):
 			message.rotate()
 			board.set_square(message.pos, Block(message.pos, Game.current.opponent_color))
+		elif isinstance(message, MsgQuit):
+			GSQuit()
 		else:
 			raise Exception("Unexpected message: %s" % message)
 		GSMyMove()
@@ -156,6 +174,7 @@ class Block(GamePiece, Flipper):
 		return self
 
 
+
 class Glow(Flipper, pygame.sprite.Sprite):
 
 	def __init__(self, pos, frame=0):
@@ -167,9 +186,15 @@ class Glow(Flipper, pygame.sprite.Sprite):
 		self.rect = pygame.Rect(pos[0] * grid, pos[1] * grid, grid, grid)
 
 
+
+
+
 if __name__ == '__main__':
 	import sys
 	sys.exit(TestGame().run())
+
+
+
 
 
 

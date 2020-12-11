@@ -69,7 +69,7 @@ class NetworkGame(Game):
 
 # Dynamically append methods to GameState class which are only used by NetworkGame:
 
-def _net_handle_message(self, message):
+def _handle_message(self, message):
 	pass
 
 def _net_quit(self, event):
@@ -77,7 +77,7 @@ def _net_quit(self, event):
 		Game.current.messenger.send(MsgQuit())
 	GSExiting()
 
-GameState.handle_message = _net_handle_message
+GameState.handle_message = _handle_message
 GameState.quit = _net_quit
 
 
