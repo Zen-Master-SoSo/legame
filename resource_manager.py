@@ -223,6 +223,7 @@ class ImageSet:
 
 		"""
 		self.variants = {}
+		self.images = []
 		self.name = name
 		self.resource_dump = resource_dump
 		my_root = os.path.join(images_dir, name)
