@@ -1,6 +1,6 @@
 import pytest, os
-import legame3
-from legame3.flipper import *
+import legame
+from legame.flipper import *
 
 
 @pytest.fixture(autouse=True)
@@ -12,7 +12,7 @@ def thing():
 class FakeGame:
 	def __init__(self):
 		Game.current = self
-		examples = os.path.join(os.path.dirname(legame3.__file__), "examples")
+		examples = os.path.join(os.path.dirname(legame.__file__), "examples")
 		if not os.path.isdir(examples):
 			raise NotADirectoryError(examples)
 		self.resource_dir = os.path.join(os.path.abspath(examples), "resources")

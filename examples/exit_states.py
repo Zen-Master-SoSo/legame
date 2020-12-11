@@ -3,7 +3,7 @@ Provides example GameState classes which exit a game after showing an animated m
 """
 from pygame.time import wait
 from pygame.sprite import Sprite
-from legame3.game import Game, GameStateFinal
+from legame.game import Game, GameStateFinal
 
 
 class GSExitAnimation(GameStateFinal):

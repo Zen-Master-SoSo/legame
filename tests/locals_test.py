@@ -1,5 +1,5 @@
 import pytest
-from legame3.locals import *
+from legame.locals import *
 
 
 def test_normal_degrees():

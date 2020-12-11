@@ -5,9 +5,9 @@ from pygame.locals import *
 from pygame import Rect, Surface, mouse
 from pygame.draw import line
 from pygame.sprite import Sprite
-from legame3.locals import *
-from legame3.game import *
-from legame3.sprite_enhancement import MovingSprite
+from legame.locals import *
+from legame.game import *
+from legame.sprite_enhancement import MovingSprite
 
 
 

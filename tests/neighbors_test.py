@@ -1,6 +1,6 @@
 import pytest, pygame
-from legame3.sprite_enhancement import MovingSprite
-from legame3.neighbors import Neighborhood, Neighbor, Quadrant
+from legame.sprite_enhancement import MovingSprite
+from legame.neighbors import Neighborhood, Neighbor, Quadrant
 
 
 class AreaByCount(Neighborhood):

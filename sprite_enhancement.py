@@ -5,7 +5,7 @@ Provides classes for easier positioning and moving of sprites.
 import math
 from pygame import Rect
 from pygame.math import Vector2 as Vector
-from legame3.locals import *
+from legame.locals import *
 
 
 

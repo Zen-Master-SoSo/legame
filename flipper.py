@@ -3,8 +3,8 @@ Provides classes which are used to do image cycling on a Sprite.
 """
 
 from collections import deque
-from legame3.resource_manager import ResourceManager
-from legame3.game import Game
+from legame.resource_manager import ResourceManager
+from legame.game import Game
 
 
 class Flipper:

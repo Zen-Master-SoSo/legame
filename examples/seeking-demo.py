@@ -4,10 +4,10 @@ from pygame.draw import polygon, circle, line
 from pygame.sprite import Sprite
 from pygame.math import Vector2 as Vector
 from pygame.locals import SRCALPHA, KEYDOWN, QUIT, K_ESCAPE, K_SPACE, K_RETURN, K_q
-from legame3.game import Game, GameState
-from legame3.flipper import Flipper, CycleNone, CycleThrough, CycleBetween
-from legame3.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
-from legame3.locals import *
+from legame.game import Game, GameState
+from legame.flipper import Flipper, CycleNone, CycleThrough, CycleBetween
+from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
+from legame.locals import *
 
 
 class SeekingDemo(Game):

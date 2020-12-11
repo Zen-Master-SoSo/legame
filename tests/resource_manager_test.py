@@ -1,7 +1,7 @@
 import pytest, os
-import legame3
-from legame3.game import Game
-from legame3.resource_manager import *
+import legame
+from legame.game import Game
+from legame.resource_manager import *
 
 
 @pytest.fixture(autouse=True)
@@ -12,7 +12,7 @@ def rm():
 class FakeGame:
 	def __init__(self):
 		Game.current = self
-		examples = os.path.join(os.path.dirname(legame3.__file__), "examples")
+		examples = os.path.join(os.path.dirname(legame.__file__), "examples")
 		if not os.path.isdir(examples):
 			raise NotADirectoryError(examples)
 		self.resource_dir = os.path.join(os.path.abspath(examples), "resources")

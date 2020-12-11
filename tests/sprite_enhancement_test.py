@@ -1,8 +1,8 @@
 import pytest, pygame, math
 from pygame import Rect
-from legame3.sprite_enhancement import MovingSprite, BoxedInSprite
+from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from pygame.math import Vector2 as Vector
-from legame3.locals import *
+from legame.locals import *
 
 
 class Boxed(BoxedInSprite, MovingSprite):

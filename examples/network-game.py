@@ -3,10 +3,10 @@ Demonstrates sending moves over a network.
 """
 
 import random
-from legame3.game import *
-from legame3.board_game import *
-from legame3.flipper import *
-from legame3.network_game import NetworkGame, GSOpponentQuit
+from legame.game import *
+from legame.board_game import *
+from legame.flipper import *
+from legame.network_game import NetworkGame, GSOpponentQuit
 from cable_car.json_messages import Message, MsgIdentify, MsgJoin, MsgRetry, MsgQuit
 
 

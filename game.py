@@ -3,13 +3,13 @@
 import sys, os, pygame, logging
 from pygame.locals import *
 from pygame.sprite import Sprite, Rect
-from legame3.resource_manager import ResourceManager
+from legame.resource_manager import ResourceManager
 
 
 
 class Game:
 	"""
-	This is the base class of games created with the legame3 library.
+	This is the base class of games created with the legame library.
 
 	Game.current is a class variable which will contain a reference to the instance
 	of the game currently running, and can be used as a "global" variable thoughout

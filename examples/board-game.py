@@ -1,9 +1,9 @@
 import random
 from pygame import Rect
 from pygame.sprite import Sprite
-from legame3.game import *
-from legame3.board_game import *
-from legame3.flipper import *
+from legame.game import *
+from legame.board_game import *
+from legame.flipper import *
 from exit_states import *
 
 
