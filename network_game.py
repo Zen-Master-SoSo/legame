@@ -16,7 +16,7 @@ Message classes which are included in these files (all take no arguments):
 import importlib, cable_car
 from time import time
 from legame.game import Game, GameState
-from legame.network_game_joiner import GameJoiner
+from legame.joiner import GameJoiner
 from cable_car.messenger import Messenger
 
 
