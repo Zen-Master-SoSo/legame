@@ -263,6 +263,7 @@ class Statusbar(Sprite):
 class BoardGameState(GameState):
 
 	mouse_down_pos	= None
+	may_click		= False
 
 
 	def __init__(self, **kwargs):
