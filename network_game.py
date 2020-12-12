@@ -13,8 +13,8 @@ Message classes which are included in these files (all take no arguments):
 
 """
 
-import importlib, cable_car
-from time import time
+import importlib, cable_car, traceback
+from time import time, sleep
 from legame.game import Game, GameState
 from legame.joiner import GameJoiner
 from legame.exit_states import GSQuit
@@ -46,12 +46,16 @@ class NetworkGame(Game):
 
 	def run(self):
 		self.__joiner.show()
-		if self.__joiner.selected_messenger:
-			self.messenger = self.__joiner.selected_messenger
-			self._next_xfer = time()
-			del self.__joiner
+		if not self.__joiner.selected_messenger: return 5
+		self.messenger = self.__joiner.selected_messenger
+		del self.__joiner
+		self._next_xfer = time()
+		try:
 			return Game.run(self)
-		else:
+		except Exception as e:
+			traceback.print_exc()
+			self.messenger.send(MsgQuit())
+			self.messenger.shutdown()
 			return 1
 
 
