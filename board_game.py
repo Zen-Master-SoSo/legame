@@ -30,7 +30,6 @@ class BoardGame(Game):
 		self.board = self.get_board()
 
 
-
 	def initial_background(self, display_size):
 		self.statusbar = self.get_statusbar()
 		board_bg = self.board.initial_background(display_size)
@@ -70,7 +69,7 @@ class GameBoard:
 		if columns: self.columns = columns
 		if rows: self.rows = rows
 		self.rect = Rect((self.left, self.top, self.columns * self.cell_width, self.rows * self.cell_height + 1))
-		self.__squares = [[None for y in range(self.rows)] for x in range(self.columns)]
+		self.__cells = [[None for y in range(self.rows)] for x in range(self.columns)]
 		self.max_column = self.columns - 1
 		self.max_row = self.rows - 1
 		self.center_column = self.columns // 2
@@ -93,59 +92,14 @@ class GameBoard:
 
 	# Set / get / inspect board positions:
 
-	def piece_at(self, pos):
-		assert isinstance(pos, BoardPosition)
-		return self.__squares[pos[0]][pos[1]]
-
-
-	def clear_square(self, pos):
-		self.__squares[pos[0]][pos[1]] = None
-		return self
-
-
-	def set_square(self, pos, piece):
-		self.__squares[pos[0]][pos[1]] = piece
-		return self
-
-
-	def is_mine(self, pos):
-		piece = self.piece_at(pos)
-		return False if piece is None else piece.color == Game.current.my_color
-
-
-	def is_my_opponents(self, pos):
-		piece = self.piece_at(pos)
-		return False if piece is None else piece.color == Game.current.opponent_color
-
-
-	def is_empty(self, pos):
-		return self.piece_at(pos) is None
-
-
-	def rotate(self, pos):
+	def cell_at(self, *args):
 		"""
-		Returns a board position rotated 180 degrees.
-		Used for showing opponent moves when the move is defined from their perspective.
+		Return a BoardPosition from screen coordinates.
+		Args may be a pair of numbers (float or int), or a tuple of numbers (float or int).
+		Returns None if the coordinates are outside of the board.
 		"""
-		return (self.max_column - pos[0], self.max_row - pos[1])
-
-
-
-class BoardPosition:
-
-	board_left	= 0
-	board_top	= 0
-
-
-	def __init__(self, column, row):
-		self.column, self.row = column, row
-
-
-	@classmethod
-	def from_screen_pos(cls, *args):
 		def throw_up():
-			raise ValueError("BoardPosition.from_screen_pos takes two numbers or a tuple of two numbers as arguments")
-		if len(args) == 0: throw_up()
+			raise ValueError("Board.cell_at() takes two numbers or a tuple of two numbers as arguments")
 		if len(args) == 1:
 			if not isinstance(args[0], tuple): throw_up()
 			if len(args[0]) != 2: throw_up()
@@ -158,19 +112,110 @@ class BoardPosition:
 			x, y = args
 		else:
 			throw_up()
-		print(x,y)
 		return BoardPosition(
 			floor((x - Game.current.board.left) / Game.current.board.cell_width),
 			floor((y - Game.current.board.top) / Game.current.board.cell_height)
-		)
+		) if Game.current.board.rect.collidepoint(x, y) else None
+
+
+	def piece_at(self, cell):
+		"""
+		Returns a reference to the GamePiece occupying the given cell.
+		If no piece occupies the cell, returns None.
+		"""
+		assert isinstance(cell, BoardPosition)
+		return self.__cells[cell.column][cell.row]
+
+
+	def clear_square(self, cell):
+		"""
+		Kills the GamePiece at the given cell, if one exists there.
+		"""
+		assert isinstance(cell, BoardPosition)
+		if self.__cells[cell.column][cell.row] is not None:
+			self.__cells[cell.column][cell.row].kill()
+			self.__cells[cell.column][cell.row] = None
+		return self
+
+
+	def set_square(self, cell, piece):
+		"""
+		Places a reference to the given GamePiece in the given square.
+		"""
+		assert isinstance(cell, BoardPosition)
+		assert isinstance(piece, GamePiece)
+		self.__cells[cell.column][cell.row] = piece
+		return self
+
+
+	def is_mine(self, cell):
+		"""
+		Returns True if there is a GamePiece at the given cell, and it is this player's "color".
+		"""
+		assert isinstance(cell, BoardPosition)
+		piece = self.piece_at(cell)
+		return False if piece is None else piece.color == Game.current.my_color
+
+
+	def opponent_at(self, cell):
+		"""
+		Returns True if there is a GamePiece at the given cell, and it is not this player's "color".
+		"""
+		assert isinstance(cell, BoardPosition)
+		piece = self.piece_at(cell)
+		return False if piece is None else piece.color != Game.current.my_color
+
+
+	def is_empty(self, cell):
+		"""
+		Returns True if the given cell is empty.
+		"""
+		assert isinstance(cell, BoardPosition)
+		return self.piece_at(cell) is None
+
+
+	def rotate(self, cell):
+		"""
+		Returns a board position rotated 180 degrees.
+		Used for showing opponent moves when the move is defined from their perspective.
+		"""
+		assert isinstance(cell, BoardPosition)
+		return (self.max_column - cell.column, self.max_row - cell.row)
+
+
+
+class BoardPosition:
+
+
+	def __init__(self, column, row):
+		self.column, self.row = column, row
 
 
 	def screen_coordinates(self):
+		"""
+		Returns the center point of this position.
+		"""
 		return (
-			Game.current.board.left + Game.current.board.cell_width * self.column,
-			Game.current.board.top + Game.current.board.cell_height * self.row
+			Game.current.board.left + Game.current.board.cell_width * self.column + Game.current.board.cell_half_width,
+			Game.current.board.top + Game.current.board.cell_height * self.row + Game.current.board.cell_half_height
 		)
 
+
+	def get_rect(self):
+		"""
+		Returns a pygame rect which covers this position.
+		Top-left is the top-left of the cell.
+		"""
+		return Rect(
+			Game.current.board.left + Game.current.board.cell_width * self.column,
+			Game.current.board.top + Game.current.board.cell_height * self.row,
+			Game.current.board.cell_width,
+			Game.current.board.cell_height
+		)
+
+
+	def __str__(self):
+		return "BoardPosition: column {}, row {}".format(self.column, self.row)
 
 
 
@@ -194,17 +239,21 @@ class Statusbar(Sprite):
 		self.text = ""
 		self.rect = self.image.get_rect()
 
+
 	def clear(self):
 		self.image.fill(self.background_color)
+
 
 	def write(self, text, color=None):
 		self.text = text
 		if color is not None: self.foreground_color = color
 		self._update()
 
+
 	def append(self, text):
 		self.text = self.text + text
 		self._update()
+
 
 	def _update(self):
 		self.clear()
@@ -217,7 +266,6 @@ class Statusbar(Sprite):
 
 class BoardGameState(GameState):
 
-	mouse_pos		= None
 	mouse_down_pos	= None
 
 
@@ -226,7 +274,7 @@ class BoardGameState(GameState):
 		BoardGameState constructor - sets the current mouse position passes execution
 		to GameState constructor.
 		"""
-		self.mouse_pos = mouse.get_pos()
+		self.mouse_pos = Game.current.board.cell_at(mouse.get_pos())
 		GameState.__init__(self, **kwargs)
 
 
@@ -246,15 +294,13 @@ class BoardGameState(GameState):
 		Mouse move event passed to this GameState.
 		event will contain:	pos, rel, buttons
 		"""
-		y = event.pos[1] // Game.current.board.cell_px
-		if y < Game.current.board.rows:
-			x = event.pos[0] // Game.current.board.cell_px
-			if x != self.mouse_pos[0] or y != self.mouse_pos[1]:
-				self.mouse_exit(self.mouse_pos)
-				self.mouse_pos = (x, y)
-				self.mouse_enter(self.mouse_pos)
-		else:
-			self.may_click = True
+		cell = Game.current.board.cell_at(event.pos)
+		if cell is None: return
+		if self.mouse_pos is not None and (cell.column != self.mouse_pos.column or cell.row != self.mouse_pos.row):
+			self.mouse_exit(self.mouse_pos)
+			self.mouse_enter(cell)
+		self.mouse_pos = cell
+
 
 
 	def mousebuttondown(self, event):
@@ -274,7 +320,7 @@ class BoardGameState(GameState):
 			self.click(self.mouse_pos, event)
 
 
-	def mouse_enter(self, pos):
+	def mouse_enter(self, cell):
 		"""
 		"Pseudo" event which occurs after the mouse moved to a new position on the board.
 		This event immediately follows "mouse_exit".
@@ -282,7 +328,7 @@ class BoardGameState(GameState):
 		pass
 
 
-	def mouse_exit(self, pos):
+	def mouse_exit(self, cell):
 		"""
 		"Pseudo" event which occurs after the mouse moves out of a position on the board.
 		This event is immediately followed by "mouse_enter" with the new position given.
@@ -290,11 +336,11 @@ class BoardGameState(GameState):
 		pass
 
 
-	def click(self, pos, event):
+	def click(self, cell, event):
 		"""
 		"Pseudo" event which occurs when the player presses and releases the mouse
 		button over a single position.
-		"pos" is the board position which was "clicked" (not screen_rect x/y).
+		"cell" is the board position which was "clicked" (not screen_rect x/y).
 		"event" is the pygame event passed to the "mousebuttonup" function, which
 		will contain "pos" and "button" attributes.
 		"""
@@ -309,49 +355,41 @@ class GamePiece(MovingSprite, Sprite):
 	decel_rate	= 1.4
 
 
-	def __init__(self, pos, color):
-		self.pos = pos
+	def __init__(self, cell, color):
+		self.cell = cell
 		self.color = color
-		x, y = self.pos.screen_coordinates()
-		MovingSprite.__init__(self, x, y)
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
-		self.rect = Rect(0, 0, Game.current.board.cell_px, Game.current.board.cell_px)
-		self.rect.centerx = int(self.position.x)
-		self.rect.centery = int(self.position.y)
+		x, y = self.cell.screen_coordinates()
+		MovingSprite.__init__(self, x, y)
+		self.rect = self.cell.get_rect()
 		self.image_set = Game.current.resources.image_set("%s/%s" % (self.__class__.__name__, self.color))
-		Game.current.board.set_square(pos, self)
+		Game.current.board.set_square(cell, self)
 
-
-	def mid_square(self, pos_tuple):
-		return (
-			pos_tuple[0] * Game.current.board.cell_px + Game.current.board.cell_half_width,
-			pos_tuple[1] * Game.current.board.cell_px + Game.current.board.cell_half_px
-		)
 
 
 	# Move routines which may be called in the "update()" function of the parent Sprite:
 
-	def travel_to_pos(self, target_pos, on_arrival=None):
+	def travel_to_cell(self, target_cell, on_arrival=None):
 		"""
 		High-level command which sets this GamePiece on a path towards a given square.
-		Each subsequent call to "move()" will move it one frame closer to the target_pos.
+		Each subsequent call to "move()" will move it one frame closer to "target_cell".
 		When travel is complete, the optional "on_arrival" function will be called.
 		This function overrides the base function in MovingSprite in order to convert board square
 		positions to pixel coordinates and update the game board when travel is complete.
 		"""
 		def arrival_function():
-			self.pos = self.target_pos
-			current_resident = Game.current.board.piece_at(self.pos)
+			self.cell = self.target_cell
+			current_resident = Game.current.board.piece_at(self.cell)
 			if current_resident is not None:
 				current_resident.kill()
-			Game.current.board.set_square(self.pos, self)
+			Game.current.board.set_square(self.cell, self)
 			self._motion_function = self.no_motion
 			if on_arrival is not None:
 				on_arrival()
-		Game.current.board.clear_square(self.pos)
-		self.target_pos = target_pos
-		return self.travel_to(target_pos.screen_coordinates(), arrival_function)
+		Game.current.board.clear_square(self.cell)
+		self.target_cell = target_cell
+		return self.travel_to(target_cell.screen_coordinates(), arrival_function)
 
 
 

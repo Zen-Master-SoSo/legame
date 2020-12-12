@@ -12,11 +12,11 @@ class TestGame(BoardGame):
 
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
-		Game.__init__(self, options)
+		BoardGame.__init__(self, options)
 		self.my_color = random.choice(["r", "g", "b"])
 
 	def initial_state(self):
-		return GSSelect(pos=None)
+		return GSSelect(cell=None)
 
 
 
@@ -40,30 +40,30 @@ class GSSelect(BoardGameState):
 	"""
 	Game state entered when the user must choose an empty space to fill, or their own block to move.
 	attributes used:
-		pos: the position that the LAST piece moved to, used as a reminder
+		cell: the position that the LAST piece moved to, used as a reminder
 	Example of changing state to this:
-		GSSelect(pos=(x, y))
+		GSSelect(cell=(x, y))
 	"""
 
 	may_click	= True	# May click on any block
-	pos			= None
+	cell		= None
 
 	def enter_state(self):
 		Game.current.statusbar.write("GSSelect")
-		self.reminder_timer = None if self.pos is None else Game.current.set_timeout(self.timeout, 4000)
+		self.reminder_timer = None if self.cell is None else Game.current.set_timeout(self.timeout, 4000)
 
-	def click(self, pos, evt):
+	def click(self, cell, evt):
 		if self.reminder_timer is not None:
 			Game.current.clear_timeout(self.reminder_timer)
-		if Game.current.board.is_mine(pos):
-			GSSelectMoveTarget(pos=pos)
+		if Game.current.board.is_mine(cell):
+			GSSelectMoveTarget(cell=cell)
 		else:
-			Block(pos, Game.current.my_color)
-			self.pos = pos	# Used to jiggle the last piece moved
+			Block(cell, Game.current.my_color)
+			self.cell = cell	# Used to jiggle the last piece moved
 			self.reminder_timer = Game.current.set_timeout(self.timeout, 4000)
 
 	def timeout(self, args):
-		Game.current.board.piece_at(self.pos).jiggle()
+		Game.current.board.piece_at(self.cell).jiggle()
 
 	def keydown(self, event):
 		"""
@@ -82,25 +82,25 @@ class GSSelectMoveTarget(BoardGameState):
 	"""
 	Game state entered after the user choses their own block, setting up for a move.
 	attributes used:
-		pos: the position of the block to move
+		cell: the position of the block to move
 	Example of changing state to this:
-		GSSelectMoveTarget(pos=(x, y))
+		GSSelectMoveTarget(cell=(x, y))
 	"""
 
 	may_click	= True	# May click on any block
-	pos			= None
+	cell		= None
 
 	def enter_state(self):
-		self.selected_piece = Game.current.board.piece_at(self.pos).glow()
+		self.selected_piece = Game.current.board.piece_at(self.cell).glow()
 		Game.current.statusbar.write("GSSelectMoveTarget")
 
-	def click(self, pos, evt):
+	def click(self, cell, evt):
 		self.selected_piece.unglow()
-		if Game.current.board.is_mine(pos):
-			self.selected_piece = Game.current.board.piece_at(pos).glow()
+		if Game.current.board.is_mine(cell):
+			self.selected_piece = Game.current.board.piece_at(cell).glow()
 		else:
 			Game.current.play("jump.wav")
-			self.selected_piece.travel_to_pos(pos, lambda: GSSelect(pos=pos))
+			self.selected_piece.travel_to_cell(cell, lambda: GSSelect(cell=cell))
 
 	def keydown(self, event):
 		"""
@@ -115,9 +115,9 @@ class GSSelectMoveTarget(BoardGameState):
 
 class Block(GamePiece, Flipper):
 
-	def __init__(self, pos, color):
+	def __init__(self, cell, color):
 		self.image_base = "Block/" + color
-		GamePiece.__init__(self, pos, color)
+		GamePiece.__init__(self, cell, color)
 		Flipper.__init__(self, CycleThrough("enter", fps=25), CycleNone())
 		Game.current.play("enter.wav")
 		self.__glow = None
@@ -131,7 +131,7 @@ class Block(GamePiece, Flipper):
 		return self
 
 	def glow(self):
-		self.__glow = Glow(self.pos)
+		self.__glow = Glow(self.cell)
 		return self
 
 	def unglow(self):
@@ -147,13 +147,12 @@ class Block(GamePiece, Flipper):
 
 class Glow(Flipper, Sprite):
 
-	def __init__(self, pos, frame=0):
-		self.pos = pos
+	def __init__(self, cell, frame=0):
+		self.cell = cell
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
 		Flipper.__init__(self, CycleBetween(loop_forever=True, frame=frame, fps=30))
-		grid = Game.current.board.cell_px
-		self.rect = Rect(pos[0] * grid, pos[1] * grid, grid, grid)
+		self.rect = self.cell.get_rect()
 
 
 

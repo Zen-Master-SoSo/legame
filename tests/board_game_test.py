@@ -1,4 +1,5 @@
 import pytest
+from pygame import Rect
 from legame.board_game import *
 from legame.game import Game
 
@@ -22,73 +23,119 @@ def test_game_init():
 	assert Game.current.board.cell_half_height == 25
 
 
-def test_BoardPosition_from_screen_pos():
-	FakeGame()
+def test_Board_cell_at():
+	game = FakeGame()
+	board = game.board
+
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos()
+		x = board.cell_at()
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos(())
+		x = board.cell_at(())
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos(1)
+		x = board.cell_at(1)
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos((1,))
+		x = board.cell_at((1,))
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos(1,2,3)
+		x = board.cell_at(1,2,3)
 	with pytest.raises(ValueError) as e:
-		x = BoardPosition.from_screen_pos((1,2,3))
+		x = board.cell_at((1,2,3))
 
-	pos = BoardPosition.from_screen_pos(0, 0)
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
-	pos = BoardPosition.from_screen_pos((0, 0))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	cell = board.cell_at(0, 0)
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
+	cell = board.cell_at((0, 0))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos(25.0, 25.0)
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
-	pos = BoardPosition.from_screen_pos((25.0, 25.0))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	# floats:
 
-	pos = BoardPosition.from_screen_pos((1, 1))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	cell = board.cell_at(25.0, 25.0)
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
+	cell = board.cell_at((25.0, 25.0))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos(25, 25)
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	cell = board.cell_at((1, 1))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos((26, 26))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	cell = board.cell_at(25, 25)
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos((49, 49))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 0
-	assert pos.row == 0
+	cell = board.cell_at((26, 26))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos((50, 50))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 1
-	assert pos.row == 1
+	cell = board.cell_at((49, 49))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
 
-	pos = BoardPosition.from_screen_pos((99, 99))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 1
-	assert pos.row == 1
+	cell = board.cell_at((50, 50))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 1
+	assert cell.row == 1
 
-	pos = BoardPosition.from_screen_pos((100, 100))
-	assert isinstance(pos, BoardPosition)
-	assert pos.column == 2
-	assert pos.row == 2
+	cell = board.cell_at((99, 99))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 1
+	assert cell.row == 1
+
+	cell = board.cell_at((100, 100))
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 2
+	assert cell.row == 2
+
+	# test outside board
+
+	cell = board.cell_at(-1, 0)
+	assert cell is None
+
+	cell = board.cell_at(0, -1)
+	assert cell is None
+
+	cell = board.cell_at(board.rect.width + 1, 0)
+	assert cell is None
+
+	cell = board.cell_at(0, board.rect.height + 1)
+	assert cell is None
+
+
+
+def test_BoardPosition_get_rect():
+	game = FakeGame()
+	board = game.board
+
+	cell = board.cell_at(0, 0)
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 0
+	assert cell.row == 0
+	rect = cell.get_rect()
+	assert isinstance(rect, Rect)
+	assert rect.x == 0
+	assert rect.y == 0
+	assert rect.width == game.board.cell_width
+	assert rect.height == game.board.cell_height
+
+	cell = board.cell_at(75, 75)
+	assert isinstance(cell, BoardPosition)
+	assert cell.column == 1
+	assert cell.row == 1
+	rect = cell.get_rect()
+	assert isinstance(rect, Rect)
+	assert rect.x == game.board.cell_width
+	assert rect.y == game.board.cell_height
+	assert rect.width == game.board.cell_width
+	assert rect.height == game.board.cell_height
 
 
 
