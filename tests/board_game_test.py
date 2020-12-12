@@ -159,8 +159,54 @@ def test_rotate():
 	assert rot_cell.row + cell.row == board.last_row
 
 
-if __name__ == "__main__":
-	test_rotate()
+def test_cell_access():
+	game = FakeGame()
+	board = game.board
+
+	cell = BoardPosition(0, 0)
+	piece = board.piece_at(cell)
+	assert piece is None
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	piece = board.piece_at(cell)
+	assert isinstance(piece, AbstractGamePiece)
+	assert piece.color == "r"
+
+
+def test_column_row_access():
+	game = FakeGame()
+	board = game.board
+
+	cells = board.column(0)
+	assert isinstance(cells, list)
+	assert len(cells) == board.rows
+
+	cells = board.row(0)
+	assert isinstance(cells, list)
+	assert len(cells) == board.columns
+
+	cell = BoardPosition(0, 0)
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	cells = board.row(cell.row)
+	assert isinstance(cells[0], AbstractGamePiece)
+	for cell in cells[1:]: assert cell is None
+
+	cell = BoardPosition(0, 0)
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	cells = board.column(cell.column)
+	assert isinstance(cells[0], AbstractGamePiece)
+	for cell in cells[1:]: assert cell is None
+
+	cell = BoardPosition(board.last_column, board.last_row)
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	cells = board.row(cell.row)
+	assert isinstance(cells[-1], AbstractGamePiece)
+	for cell in cells[:-1]: assert cell is None
+
+	cell = BoardPosition(board.last_column, board.last_row)
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	cells = board.column(cell.column)
+	assert isinstance(cells[-1], AbstractGamePiece)
+	for cell in cells[:-1]: assert cell is None
 
 
 

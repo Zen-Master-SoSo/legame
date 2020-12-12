@@ -139,7 +139,7 @@ class GameBoard:
 		Places a reference to the given GamePiece in the given cell.
 		"""
 		assert isinstance(cell, BoardPosition)
-		assert isinstance(piece, GamePiece)
+		assert isinstance(piece, AbstractGamePiece)
 		self.__cells[cell.column][cell.row] = piece
 		return self
 
@@ -168,6 +168,20 @@ class GameBoard:
 		"""
 		assert isinstance(cell, BoardPosition)
 		return self.piece_at(cell) is None
+
+
+	def column(self, column):
+		"""
+		Returns a list of the occupants of the given column.
+		"""
+		return self.__cells[column]
+
+
+	def row(self, row):
+		"""
+		Returns a list of the occupants of the given row.
+		"""
+		return [ self.__cells[column][row] for column in range(self.columns) ]
 
 
 	def rotate(self, cell):
@@ -353,7 +367,16 @@ class BoardGameState(GameState):
 
 
 
-class GamePiece(MovingSprite, Sprite):
+class AbstractGamePiece:
+	"""
+	An "abstract" version of a GamePiece, used for testing and assertions
+	"""
+	def __init__(self, cell, color):
+		self.cell = cell
+		self.color = color
+
+
+class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
 
 	max_speed	= 17.0
 	min_speed	= 0.5
