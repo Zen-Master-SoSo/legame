@@ -4,7 +4,7 @@ from pygame.sprite import Sprite
 from legame.game import *
 from legame.board_game import *
 from legame.flipper import *
-from exit_states import *
+from legame.exit_states import *
 
 
 
@@ -122,17 +122,21 @@ class Block(GamePiece, Flipper):
 		Game.current.play("enter.wav")
 		self.__glow = None
 
+
 	def update(self):
 		GamePiece.update(self)
 		Flipper.update(self)
+
 
 	def jiggle(self):
 		self.image_cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
 		return self
 
+
 	def glow(self):
 		self.__glow = Glow(self.cell)
 		return self
+
 
 	def unglow(self):
 		if self.__glow:
@@ -140,9 +144,11 @@ class Block(GamePiece, Flipper):
 			self.__glow = None
 		return self
 
+
 	def kill(self):
 		Game.current.play("bust.wav")
 		Sprite.kill(self)
+
 
 
 class Glow(Flipper, Sprite):

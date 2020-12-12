@@ -513,7 +513,7 @@ class GameState:
 class GameStateFinal(GameState):
 	"""
 	Final GameState - cannot be replaced even if a new GameState is instantiated after this one.
-	See examples/exit_states.py for an example.
+	See exit_states.py for an example.
 	"""
 	pass
 

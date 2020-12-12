@@ -28,10 +28,10 @@ class BoardGame(Game):
 		"""
 		Game.__init__(self, options)
 		self.board = self.get_board()
+		self.statusbar = Statusbar()
 
 
 	def initial_background(self, display_size):
-		self.statusbar = self.get_statusbar()
 		board_bg = self.board.initial_background(display_size)
 		background = Surface((
 			self.board.rect.width,
@@ -45,9 +45,6 @@ class BoardGame(Game):
 	def get_board(self):
 		return GameBoard()
 
-
-	def get_statusbar(self):
-		return Statusbar()
 
 
 
@@ -64,6 +61,7 @@ class GameBoard:
 	grid_lines_color	= (80,80,80)
 
 	background			= None
+
 
 	def __init__(self, columns=None, rows=None):
 		if columns: self.columns = columns
@@ -132,9 +130,7 @@ class GameBoard:
 		Kills the GamePiece at the given cell, if one exists there.
 		"""
 		assert isinstance(cell, BoardPosition)
-		if self.__cells[cell.column][cell.row] is not None:
-			self.__cells[cell.column][cell.row].kill()
-			self.__cells[cell.column][cell.row] = None
+		self.__cells[cell.column][cell.row] = None
 		return self
 
 

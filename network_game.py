@@ -77,7 +77,7 @@ def _handle_message(self, message):
 def _net_quit(self, event):
 	if not Game.current.messenger.closed:
 		Game.current.messenger.send(MsgQuit())
-	GSExiting()
+	GSQuit()
 
 GameState.handle_message = _handle_message
 GameState.quit = _net_quit
