@@ -179,6 +179,15 @@ class GameBoard:
 		return BoardPosition(self.max_column - cell.column, self.max_row - cell.row)
 
 
+	def dump(self):
+		print("  " + "".join([("%2d" % column) for column in range(self.columns)]))
+		print("\n".join(
+			[("%2d|" % row) + "|".join(self.__cells[column][row].color if self.__cells[column][row] is not None else " " \
+			for column in range(self.columns)) + "|" for row in range(self.rows)]
+		))
+		print("  " + "-" * (self.columns * 2 + 1))
+
+
 
 class BoardPosition:
 
@@ -226,7 +235,7 @@ class Statusbar(Sprite):
 
 	def __init__(self):
 		Sprite.__init__(self, Game.current.sprites)
-		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
+		Game.current.sprites.change_layer(self, Game.LAYER_ABOVE_BG)
 		self.font = SysFont(self.font, 22)
 		self.image = Surface((
 			Game.current.board.rect.width,
