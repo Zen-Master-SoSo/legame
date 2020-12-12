@@ -455,7 +455,7 @@ class MovingSprite(CenteredSprite):
 
 	def __str__(self):
 		if self.is_directionless():
-			return "<Motionless %s at %.1f / .1f>" % (type(self).__name__, self.position.x, self.position.y)
+			return "<Motionless %s at %.1f / %.1f>" % (type(self).__name__, self.position.x, self.position.y)
 		return "<%s at %.1f / %.1f, moving %d degrees at %.1f pixels-per-second>" % \
 			(type(self).__name__, self.position.x, self.position.y, self.motion.degrees, self.motion.magnitude())
 
