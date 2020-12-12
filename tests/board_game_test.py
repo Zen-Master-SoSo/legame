@@ -138,4 +138,29 @@ def test_BoardPosition_get_rect():
 	assert rect.height == game.board.cell_height
 
 
+def test_rotate():
+	game = FakeGame()
+	board = game.board
+
+	cell = BoardPosition(0, 0)
+	rot_cell = board.rotate(cell)
+	assert rot_cell.column + cell.column == board.last_column
+	assert rot_cell.row + cell.row == board.last_row
+
+	cell = BoardPosition(2, 4)
+	rot_cell = board.rotate(cell)
+	print(cell, rot_cell)
+	assert rot_cell.column + cell.column == board.last_column
+	assert rot_cell.row + cell.row == board.last_row
+
+	cell = BoardPosition(board.center_column, board.center_row)
+	rot_cell = board.rotate(cell)
+	assert rot_cell.column + cell.column == board.last_column
+	assert rot_cell.row + cell.row == board.last_row
+
+
+if __name__ == "__main__":
+	test_rotate()
+
+
 

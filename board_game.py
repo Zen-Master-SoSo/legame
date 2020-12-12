@@ -68,8 +68,8 @@ class GameBoard:
 		if rows: self.rows = rows
 		self.rect = Rect((self.left, self.top, self.columns * self.cell_width, self.rows * self.cell_height + 1))
 		self.__cells = [[None for y in range(self.rows)] for x in range(self.columns)]
-		self.max_column = self.columns - 1
-		self.max_row = self.rows - 1
+		self.last_column = self.columns - 1
+		self.last_row = self.rows - 1
 		self.center_column = self.columns // 2
 		self.center_row = self.rows // 2
 		self.cell_half_width = self.cell_width // 2
@@ -176,7 +176,7 @@ class GameBoard:
 		Used for showing opponent moves when the move is defined from their perspective.
 		"""
 		assert isinstance(cell, BoardPosition)
-		return BoardPosition(self.max_column - cell.column, self.max_row - cell.row)
+		return BoardPosition(self.last_column - cell.column, self.last_row - cell.row)
 
 
 	def dump(self):
