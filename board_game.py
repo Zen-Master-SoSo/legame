@@ -121,6 +121,7 @@ class GameBoard:
 		Returns a reference to the GamePiece occupying the given cell.
 		If no piece occupies the cell, returns None.
 		"""
+		print('piece_at: %s (%s)' % (type(cell), cell))
 		assert isinstance(cell, BoardPosition)
 		return self.__cells[cell.column][cell.row]
 
@@ -176,7 +177,7 @@ class GameBoard:
 		Used for showing opponent moves when the move is defined from their perspective.
 		"""
 		assert isinstance(cell, BoardPosition)
-		return (self.max_column - cell.column, self.max_row - cell.row)
+		return BoardPosition(self.max_column - cell.column, self.max_row - cell.row)
 
 
 
@@ -385,7 +386,6 @@ class GamePiece(MovingSprite, Sprite):
 				on_arrival()
 		Game.current.board.clear_square(self.cell)
 		self.target_cell = target_cell
-		print(self.target_cell)
 		return self.travel_to(target_cell.screen_coordinates(), arrival_function)
 
 
