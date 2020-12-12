@@ -385,6 +385,7 @@ class GamePiece(MovingSprite, Sprite):
 				on_arrival()
 		Game.current.board.clear_square(self.cell)
 		self.target_cell = target_cell
+		print(self.target_cell)
 		return self.travel_to(target_cell.screen_coordinates(), arrival_function)
 
 

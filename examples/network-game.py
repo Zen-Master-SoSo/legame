@@ -37,10 +37,6 @@ class TestGame(BoardGame, NetworkGame):
 
 class MsgAdd(Message):
 
-	def __init__(self, pos=None):
-		self.pos = pos
-
-
 	def rotate(self):
 		self.pos = Game.current.board.rotate(self.pos)
 		return self
@@ -48,7 +44,8 @@ class MsgAdd(Message):
 
 
 class MsgPickAColor(Message):
-	def __init__(self, color=None, number=None):
+
+	def __init__(self):
 		self.color = random.choice(["r", "g", "b"])
 		self.number = random.randint(0,999)
 
