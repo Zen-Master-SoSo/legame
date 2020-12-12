@@ -1,7 +1,9 @@
 """Provides the BoardGame class, a framework for board games"""
 
-import pygame
+from math import floor
+from pygame.font import SysFont
 from pygame.locals import *
+from pygame.cursors import arrow, broken_x
 from pygame import Rect, Surface, mouse
 from pygame.draw import line
 from pygame.sprite import Sprite
@@ -20,8 +22,16 @@ class BoardGame(Game):
 	opponent_color			= None
 
 
-	def initial_background(self, display_size):
+	def __init__(self, options=None):
+		"""
+		BoardGame constructor; calls Game.__init__() and instantiates the GameBoard and
+		"""
+		Game.__init__(self, options)
 		self.board = self.get_board()
+
+
+
+	def initial_background(self, display_size):
 		self.statusbar = self.get_statusbar()
 		board_bg = self.board.initial_background(display_size)
 		background = Surface((
@@ -46,7 +56,10 @@ class GameBoard:
 
 	columns				= 7
 	rows				= 9
-	cell_px				= 50
+	cell_width			= 50
+	cell_height			= 50
+	left				= 0
+	top					= 0
 
 	background_color	= (0,0,0)
 	grid_lines_color	= (80,80,80)
@@ -56,23 +69,24 @@ class GameBoard:
 	def __init__(self, columns=None, rows=None):
 		if columns: self.columns = columns
 		if rows: self.rows = rows
-		self.rect = Rect((0, 0, self.columns * self.cell_px, self.rows * self.cell_px + 1))
+		self.rect = Rect((self.left, self.top, self.columns * self.cell_width, self.rows * self.cell_height + 1))
 		self.__squares = [[None for y in range(self.rows)] for x in range(self.columns)]
-		self.max_x = self.columns - 1
-		self.max_y = self.rows - 1
-		self.center_x = self.columns // 2
-		self.center_y = self.rows // 2
-		self.cell_half_px = self.cell_px // 2
+		self.max_column = self.columns - 1
+		self.max_row = self.rows - 1
+		self.center_column = self.columns // 2
+		self.center_row = self.rows // 2
+		self.cell_half_width = self.cell_width // 2
+		self.cell_half_height = self.cell_height // 2
 
 
 	def initial_background(self, display_size):
 		bg = Surface(self.rect.size)
 		bg.fill(self.background_color)
 		for col in range(self.columns):
-			x = col * self.cell_px
+			x = col * self.cell_width
 			line(bg, self.grid_lines_color, (x, 0), (x, self.rect.height), 1)
 		for row in range(self.rows + 1):
-			y = row * self.cell_px
+			y = row * self.cell_height
 			line(bg, self.grid_lines_color, (0, y), (self.rect.width, y), 1)
 		return bg
 
@@ -80,6 +94,7 @@ class GameBoard:
 	# Set / get / inspect board positions:
 
 	def piece_at(self, pos):
+		assert isinstance(pos, BoardPosition)
 		return self.__squares[pos[0]][pos[1]]
 
 
@@ -112,7 +127,50 @@ class GameBoard:
 		Returns a board position rotated 180 degrees.
 		Used for showing opponent moves when the move is defined from their perspective.
 		"""
-		return (self.max_x - pos[0], self.max_y - pos[1])
+		return (self.max_column - pos[0], self.max_row - pos[1])
+
+
+
+class BoardPosition:
+
+	board_left	= 0
+	board_top	= 0
+
+
+	def __init__(self, column, row):
+		self.column, self.row = column, row
+
+
+	@classmethod
+	def from_screen_pos(cls, *args):
+		def throw_up():
+			raise ValueError("BoardPosition.from_screen_pos takes two numbers or a tuple of two numbers as arguments")
+		if len(args) == 0: throw_up()
+		if len(args) == 1:
+			if not isinstance(args[0], tuple): throw_up()
+			if len(args[0]) != 2: throw_up()
+			if not isinstance(args[0][0], int) and not isinstance(args[0][0], float): throw_up()
+			if not isinstance(args[0][1], int) and not isinstance(args[0][1], float): throw_up()
+			x, y = args[0]
+		elif len(args) == 2:
+			if not isinstance(args[0], int) and not isinstance(args[0], float): throw_up()
+			if not isinstance(args[1], int) and not isinstance(args[1], float): throw_up()
+			x, y = args
+		else:
+			throw_up()
+		print(x,y)
+		return BoardPosition(
+			floor((x - Game.current.board.left) / Game.current.board.cell_width),
+			floor((y - Game.current.board.top) / Game.current.board.cell_height)
+		)
+
+
+	def screen_coordinates(self):
+		return (
+			Game.current.board.left + Game.current.board.cell_width * self.column,
+			Game.current.board.top + Game.current.board.cell_height * self.row
+		)
+
 
 
 
@@ -128,7 +186,7 @@ class Statusbar(Sprite):
 	def __init__(self):
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
-		self.font = pygame.font.SysFont(self.font, 22)
+		self.font = SysFont(self.font, 22)
 		self.image = Surface((
 			Game.current.board.rect.width,
 			self.font.get_linesize() + self.padding * 2
@@ -178,9 +236,9 @@ class BoardGameState(GameState):
 		Sets the mouse cursor based on the state of the "may_click" flag.
 		"""
 		if self.may_click:
-			mouse.set_cursor(*pygame.cursors.arrow)
+			mouse.set_cursor(*arrow)
 		else:
-			mouse.set_cursor(*pygame.cursors.broken_x)
+			mouse.set_cursor(*broken_x)
 
 
 	def mousemotion(self, event):
@@ -254,7 +312,7 @@ class GamePiece(MovingSprite, Sprite):
 	def __init__(self, pos, color):
 		self.pos = pos
 		self.color = color
-		x, y = self.mid_square(self.pos)
+		x, y = self.pos.screen_coordinates()
 		MovingSprite.__init__(self, x, y)
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
@@ -267,7 +325,7 @@ class GamePiece(MovingSprite, Sprite):
 
 	def mid_square(self, pos_tuple):
 		return (
-			pos_tuple[0] * Game.current.board.cell_px + Game.current.board.cell_half_px,
+			pos_tuple[0] * Game.current.board.cell_px + Game.current.board.cell_half_width,
 			pos_tuple[1] * Game.current.board.cell_px + Game.current.board.cell_half_px
 		)
 
@@ -293,7 +351,7 @@ class GamePiece(MovingSprite, Sprite):
 				on_arrival()
 		Game.current.board.clear_square(self.pos)
 		self.target_pos = target_pos
-		return self.travel_to(self.mid_square(target_pos), arrival_function)
+		return self.travel_to(target_pos.screen_coordinates(), arrival_function)
 
 
 

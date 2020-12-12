@@ -71,7 +71,7 @@ class GameJoiner(Dialog, BroadcastConnector):
 			self.append(button)
 		self.address_buttons[0].margin_top = 10
 		self.statusbar = Label(
-			" ",
+			"Waiting for other players to appear on the network",
 			align = ALIGN_LEFT,
 			font_size = 15,
 			width = 580,

@@ -88,8 +88,8 @@ class Game:
 		if options is not None:
 			for varname, value in options.items():
 				setattr(self, varname, value)
-		if self.resource_dir is None:
-			raise Exception("No resource_dir defined")
+		if self.resource_dir is None: self.resource_dir = "resources"
+			#raise Exception("No resource_dir defined")
 		self.resources = ResourceManager(self.resource_dir, self.resource_dump)
 		pygame.display.init()
 		pygame.font.init()

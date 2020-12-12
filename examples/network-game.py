@@ -182,8 +182,7 @@ class Glow(Flipper, pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
 		Flipper.__init__(self, CycleBetween(loop_forever=True, frame=frame, fps=30))
-		grid = board.cell_px
-		self.rect = pygame.Rect(pos[0] * grid, pos[1] * grid, grid, grid)
+		self.rect = pygame.Rect(pos[0] * board.cell_width, pos[1] * board.cell_height, board.cell_width, board.cell_height)
 
 
 
