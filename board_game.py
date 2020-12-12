@@ -92,7 +92,7 @@ class GameBoard:
 
 	def cell_at(self, *args):
 		"""
-		Return a BoardPosition from screen coordinates.
+		Return a Cell from screen coordinates.
 		Args may be a pair of numbers (float or int), or a tuple of numbers (float or int).
 		Returns None if the coordinates are outside of the board.
 		"""
@@ -110,7 +110,7 @@ class GameBoard:
 			x, y = args
 		else:
 			throw_up()
-		return BoardPosition(
+		return Cell(
 			floor((x - Game.current.board.left) / Game.current.board.cell_width),
 			floor((y - Game.current.board.top) / Game.current.board.cell_height)
 		) if Game.current.board.rect.collidepoint(x, y) else None
@@ -121,7 +121,7 @@ class GameBoard:
 		Returns a reference to the GamePiece occupying the given cell.
 		If no piece occupies the cell, returns None.
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		return self.__cells[cell.column][cell.row]
 
 
@@ -129,7 +129,7 @@ class GameBoard:
 		"""
 		Kills the GamePiece at the given cell, if one exists there.
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		self.__cells[cell.column][cell.row] = None
 		return self
 
@@ -138,7 +138,7 @@ class GameBoard:
 		"""
 		Places a reference to the given GamePiece in the given cell.
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		assert isinstance(piece, AbstractGamePiece)
 		self.__cells[cell.column][cell.row] = piece
 		return self
@@ -146,18 +146,20 @@ class GameBoard:
 
 	def is_mine(self, cell):
 		"""
-		Returns True if there is a GamePiece at the given cell, and it is this player's "color".
+		Returns True if there is a GamePiece at the given cell which has this player's
+		"color".
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		piece = self.piece_at(cell)
 		return False if piece is None else piece.color == Game.current.my_color
 
 
-	def opponent_at(self, cell):
+	def is_opponents(self, cell):
 		"""
-		Returns True if there is a GamePiece at the given cell, and it is not this player's "color".
+		Returns True if there is a GamePiece at the given cell, and it doesn't have
+		this player's "color".
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		piece = self.piece_at(cell)
 		return False if piece is None else piece.color != Game.current.my_color
 
@@ -166,7 +168,7 @@ class GameBoard:
 		"""
 		Returns True if the given cell is empty.
 		"""
-		assert isinstance(cell, BoardPosition)
+		assert isinstance(cell, Cell)
 		return self.piece_at(cell) is None
 
 
@@ -189,8 +191,8 @@ class GameBoard:
 		Returns a board position rotated 180 degrees.
 		Used for showing opponent moves when the move is defined from their perspective.
 		"""
-		assert isinstance(cell, BoardPosition)
-		return BoardPosition(self.last_column - cell.column, self.last_row - cell.row)
+		assert isinstance(cell, Cell)
+		return Cell(self.last_column - cell.column, self.last_row - cell.row)
 
 
 	def dump(self):
@@ -203,11 +205,18 @@ class GameBoard:
 
 
 
-class BoardPosition:
+class Cell:
 
 
 	def __init__(self, column, row):
 		self.column, self.row = column, row
+
+
+	def piece(self):
+		"""
+		Returns the content of the GameBoard at this cell
+		"""
+		return Game.current.board.piece_at(self)
 
 
 	def screen_coordinates(self):
@@ -234,7 +243,7 @@ class BoardPosition:
 
 
 	def __str__(self):
-		return "BoardPosition: column {}, row {}".format(self.column, self.row)
+		return "Cell: column {}, row {}".format(self.column, self.row)
 
 
 
@@ -374,6 +383,7 @@ class AbstractGamePiece:
 	def __init__(self, cell, color):
 		self.cell = cell
 		self.color = color
+
 
 
 class GamePiece(MovingSprite, Sprite, AbstractGamePiece):

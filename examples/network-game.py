@@ -42,7 +42,7 @@ class MsgAdd(Message):
 
 
 	def decode_attributes(self, attributes):
-		self.cell = BoardPosition(attributes["cell"][0], attributes["cell"][1])
+		self.cell = Cell(attributes["cell"][0], attributes["cell"][1])
 
 
 	def rotate(self):
@@ -118,9 +118,9 @@ class GSMyMove(GSBase):
 
 
 	def timeout(self, args):
-		for x in range(board.columns):
-			for y in range(board.rows):
-				cell = BoardPosition(x, y)
+		for y in range(board.rows):
+			for x in range(board.columns):
+				cell = Cell(x, y)
 				if board.piece_at(cell) is None:
 					Block(cell, Game.current.my_color)
 					send(MsgAdd(cell=cell))

@@ -41,57 +41,57 @@ def test_Board_cell_at():
 		x = board.cell_at((1,2,3))
 
 	cell = board.cell_at(0, 0)
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 	cell = board.cell_at((0, 0))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	# floats:
 
 	cell = board.cell_at(25.0, 25.0)
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 	cell = board.cell_at((25.0, 25.0))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	cell = board.cell_at((1, 1))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	cell = board.cell_at(25, 25)
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	cell = board.cell_at((26, 26))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	cell = board.cell_at((49, 49))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 
 	cell = board.cell_at((50, 50))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 1
 	assert cell.row == 1
 
 	cell = board.cell_at((99, 99))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 1
 	assert cell.row == 1
 
 	cell = board.cell_at((100, 100))
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 2
 	assert cell.row == 2
 
@@ -111,12 +111,12 @@ def test_Board_cell_at():
 
 
 
-def test_BoardPosition_get_rect():
+def test_Cell_get_rect():
 	game = FakeGame()
 	board = game.board
 
 	cell = board.cell_at(0, 0)
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
 	rect = cell.get_rect()
@@ -127,7 +127,7 @@ def test_BoardPosition_get_rect():
 	assert rect.height == game.board.cell_height
 
 	cell = board.cell_at(75, 75)
-	assert isinstance(cell, BoardPosition)
+	assert isinstance(cell, Cell)
 	assert cell.column == 1
 	assert cell.row == 1
 	rect = cell.get_rect()
@@ -142,18 +142,18 @@ def test_rotate():
 	game = FakeGame()
 	board = game.board
 
-	cell = BoardPosition(0, 0)
+	cell = Cell(0, 0)
 	rot_cell = board.rotate(cell)
 	assert rot_cell.column + cell.column == board.last_column
 	assert rot_cell.row + cell.row == board.last_row
 
-	cell = BoardPosition(2, 4)
+	cell = Cell(2, 4)
 	rot_cell = board.rotate(cell)
 	print(cell, rot_cell)
 	assert rot_cell.column + cell.column == board.last_column
 	assert rot_cell.row + cell.row == board.last_row
 
-	cell = BoardPosition(board.center_column, board.center_row)
+	cell = Cell(board.center_column, board.center_row)
 	rot_cell = board.rotate(cell)
 	assert rot_cell.column + cell.column == board.last_column
 	assert rot_cell.row + cell.row == board.last_row
@@ -163,11 +163,19 @@ def test_cell_access():
 	game = FakeGame()
 	board = game.board
 
-	cell = BoardPosition(0, 0)
+	cell = Cell(0, 0)
 	piece = board.piece_at(cell)
 	assert piece is None
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
 	piece = board.piece_at(cell)
+	assert isinstance(piece, AbstractGamePiece)
+	assert piece.color == "r"
+
+	cell = Cell(0, 1)
+	piece = cell.piece()
+	assert piece is None
+	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	piece = cell.piece()
 	assert isinstance(piece, AbstractGamePiece)
 	assert piece.color == "r"
 
@@ -184,25 +192,25 @@ def test_column_row_access():
 	assert isinstance(cells, list)
 	assert len(cells) == board.columns
 
-	cell = BoardPosition(0, 0)
+	cell = Cell(0, 0)
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
 	cells = board.row(cell.row)
 	assert isinstance(cells[0], AbstractGamePiece)
 	for cell in cells[1:]: assert cell is None
 
-	cell = BoardPosition(0, 0)
+	cell = Cell(0, 0)
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
 	cells = board.column(cell.column)
 	assert isinstance(cells[0], AbstractGamePiece)
 	for cell in cells[1:]: assert cell is None
 
-	cell = BoardPosition(board.last_column, board.last_row)
+	cell = Cell(board.last_column, board.last_row)
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
 	cells = board.row(cell.row)
 	assert isinstance(cells[-1], AbstractGamePiece)
 	for cell in cells[:-1]: assert cell is None
 
-	cell = BoardPosition(board.last_column, board.last_row)
+	cell = Cell(board.last_column, board.last_row)
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
 	cells = board.column(cell.column)
 	assert isinstance(cells[-1], AbstractGamePiece)
