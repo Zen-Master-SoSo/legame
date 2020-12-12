@@ -336,12 +336,13 @@ class Game:
 
 class GameState:
 
+
 	def __init__(self, **kwargs):
 		"""
-		GameState constructor - sets the next state of the game.
+		Set up this GameState to be the new game state next time through the main loop.
 		The new state will have attributes set by keyword args passed to this function.
-		Note that if the current game state is an instance of "GameStateFinal", the
-		current game state will not be changed.
+		If the current game state is an instance of "GameStateFinal", the current game
+		state will not be changed.
 		"""
 		for varname, value in kwargs.items(): setattr(self, varname, value)
 		if isinstance(Game.current._state, GameStateFinal):

@@ -32,14 +32,14 @@ class BoardGame(Game):
 
 
 	def initial_background(self, display_size):
+		self.statusbar.rect.top = self.board.rect.height
 		board_bg = self.board.initial_background(display_size)
-		background = Surface((
+		my_background = Surface((
 			self.board.rect.width,
 			self.board.rect.height + self.statusbar.rect.height
 		))
-		background.blit(board_bg, (0, 0))
-		self.statusbar.rect.top = self.board.rect.height
-		return background
+		my_background.blit(board_bg, (0, 0))
+		return my_background
 
 
 	def get_board(self):
@@ -296,7 +296,6 @@ class BoardGameState(GameState):
 			self.mouse_exit(self.mouse_pos)
 			self.mouse_enter(cell)
 		self.mouse_pos = cell
-
 
 
 	def mousebuttondown(self, event):

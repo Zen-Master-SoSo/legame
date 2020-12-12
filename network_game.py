@@ -17,6 +17,7 @@ import importlib, cable_car
 from time import time
 from legame.game import Game, GameState
 from legame.joiner import GameJoiner
+from legame.exit_states import GSQuit
 from cable_car.messenger import Messenger
 
 
@@ -75,8 +76,7 @@ def _handle_message(self, message):
 	pass
 
 def _net_quit(self, event):
-	if not Game.current.messenger.closed:
-		Game.current.messenger.send(MsgQuit())
+	if not Game.current.messenger.closed: Game.current.messenger.send(MsgQuit())
 	GSQuit()
 
 GameState.handle_message = _handle_message
