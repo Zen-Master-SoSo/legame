@@ -121,12 +121,11 @@ class GameBoard:
 		Returns a reference to the GamePiece occupying the given cell.
 		If no piece occupies the cell, returns None.
 		"""
-		print('piece_at: %s (%s)' % (type(cell), cell))
 		assert isinstance(cell, BoardPosition)
 		return self.__cells[cell.column][cell.row]
 
 
-	def clear_square(self, cell):
+	def clear_cell(self, cell):
 		"""
 		Kills the GamePiece at the given cell, if one exists there.
 		"""
@@ -135,9 +134,9 @@ class GameBoard:
 		return self
 
 
-	def set_square(self, cell, piece):
+	def set_cell(self, cell, piece):
 		"""
-		Places a reference to the given GamePiece in the given square.
+		Places a reference to the given GamePiece in the given cell.
 		"""
 		assert isinstance(cell, BoardPosition)
 		assert isinstance(piece, GamePiece)
@@ -361,7 +360,7 @@ class GamePiece(MovingSprite, Sprite):
 		MovingSprite.__init__(self, x, y)
 		self.rect = self.cell.get_rect()
 		self.image_set = Game.current.resources.image_set("%s/%s" % (self.__class__.__name__, self.color))
-		Game.current.board.set_square(cell, self)
+		Game.current.board.set_cell(cell, self)
 
 
 
@@ -369,22 +368,20 @@ class GamePiece(MovingSprite, Sprite):
 
 	def travel_to_cell(self, target_cell, on_arrival=None):
 		"""
-		High-level command which sets this GamePiece on a path towards a given square.
+		High-level command which sets this GamePiece on a path towards a given cell.
 		Each subsequent call to "move()" will move it one frame closer to "target_cell".
 		When travel is complete, the optional "on_arrival" function will be called.
-		This function overrides the base function in MovingSprite in order to convert board square
-		positions to pixel coordinates and update the game board when travel is complete.
 		"""
 		def arrival_function():
 			self.cell = self.target_cell
 			current_resident = Game.current.board.piece_at(self.cell)
 			if current_resident is not None:
 				current_resident.kill()
-			Game.current.board.set_square(self.cell, self)
+			Game.current.board.set_cell(self.cell, self)
 			self._motion_function = self.no_motion
 			if on_arrival is not None:
 				on_arrival()
-		Game.current.board.clear_square(self.cell)
+		Game.current.board.clear_cell(self.cell)
 		self.target_cell = target_cell
 		return self.travel_to(target_cell.screen_coordinates(), arrival_function)
 

@@ -16,7 +16,7 @@ class TestGame(BoardGame, NetworkGame):
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
 		assert os.path.isdir(self.resource_dir)
-		Game.__init__(self, options=None)
+		BoardGame.__init__(self, options=None)
 		NetworkGame.__init__(self)
 
 
@@ -37,8 +37,16 @@ class TestGame(BoardGame, NetworkGame):
 
 class MsgAdd(Message):
 
+	def encoded_attributes(self):
+		return { "cell" : (self.cell.row, self.cell.column) }
+
+
+	def decode_attributes(self, attributes):
+		self.cell = BoardPosition(attributes["cell"][0], attributes["cell"][1])
+
+
 	def rotate(self):
-		self.pos = Game.current.board.rotate(self.pos)
+		self.cell = board.rotate(self.cell)
 		return self
 
 
@@ -112,9 +120,10 @@ class GSMyMove(GSBase):
 	def timeout(self, args):
 		for x in range(board.columns):
 			for y in range(board.rows):
-				if board.piece_at((x, y)) is None:
-					Block((x, y), Game.current.my_color)
-					send(MsgAdd((x, y)))
+				cell = BoardPosition(x, y)
+				if board.piece_at(cell) is None:
+					Block(cell, Game.current.my_color)
+					send(MsgAdd(cell=cell))
 					GSWaitYourTurn()
 					return
 		send(MsgQuit())
@@ -132,7 +141,7 @@ class GSWaitYourTurn(GSBase):
 	def handle_message(self, message):
 		if isinstance(message, MsgAdd):
 			message.rotate()
-			board.set_square(message.pos, Block(message.pos, Game.current.opponent_color))
+			board.set_cell(message.cell, Block(message.cell, Game.current.opponent_color))
 		elif isinstance(message, MsgQuit):
 			GSQuit()
 		else:
@@ -146,9 +155,9 @@ class GSWaitYourTurn(GSBase):
 
 class Block(GamePiece, Flipper):
 
-	def __init__(self, pos, color):
+	def __init__(self, cell, color):
 		self.image_base = "Block/" + color
-		GamePiece.__init__(self, pos, color)
+		GamePiece.__init__(self, cell, color)
 		Flipper.__init__(self, CycleThrough("enter", fps=25), CycleNone())
 		self.__glow = None
 
@@ -161,7 +170,7 @@ class Block(GamePiece, Flipper):
 		return self
 
 	def glow(self):
-		self.__glow = Glow(self.pos)
+		self.__glow = Glow(self.cell)
 		return self
 
 	def unglow(self):
@@ -174,12 +183,12 @@ class Block(GamePiece, Flipper):
 
 class Glow(Flipper, pygame.sprite.Sprite):
 
-	def __init__(self, pos, frame=0):
-		self.pos = pos
+	def __init__(self, cell, frame=0):
+		self.cell = cell
 		pygame.sprite.Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
 		Flipper.__init__(self, CycleBetween(loop_forever=True, frame=frame, fps=30))
-		self.rect = pygame.Rect(pos[0] * board.cell_width, pos[1] * board.cell_height, board.cell_width, board.cell_height)
+		self.rect = self.cell.get_rect()
 
 
 
