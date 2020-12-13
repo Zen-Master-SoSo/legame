@@ -217,4 +217,36 @@ def test_column_row_access():
 	for cell in cells[:-1]: assert cell is None
 
 
+def test_cell_copy():
+	game = FakeGame()
+	board = game.board
+	cell1 = Cell(5, 6)
+	cell2 = cell1.copy()
+	assert cell2.column == cell1.column
+	assert cell2.row == cell1.row
+
+	cell2 = cell1.shifted(1)
+	assert cell2.column == cell1.column + 1
+	assert cell2.row == cell1.row
+
+	cell2 = cell1.shifted(0, 1)
+	assert cell2.column == cell1.column
+	assert cell2.row == cell1.row + 1
+
+	cell2 = cell1.shifted(-1)
+	assert cell2.column == cell1.column - 1
+	assert cell2.row == cell1.row
+
+	cell2 = cell1.shifted(0, -1)
+	assert cell2.column == cell1.column
+	assert cell2.row == cell1.row - 1
+
+	cell2 = cell1.moved(row=7)
+	assert cell2.column == cell1.column
+	assert cell2.row == 7
+
+	cell2 = cell1.moved(column=5)
+	assert cell2.column == 5
+	assert cell2.row == cell1.row
+
 

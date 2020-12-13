@@ -242,6 +242,36 @@ class Cell:
 		)
 
 
+	def copy(self):
+		"""
+		Returns a copy.
+		"""
+		return Cell(self.column, self.row)
+
+
+	def shifted(self, columns=None, rows=None):
+		"""
+		Returns a copy of this Cell shifted by the given "columns" and "rows".
+		Either of those arguments are optional. Providing neither will yield a copy.
+		"""
+		return Cell(
+			self.column if columns is None else self.column + columns,
+			self.row if rows is None else self.row + rows
+		)
+
+
+	def moved(self, column=None, row=None):
+		"""
+		Returns a copy of this Cell with either "columns" or "rows" set to the given
+		values(s), and the other values unchanged.
+		Either of those arguments are optional. Providing neither will yield a copy.
+		"""
+		return Cell(
+			self.column if column is None else column,
+			self.row if row is None else row
+		)
+
+
 	def __str__(self):
 		return "Cell: column {}, row {}".format(self.column, self.row)
 
