@@ -9,13 +9,14 @@ from legame.game import Game
 
 class Flipper:
 
+	image_base = None	# base name of this thing's image set. If none, use the class name
+
+
 	@classmethod
 	def preload(cls, alpha_channel=True, color_key=None):
 		for subclass in Flipper.__subclasses__():
 			Game.current.resources.image_set(subclass.__name__, alpha_channel=alpha_channel, color_key=None)
 
-
-	image_base = None	# base name of this thing's image set. If none, use the class name
 
 	def __init__(self, *cyclers, alpha_channel=True, color_key=None):
 		"""
@@ -37,14 +38,14 @@ class Flipper:
 		self.next_cycler()
 
 
-	def image_cycle(self, *cyclers):
+	def cycle(self, *cyclers):
 		"""
 		Replaces the current ImageCycle with the first ImageCycle object given, and queues any other
 		ImageCycle objects given.
 
 		e.g.:
 
-			thing.image_cycle(<cycler>, <cycler>, <cycler>)
+			thing.cycle(<cycler>, <cycler>, <cycler>)
 
 		"""
 		self._cycler_queue.clear()
@@ -102,6 +103,7 @@ class ImageCycle:
 	loop_forever	= False
 	loops			= 1			# Number of times to loop through
 	fps				= None		# If set, increment image this many frames-per-second
+	frame			= None		# May be overriden in the constructor using "frame" kwarg
 
 	def __init__(self, variant=None, on_complete=None, **kwargs):
 		"""
@@ -128,12 +130,12 @@ class ImageCycle:
 		self.variant = variant
 		self.on_complete_function = on_complete
 		for varname, value in kwargs.items(): setattr(self, varname, value)
+		if self.frame is None: self.frame = 0
 		self.__updates_per_frame = 1 if self.fps is None \
 			else Game.current.fps // self.fps if Game.current is not None \
 			else 60 // self.fps
-		self.__updates_this_frame = 0
+		self._updates_this_frame = 0
 		self._loops_remaining = self.loops
-		self.frame = 0
 		self.done = False
 
 
@@ -150,9 +152,9 @@ class ImageCycle:
 		Returns Image object.
 		"""
 		if not self.done:
-			self.__updates_this_frame += 1
-			if self.__updates_this_frame >= self.__updates_per_frame:
-				self.__updates_this_frame = 0
+			self._updates_this_frame += 1
+			if self._updates_this_frame >= self.__updates_per_frame:
+				self._updates_this_frame = 0
 				self.advance_frame()
 				if self.done and self.on_complete_function:
 					self.on_complete_function()

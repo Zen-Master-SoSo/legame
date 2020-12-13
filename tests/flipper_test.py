@@ -10,6 +10,7 @@ def thing():
 
 
 class FakeGame:
+	fps	= 30
 	def __init__(self):
 		Game.current = self
 		examples = os.path.join(os.path.dirname(legame.__file__), "examples")
@@ -40,7 +41,7 @@ def test_cycle_through_once(thing):
 
 
 def test_cycle_through_twice(thing):
-	thing.image_cycle(CycleThrough("enter", loops=2))
+	thing.cycle(CycleThrough("enter", loops=2))
 	assert thing.cycler.loop_forever == False
 	assert(thing.cycler.loops == 2)
 	for frame in [0, 1, 2, 0, 1, 2]:
@@ -50,7 +51,7 @@ def test_cycle_through_twice(thing):
 
 
 def test_between_through_once(thing):
-	thing.image_cycle(CycleBetween("jiggle"))
+	thing.cycle(CycleBetween("jiggle"))
 	assert isinstance(thing.cycler, CycleBetween)
 	assert thing.cycler.loop_forever == False
 	assert thing.cycler.loops == 1
@@ -61,7 +62,7 @@ def test_between_through_once(thing):
 
 
 def test_cycle_between_twice(thing):
-	thing.image_cycle(CycleBetween("jiggle", loops=2))
+	thing.cycle(CycleBetween("jiggle", loops=2))
 	assert thing.cycler.loop_forever == False
 	assert(thing.cycler.loops == 2)
 	assert(thing.image == thing.cycler.image_set.images[0])
@@ -72,7 +73,7 @@ def test_cycle_between_twice(thing):
 
 
 def test_cycle_through_loop_forever(thing):
-	thing.image_cycle(CycleThrough("enter", loop_forever=True))
+	thing.cycle(CycleThrough("enter", loop_forever=True))
 	assert thing.cycler.loop_forever == True
 	assert thing.cycler.frame == 0
 	for frame in [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]:
@@ -81,7 +82,7 @@ def test_cycle_through_loop_forever(thing):
 
 
 def test_two_cycles_queued(thing):
-	thing.image_cycle(CycleBetween("jiggle"), CycleThrough("enter"))
+	thing.cycle(CycleBetween("jiggle"), CycleThrough("enter"))
 	assert(thing.cycler.__class__.__name__ == "CycleBetween")
 	assert thing.cycler.loop_forever == False
 	assert thing.cycler.loops == 1
@@ -97,5 +98,13 @@ def test_two_cycles_queued(thing):
 		assert thing.cycler.frame == frame
 		thing.update()
 	assert thing.cycler is None
+
+
+def test_starting_frame(thing):
+	thing.cycle(CycleBetween("jiggle", loop_forever=True, frame=2, fps=30))
+	assert thing.cycler.loop_forever == True
+	assert thing.cycler.frame == 2
+
+
 
 

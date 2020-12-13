@@ -129,7 +129,7 @@ class Block(GamePiece, Flipper):
 
 
 	def jiggle(self):
-		self.image_cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
+		self.cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
 		return self
 
 

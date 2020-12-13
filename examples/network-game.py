@@ -166,7 +166,7 @@ class Block(GamePiece, Flipper):
 		Flipper.update(self)
 
 	def jiggle(self):
-		self.image_cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
+		self.cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
 		return self
 
 	def glow(self):
