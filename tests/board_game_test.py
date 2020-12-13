@@ -194,6 +194,7 @@ def test_cell_access():
 	cell = Cell(1, 0)
 	piece = cell.piece()
 	assert piece is None
+	assert cell.is_empty()
 	cell.set(AbstractGamePiece(cell, "r"))
 	piece = cell.piece()
 	assert isinstance(piece, AbstractGamePiece)

@@ -250,7 +250,7 @@ class Cell:
 		return Game.current.board.is_mine(self)
 
 
-	def is_opponents(self, cell):
+	def is_opponents(self):
 		"""
 		Returns True if there is a GamePiece at this cell, and it doesn't have this
 		player's "color".
@@ -258,7 +258,7 @@ class Cell:
 		return Game.current.board.is_opponents(self)
 
 
-	def is_empty(self, cell):
+	def is_empty(self):
 		"""
 		Returns True if this cell is empty.
 		"""
