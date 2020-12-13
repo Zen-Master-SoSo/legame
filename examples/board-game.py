@@ -155,7 +155,7 @@ class Glow(Flipper, Sprite):
 
 	def __init__(self, cell, frame=0):
 		self.cell = cell
-		self.rect = self.cell.get_rect()
+		self.rect = self.cell.rect()
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
 		Flipper.__init__(self, CycleBetween(loop_forever=True, frame=frame, fps=30))

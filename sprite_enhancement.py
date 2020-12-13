@@ -9,12 +9,40 @@ from legame.locals import *
 
 
 
+def vector(self, target):
+	"""
+	Returns a Vector from the given tuple, Vector, or CenteredSprite.
+	Raises ValueError if impossible to convert.
+	"""
+	if isinstance(target, CenteredSprite): return target.position
+	if isinstance(target, Vector): return target
+	if isinstance(target, tuple): return Vector(target)
+	raise ValueError("Invalid target: %s" % target)
+
+
+
 class CenteredSprite:
 
 	height				= 10
 	width				= 10
 
-	########################### x
+
+	def __init__(self, x=0.0, y=0.0):
+		"""
+		CenteredSprite constructor.
+		Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+		at the x/y position of this Sprite.
+		"x" and "y" must be float values which define the position of the object.
+		"""
+		self.position = Vector(x, y)
+		self.rect = Rect(
+			self.position.x - self.width / 2.0,
+			self.position.y - self.height / 2.0,
+			self.width,
+			self.height
+		)
+
+
 	@property
 	def x(self):
 		"""
@@ -31,7 +59,7 @@ class CenteredSprite:
 		"""
 		self.position.x = value
 
-	########################### y
+
 	@property
 	def y(self):
 		"""
@@ -47,24 +75,6 @@ class CenteredSprite:
 		object is to be rendered.
 		"""
 		self.position.y = value
-
-
-	def __init__(self, x=0.0, y=0.0):
-		"""
-		CenteredSprite constructor.
-		Creates a "rect" property as used by pygame.sprite.Sprite, with the center
-		at the x/y position of this Sprite.
-		"x" and "y" must be float values which define the position of the object.
-		"""
-		self.position = Vector(x, y)
-		self._half_width = self.width / 2.0
-		self._half_height = self.height / 2.0
-		self.rect = Rect(
-			self.position.x - self._half_width,
-			self.position.y - self._half_height,
-			self.width,
-			self.height
-		)
 
 
 	def update_rect(self):
@@ -118,7 +128,6 @@ class MovingSprite(CenteredSprite):
 		self.motion.from_polar((speed, direction))
 
 
-	###########################  speed
 	@property
 	def speed(self):
 		"""
@@ -137,7 +146,6 @@ class MovingSprite(CenteredSprite):
 			self.motion.from_polar((value, 0.0))
 
 
-	########################### direction
 	@property
 	def direction(self):
 		"""
@@ -184,24 +192,13 @@ class MovingSprite(CenteredSprite):
 		self.motion.from_polar((magnitude, degrees))
 
 
-	def to_vector(self, target):
-		"""
-		Returns a Vector from the given tuple, Vector, or CenteredSprite.
-		Raises ValueError if impossible to convert.
-		"""
-		if isinstance(target, CenteredSprite): return target.position
-		if isinstance(target, Vector): return target
-		if isinstance(target, tuple): return Vector(target)
-		raise ValueError("Invalid target: %s" % target)
-
-
 	def travel_to(self, target, on_arrival=None):
 		"""
 		High-level command which sets this MovingSprite on a path towards a given target.
 		Each subsequent call to "move()" will move the Thing one frame closer to the target.
 		When travel is complete, the optional "on_arrival" function will be called.
 		"""
-		self.destination = self.to_vector(target)
+		self.destination = vector(target)
 		self._motion_function = self.seek_motion
 		self._arrival_function = on_arrival
 		return self.make_heading()

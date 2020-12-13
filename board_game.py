@@ -212,6 +212,14 @@ class Cell:
 		self.column, self.row = column, row
 
 
+	def __iter__(self):
+		return iter((self.column, self.row))
+
+
+	def __eq__(self, cell):
+		return self.column == cell.column and self.row == cell.row
+
+
 	def piece(self):
 		"""
 		Returns the content of the GameBoard at this cell
@@ -219,7 +227,7 @@ class Cell:
 		return Game.current.board.piece_at(self)
 
 
-	def screen_coordinates(self):
+	def center(self):
 		"""
 		Returns the center point of this position.
 		"""
@@ -229,7 +237,7 @@ class Cell:
 		)
 
 
-	def get_rect(self):
+	def rect(self):
 		"""
 		Returns a pygame rect which covers this position.
 		Top-left is the top-left of the cell.
@@ -273,7 +281,7 @@ class Cell:
 
 
 	def __str__(self):
-		return "Cell: column {}, row {}".format(self.column, self.row)
+		return "Cell at column {}, row {}".format(self.column, self.row)
 
 
 
@@ -410,9 +418,56 @@ class AbstractGamePiece:
 	"""
 	An "abstract" version of a GamePiece, used for testing and assertions
 	"""
+
 	def __init__(self, cell, color):
 		self.cell = cell
 		self.color = color
+		self.rect = self.cell.rect()
+		self.position = Vector(self.cell.center())
+		Game.current.board.set_cell(cell, self)
+
+
+	def travel_to_cell(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
+		"""
+		High-level command which sets this GamePiece on a path towards a given cell.
+		Each subsequent call to "move()" will move it one frame closer to "target_cell".
+		When travel is complete, the optional "on_arrival" function will be called.
+
+		Specifying the target destination:
+
+		1. Pass another Cell as "target_cell"
+		2. Specify the target "column" and/or "row".
+		3. Specify relative "columns" and/or "rows" to move by.
+
+		In cases 2 and 3 above, if "column" or "columns" is not given, this GamePiece's
+		current column will be used. If "row" or "rows" is not given, this GamePiece's
+		current row will be used.
+
+		"""
+		def arrival_function():
+			self.cell = self.target_cell
+			current_resident = Game.current.board.piece_at(self.cell)
+			if current_resident is not None:
+				current_resident.kill()
+			Game.current.board.set_cell(self.cell, self)
+			self._motion_function = self.no_motion
+			if on_arrival is not None:
+				on_arrival()
+		if target_cell is None:
+			self.target_cell = self.cell.copy()
+			self.target_cell.column = column if column is not None else self.cell.column + columns if columns is not None else self.cell.column
+			self.target_cell.row = row if row is not None else self.cell.row + rows if rows is not None else self.cell.row
+		else:
+			self.target_cell = target_cell
+		if self.target_cell == self.cell:
+			logging.warn("GamePiece.travel_to_cell target_cell is the current GamePiece location cell")
+		else:
+			Game.current.board.clear_cell(self.cell)
+			return self.travel_to(self.target_cell.center(), arrival_function)
+
+
+	def travel_to(self, coords, on_arrival):
+		pass
 
 
 
@@ -424,38 +479,11 @@ class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
 
 
 	def __init__(self, cell, color):
-		self.cell = cell
-		self.color = color
+		AbstractGamePiece.__init__(self, cell, color)
+		self._motion_function = self.cartesian_motion
+		self.motion = Vector()
+		self.image_set = Game.current.resources.image_set("%s/%s" % (self.__class__.__name__, self.color))
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
-		x, y = self.cell.screen_coordinates()
-		MovingSprite.__init__(self, x, y)
-		self.rect = self.cell.get_rect()
-		self.image_set = Game.current.resources.image_set("%s/%s" % (self.__class__.__name__, self.color))
-		Game.current.board.set_cell(cell, self)
-
-
-
-	# Move routines which may be called in the "update()" function of the parent Sprite:
-
-	def travel_to_cell(self, target_cell, on_arrival=None):
-		"""
-		High-level command which sets this GamePiece on a path towards a given cell.
-		Each subsequent call to "move()" will move it one frame closer to "target_cell".
-		When travel is complete, the optional "on_arrival" function will be called.
-		"""
-		def arrival_function():
-			self.cell = self.target_cell
-			current_resident = Game.current.board.piece_at(self.cell)
-			if current_resident is not None:
-				current_resident.kill()
-			Game.current.board.set_cell(self.cell, self)
-			self._motion_function = self.no_motion
-			if on_arrival is not None:
-				on_arrival()
-		Game.current.board.clear_cell(self.cell)
-		self.target_cell = target_cell
-		return self.travel_to(target_cell.screen_coordinates(), arrival_function)
-
 
 

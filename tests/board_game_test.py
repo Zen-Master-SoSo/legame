@@ -23,7 +23,14 @@ def test_game_init():
 	assert Game.current.board.cell_half_height == 25
 
 
-def test_Board_cell_at():
+def test_cell_str():
+	game = FakeGame()
+	board = game.board
+	cell = Cell(5, 6)
+	assert str(cell) == "Cell at column 5, row 6"
+
+
+def test_cell_at():
 	game = FakeGame()
 	board = game.board
 
@@ -111,7 +118,7 @@ def test_Board_cell_at():
 
 
 
-def test_Cell_get_rect():
+def test_cell_get_rect():
 	game = FakeGame()
 	board = game.board
 
@@ -119,7 +126,7 @@ def test_Cell_get_rect():
 	assert isinstance(cell, Cell)
 	assert cell.column == 0
 	assert cell.row == 0
-	rect = cell.get_rect()
+	rect = cell.rect()
 	assert isinstance(rect, Rect)
 	assert rect.x == 0
 	assert rect.y == 0
@@ -130,7 +137,7 @@ def test_Cell_get_rect():
 	assert isinstance(cell, Cell)
 	assert cell.column == 1
 	assert cell.row == 1
-	rect = cell.get_rect()
+	rect = cell.rect()
 	assert isinstance(rect, Rect)
 	assert rect.x == game.board.cell_width
 	assert rect.y == game.board.cell_height
@@ -138,7 +145,7 @@ def test_Cell_get_rect():
 	assert rect.height == game.board.cell_height
 
 
-def test_rotate():
+def test_cell_rotate():
 	game = FakeGame()
 	board = game.board
 
@@ -248,5 +255,49 @@ def test_cell_copy():
 	cell2 = cell1.moved(column=5)
 	assert cell2.column == 5
 	assert cell2.row == cell1.row
+
+
+def test_cell_eq():
+	game = FakeGame()
+	board = game.board
+
+	cell1 = Cell(5, 6)
+	cell2 = cell1.copy()
+	assert cell1 == cell2
+
+
+def test_cell_unpacking():
+	game = FakeGame()
+	board = game.board
+	cell = Cell(5, 6)
+	column, row = cell
+	assert column == 5
+	assert row == 6
+
+
+def test_game_piece_travel():
+	game = FakeGame()
+	board = game.board
+	piece = AbstractGamePiece(Cell(5,6), "r")
+	piece.travel_to_cell(Cell(3,4))
+	assert piece.target_cell.column == 3
+	assert piece.target_cell.row == 4
+	piece.travel_to_cell(column=3)
+	assert piece.target_cell.column == 3
+	assert piece.target_cell.row == 6
+	piece.travel_to_cell(row=1)
+	assert piece.target_cell.column == 5
+	assert piece.target_cell.row == 1
+	piece.travel_to_cell(columns=-1)
+	assert piece.target_cell.column == 4
+	assert piece.target_cell.row == 6
+	piece.travel_to_cell(rows=-2)
+	assert piece.target_cell.column == 5
+	assert piece.target_cell.row == 4
+
+
+
+if __name__ == "__main__":
+	test_game_piece_travel()
 
 
