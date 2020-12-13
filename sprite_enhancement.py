@@ -9,7 +9,7 @@ from legame.locals import *
 
 
 
-def vector(self, target):
+def vector(target):
 	"""
 	Returns a Vector from the given tuple, Vector, or CenteredSprite.
 	Raises ValueError if impossible to convert.
