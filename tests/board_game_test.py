@@ -279,19 +279,19 @@ def test_game_piece_travel():
 	game = FakeGame()
 	board = game.board
 	piece = AbstractGamePiece(Cell(5,6), "r")
-	piece.travel_to_cell(Cell(3,4))
+	piece.move_to(Cell(3,4))
 	assert piece.target_cell.column == 3
 	assert piece.target_cell.row == 4
-	piece.travel_to_cell(column=3)
+	piece.move_to(column=3)
 	assert piece.target_cell.column == 3
 	assert piece.target_cell.row == 6
-	piece.travel_to_cell(row=1)
+	piece.move_to(row=1)
 	assert piece.target_cell.column == 5
 	assert piece.target_cell.row == 1
-	piece.travel_to_cell(columns=-1)
+	piece.move_to(columns=-1)
 	assert piece.target_cell.column == 4
 	assert piece.target_cell.row == 6
-	piece.travel_to_cell(rows=-2)
+	piece.move_to(rows=-2)
 	assert piece.target_cell.column == 5
 	assert piece.target_cell.row == 4
 

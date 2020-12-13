@@ -427,7 +427,7 @@ class AbstractGamePiece:
 		Game.current.board.set_cell(cell, self)
 
 
-	def travel_to_cell(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
+	def move_to(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
 		"""
 		High-level command which sets this GamePiece on a path towards a given cell.
 		Each subsequent call to "move()" will move it one frame closer to "target_cell".
@@ -460,7 +460,7 @@ class AbstractGamePiece:
 		else:
 			self.target_cell = target_cell
 		if self.target_cell == self.cell:
-			logging.warn("GamePiece.travel_to_cell target_cell is the current GamePiece location cell")
+			logging.warn("GamePiece.move_to target_cell is the current GamePiece location cell")
 		else:
 			Game.current.board.clear_cell(self.cell)
 			return self.travel_to(self.target_cell.center(), arrival_function)

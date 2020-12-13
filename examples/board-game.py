@@ -100,7 +100,7 @@ class GSSelectMoveTarget(BoardGameState):
 			self.selected_piece = Game.current.board.piece_at(cell).glow()
 		else:
 			Game.current.play("jump.wav")
-			self.selected_piece.travel_to_cell(cell, lambda: GSSelect(cell=cell))
+			self.selected_piece.move_to(cell, lambda: GSSelect(cell=cell))
 
 	def keydown(self, event):
 		"""
