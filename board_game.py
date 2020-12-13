@@ -125,15 +125,6 @@ class GameBoard:
 		return self.__cells[cell.column][cell.row]
 
 
-	def clear_cell(self, cell):
-		"""
-		Kills the GamePiece at the given cell, if one exists there.
-		"""
-		assert isinstance(cell, Cell)
-		self.__cells[cell.column][cell.row] = None
-		return self
-
-
 	def set_cell(self, cell, piece):
 		"""
 		Places a reference to the given GamePiece in the given cell.
@@ -141,6 +132,15 @@ class GameBoard:
 		assert isinstance(cell, Cell)
 		assert isinstance(piece, AbstractGamePiece)
 		self.__cells[cell.column][cell.row] = piece
+		return self
+
+
+	def clear_cell(self, cell):
+		"""
+		Kills the GamePiece at the given cell, if one exists there.
+		"""
+		assert isinstance(cell, Cell)
+		self.__cells[cell.column][cell.row] = None
 		return self
 
 
@@ -220,11 +220,49 @@ class Cell:
 		return self.column == cell.column and self.row == cell.row
 
 
+	def set(self, piece):
+		"""
+		Places a reference to the given GamePiece in this cell.
+		"""
+		Game.current.board.set_cell(self, piece)
+		return self
+
+
+	def clear(self):
+		"""
+		Kills the GamePiece at this cell, if one exists there.
+		"""
+		Game.current.board.clear_cell(self)
+		return self
+
+
 	def piece(self):
 		"""
 		Returns the content of the GameBoard at this cell
 		"""
 		return Game.current.board.piece_at(self)
+
+
+	def is_mine(self):
+		"""
+		Returns True if there is a GamePiece at this cell which has this player's "color".
+		"""
+		return Game.current.board.is_mine(self)
+
+
+	def is_opponents(self, cell):
+		"""
+		Returns True if there is a GamePiece at this cell, and it doesn't have this
+		player's "color".
+		"""
+		return Game.current.board.is_opponents(self)
+
+
+	def is_empty(self, cell):
+		"""
+		Returns True if this cell is empty.
+		"""
+		return Game.current.board.is_empty(self)
 
 
 	def center(self):
@@ -430,7 +468,7 @@ class AbstractGamePiece:
 	def move_to(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
 		"""
 		High-level command which sets this GamePiece on a path towards a given cell.
-		Each subsequent call to "move()" will move it one frame closer to "target_cell".
+		Each subsequent cyclic update will move this one frame closer to "target_cell".
 		When travel is complete, the optional "on_arrival" function will be called.
 
 		Specifying the target destination:

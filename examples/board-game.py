@@ -55,7 +55,7 @@ class GSSelect(BoardGameState):
 	def click(self, cell, evt):
 		if self.reminder_timer is not None:
 			Game.current.clear_timeout(self.reminder_timer)
-		if Game.current.board.is_mine(cell):
+		if cell.is_mine():
 			GSSelectMoveTarget(cell=cell)
 		else:
 			Block(cell, Game.current.my_color)
@@ -63,7 +63,7 @@ class GSSelect(BoardGameState):
 			self.reminder_timer = Game.current.set_timeout(self.timeout, 4000)
 
 	def timeout(self, args):
-		Game.current.board.piece_at(self.cell).jiggle()
+		self.cell.piece().jiggle()
 
 	def keydown(self, event):
 		"""
@@ -91,13 +91,13 @@ class GSSelectMoveTarget(BoardGameState):
 	cell		= None
 
 	def enter_state(self):
-		self.selected_piece = Game.current.board.piece_at(self.cell).glow()
+		self.selected_piece = self.cell.piece().glow()
 		Game.current.statusbar.write("GSSelectMoveTarget")
 
 	def click(self, cell, evt):
 		self.selected_piece.unglow()
-		if Game.current.board.is_mine(cell):
-			self.selected_piece = Game.current.board.piece_at(cell).glow()
+		if cell.is_mine():
+			self.selected_piece = cell.piece().glow()
 		else:
 			Game.current.play("jump.wav")
 			self.selected_piece.move_to(cell, lambda: GSSelect(cell=cell))

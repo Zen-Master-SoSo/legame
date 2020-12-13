@@ -179,12 +179,41 @@ def test_cell_access():
 	assert piece.color == "r"
 
 	cell = Cell(0, 1)
-	piece = cell.piece()
+	piece = board.piece_at(cell)
 	assert piece is None
 	board.set_cell(cell, AbstractGamePiece(cell, "r"))
+	piece = board.piece_at(cell)
+	assert isinstance(piece, AbstractGamePiece)
+	assert piece.color == "r"
+
+	cell = Cell(0, 0)
+	board.clear_cell(cell)
+	piece = board.piece_at(cell)
+	assert piece is None
+
+	cell = Cell(1, 0)
+	piece = cell.piece()
+	assert piece is None
+	cell.set(AbstractGamePiece(cell, "r"))
 	piece = cell.piece()
 	assert isinstance(piece, AbstractGamePiece)
 	assert piece.color == "r"
+
+	cell = Cell(1, 1)
+	piece = cell.piece()
+	assert piece is None
+	cell.set(AbstractGamePiece(cell, "r"))
+	piece = cell.piece()
+	assert isinstance(piece, AbstractGamePiece)
+	assert piece.color == "r"
+	game.my_color = piece.color
+	assert cell.is_mine()
+
+	cell = Cell(0, 0)
+	cell.clear()
+	piece = board.piece_at(cell)
+	assert piece is None
+	assert not cell.is_mine()
 
 
 def test_column_row_access():
