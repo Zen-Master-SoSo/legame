@@ -10,16 +10,18 @@ from math import floor, ceil
 
 class Neighborhood:
 	"""
-	Divides an area of the screen into "Quadrant"s which are used to determine which sprites (or any
-	thing really) are nearby which others.
+	Divides an area of the screen into "Quadrant"s which are used to determine
+	which sprites (or any thing really) are nearby which others.
 
-	Quadrants are a series of squares which overlap on both the x, y axes. This reduces the search
-	space when determining whether two things need to be notified of each other's existence.
+	Quadrants are a series of squares which overlap on both the x, y axes. This
+	reduces the search space when determining whether two things need to be
+	notified of each other's existence.
 
-	This can best be described visually. This is a representation of an Neighborhood covering a 4x3
-	grid. It spans 3 Quadrants on the x axis, (labeled 0, 1, 2) and 2 quadrants on the y axis (labeled
-	0, 1). Inside of each cell in the illustration is a list of the x,y coordinates of all of the the
-	quadrants which overlap that cell:
+	This can best be described visually. This is a representation of an
+	Neighborhood covering a 4x3 grid. It spans 3 Quadrants on the x axis, (labeled
+	0, 1, 2) and 2 quadrants on the y axis (labeled 0, 1). Inside of each cell in
+	the illustration is a list of the x,y coordinates of all of the the quadrants
+	which overlap that cell:
 
 		---------------------
 		|         0         |
@@ -44,9 +46,9 @@ class Neighborhood:
 		| 0,1     | 0,1     |     2,1 |     2,1 |          |
 		-----------------------------------------  --------
 
-	Notice that each quadrant takes up four cells, and each cell shares at least one quadrant with all
-	the cells surrounding it (above-left, above, above-right, left, right, below-left, below,
-	below-right - 8 in total).
+	Notice that each quadrant takes up four cells, and each cell shares at least
+	one quadrant with all the cells surrounding it (above-left, above, above-right,
+	left, right, below-left, below, below-right - 8 in total).
 
 	Let's take a close look at the third cell from the left, third from the top.
 	It is covered by two quadrants:
@@ -56,54 +58,65 @@ class Neighborhood:
 		2,0  1,0  1,1  2,1
 	... so these two cells are both in quadrant 1,1, and both in quadrant 2,1
 
-	The cell above and to the left (second from left, second from top), is contained in these quadrants:
+	The cell above and to the left (second from left, second from top), is
+	contained in these quadrants:
 		0,0  1,0  1,1  0,1
-	... so our cell (three cells from the left, three cells from the top), shares only quadrant 1,1
+	... so our cell (three cells from the left, three cells from the top), shares
+	only quadrant 1,1
 
-	The cell above and to the right (fourth from left, second from top), is contained in these
-	quadrants:
+	The cell above and to the right (fourth from left, second from top), is
+	contained in these quadrants:
 		2,0  2,1
-	... so our cell (three cells from the left, three cells from the top), shares only quadrant 2,1
+	... so our cell (three cells from the left, three cells from the top), shares
+	only quadrant 2,1
 
-	When an "observed" sprite is placed, it is given membership in the quadrants which contain the cell
-	that it is in. Detecting interaction between sprites is done for every quadrant, and that reduces
-	the amount of comparisons neccessary between sprites.
+	When an "observed" sprite is placed, it is given membership in the quadrants
+	which contain the cell that it is in. Detecting interaction between sprites is
+	done for every quadrant, and that reduces the amount of comparisons neccessary
+	between sprites.
 
+	To use a Neighborhood, instantiate the Neighborhood class, add the sprites you
+	want notified of each other's existence using the "observe" function when they
+	are instantiated, and call the "notify_sprites" function of the Neighborhood
+	periodically. Typically this involves overriding the "_end_loop" function of
+	the Game class and calling "notify_sprites" from there. Alternatively, you
+	could call "notify_sprites" in a GameState's "loop_end" function. The only
+	drawback to the second method is that you need to make sure that this call is
+	made from every GameState which needs it.
+
+	Don't forget to call the "ignore" function if/when a sprite is killed.
+	Otherwise, it will remain in the list of observed sprites, and all the math
+	necessary for keeping track of it will still be done. That will slow down
+	your game. You might put a call to the "Neighborhood.ignore" function in the
+	sprite's "kill" function.
 	"""
 
-	cells_x		= None
-	cells_y		= None
-	cell_width	= None
-	cell_height	= None
-
-	def __init__(self, rect, **kwargs):
+	def __init__(self, rect, cells_x, cells_y):
 		"""
-		rect is a pygame.Rect defining the area to observe
+		Set the area to be watched by this Neighborhood.
+		(God, that sounds so Orwellian!)
+
+		When constructing a Neighborhood, you must pass the following required
+		arguments:
+
+		rect (pygame.Rect): Identifies the area encompassing the Neighborhood.
+							Only sprites in this rect will be notified of each
+							others' existence. Normally,  this will be the
+							Game.screen_rect, or some similar play area.
+		cells_x (int)	  : The number of "cells" to divide the Neighborhood into
+							on the x-axis - not "quadrants". A "quadrant" spans 3
+							cells across. See the docstring for this module for a
+							full explanation.
+		cells_y (int)	  : The number of "cells" to divide the Neighborhood into
+							on the y-axis - not "quadrants". (See "cells_x" above.)
 		"""
 
 		# Initialize either height/width based on cells_x/cells_y, or cells_x/cells_y based on height/width:
-		for varname, value in kwargs.items():
-			setattr(self, varname, value)
-
-		if self.cell_width is None:
-			if self.cells_x is None:
-				raise Exception("No cell size can be determined")
-			else:
-				self.cell_width = rect.width // self.cells_x
-		elif self.cells_x is not None and self.cells_x * self.cell_width != rect.width:
-			raise Exception("cell_width and cells_x conflicts with rect.width")
-		else:
-			self.cells_x = ceil(rect.width / self.cell_width)
-
-		if self.cell_height is None:
-			if self.cells_y is None:
-				raise Eyception("No cell size can be determined")
-			else:
-				self.cell_height = rect.height // self.cells_y
-		elif self.cells_y is not None and self.cells_y * self.cell_height != rect.height:
-			raise Exception("cell_width and cells_x conflicts with rect.width")
-		else:
-			self.cells_y = ceil(rect.height / self.cell_height)
+		self.rect = rect
+		self.cells_x = cells_x
+		self.cells_y = cells_y
+		self.cell_width = self.rect.width / cells_x
+		self.cell_height = self.rect.height / cells_y
 
 		# self._quadrants is a flat, 1-dimensional list of Quadrant objects.
 		# Each quadrant has an .x and .y attribute, corresponding to the first "cell" it covers.
@@ -198,7 +211,7 @@ class Neighborhood:
 		for quadrant in self._quadrants:
 			quadrant.sprites.clear()
 		for sprite in self._observed_sprites_list:
-			for quadrant in self.__cell2quad_maps[floor(sprite.x // self.cell_width)][floor(sprite.y // self.cell_height)]:
+			for quadrant in self.__cell2quad_maps[floor(sprite.x / self.cell_width)][floor(sprite.y / self.cell_height)]:
 				quadrant.sprites.append(sprite)
 		for quadrant in self._quadrants:
 			cnt = len(quadrant.sprites)
