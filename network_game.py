@@ -1,16 +1,7 @@
-"""Provides the NetworkGame class, a framework for games played over a network.
-Message transport selection is up to you!
-You must import Message from one of the cable_car message modules, i.e.:
-
-	from cable_car.json_messages import *
-	from cable_car.byte_messages import *
-
-Message classes which are included in these files (all take no arguments):
-	class MsgIdentify(Message)
-	class MsgJoin(Message)
-	class MsgRetry(Message)
-	class MsgQuit(Message)
-
+"""
+Provides the NetworkGame class, a framework for games played over a network.
+Message transport selection is up to you. The current options are "json" and "byte".
+The the cable_car docs for more info on message transports.
 """
 
 import importlib, cable_car, traceback
@@ -29,6 +20,15 @@ class NetworkGame(Game):
 
 
 	def __init__(self, transport="json", allow_loopback=False):
+		"""
+		Network game constructor.
+		.
+
+		"transport" may be one of either "json" or "byte". See the cable_car
+		documentation for more info on message transports.
+
+
+		"""
 		self.transport = transport
 		self.allow_loopback = allow_loopback
 		if not "Message" in dir():

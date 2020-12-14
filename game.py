@@ -73,14 +73,14 @@ class Game:
 
 		The "options" argument is expected to be a dictionary, the items of which are
 		set as attributes of the game during initialization. A typical use case would
-		be if you used the "optparse" library to read command-line options, and wish to
+		be if you used the "argparse" library to read command-line options, and wish to
 		pass those options to the Game class before starting up modules. i.e.:
 
-			import sys, optparse
-			p = optparse.OptionParser()
-			p.add_option('--quiet', '-q', action='store_true')
-			p.add_option('--fullscreen', '-f', action='store_true')
-			options, arguments = p.parse_args()
+			import argparse, sys
+			p = argparse.ArgumentParser()
+			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+			options = p.parse_args()
 			sys.exit(MyGameClass(options.__dict__).run())
 
 		"""

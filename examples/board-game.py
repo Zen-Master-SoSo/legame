@@ -164,11 +164,10 @@ class Glow(Flipper, Sprite):
 
 
 if __name__ == '__main__':
-	import optparse, sys
-	p = optparse.OptionParser()
-	p.add_option('--quiet', '-q', action='store_true')
-	p.add_option('--transport', type='string', default='json')
-	options, arguments = p.parse_args()
+	import argparse, sys
+	p = argparse.ArgumentParser()
+	p.add_argument('--quiet', '-q', action='store_true')
+	options = p.parse_args()
 	sys.exit(TestGame(options.__dict__).run())
 
 

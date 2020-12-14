@@ -193,12 +193,12 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 
 if __name__ == '__main__':
-	import optparse, sys
+	import argparse, sys
 
-	p = optparse.OptionParser()
-	p.add_option('--loopback', '-l', action='store_true')
-	p.add_option('--transport', type='string', default='json')
-	options, arguments = p.parse_args()
+	p = argparse.ArgumentParser()
+	p.add_argument('--loopback', '-l', action='store_true')
+	p.add_argument('--transport', type=str, default='json')
+	options = p.parse_args()
 
 	joiner = GameJoiner(options.transport)
 	joiner.allow_loopback = options.loopback
