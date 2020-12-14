@@ -211,8 +211,11 @@ class Neighborhood:
 		for quadrant in self._quadrants:
 			quadrant.sprites.clear()
 		for sprite in self._observed_sprites_list:
-			for quadrant in self.__cell2quad_maps[floor(sprite.x / self.cell_width)][floor(sprite.y / self.cell_height)]:
-				quadrant.sprites.append(sprite)
+			try:
+				for quadrant in self.__cell2quad_maps[floor(sprite.x / self.cell_width)][floor(sprite.y / self.cell_height)]:
+					quadrant.sprites.append(sprite)
+			except IndexError:
+				pass
 		for quadrant in self._quadrants:
 			cnt = len(quadrant.sprites)
 			if cnt > 1:
