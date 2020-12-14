@@ -16,8 +16,8 @@ class TestGame(BoardGame, NetworkGame):
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
 		assert os.path.isdir(self.resource_dir)
-		BoardGame.__init__(self, options=None)
-		NetworkGame.__init__(self)
+		BoardGame.__init__(self, options)
+		NetworkGame.__init__(self, options)
 
 
 	def get_board(self):
@@ -195,9 +195,23 @@ class Glow(Flipper, pygame.sprite.Sprite):
 
 
 if __name__ == '__main__':
-	import sys
-	sys.exit(TestGame().run())
+	import argparse, logging, sys
 
+	p = argparse.ArgumentParser()
+	p.epilog = "Demonstrates network game functions."
+	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
+	p.add_argument('--client', '-c', action='store_true', help="Connect as the client instead of using broadcast discovery.")
+	p.add_argument('--server', '-s', action='store_true', help="Connect as the server instead of using broadcast discovery.")
+	options = p.parse_args()
+
+	logging.basicConfig(
+		stream=sys.stdout,
+		level=logging.DEBUG if options.verbose else logging.ERROR,
+		format="[%(filename)24s:%(lineno)3d] %(message)s"
+	)
+
+	sys.exit(TestGame(options).run())
 
 
 

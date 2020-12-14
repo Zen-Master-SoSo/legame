@@ -34,25 +34,21 @@ class GameJoiner(Dialog, BroadcastConnector):
 	background_color_disabled	= (0,0,40)
 	foreground_color			= (180,180,255)
 	foreground_color_hover		= (20,20,20)
-	delay_exit					= False
+	shutdown_delay				= 0.0
 
 
-	def __init__(self, transport=None):
-		BroadcastConnector.__init__(self)
+	def __init__(self, options=None):
 		Dialog.__init__(self)
-		if not "Message" in dir():
-			if transport is not None:
-				self.transport = transport
-			try:
-				messages = importlib.import_module("cable_car.%s_messages" % self.transport)
-			except ImportError:
-				raise Exception("%s is not a valid message transport" % self.transport)
-			globals().update({name: messages.__dict__[name] for name in [name for name in messages.__dict__]})
+		if options is not None:
+			for varname, value in options.__dict__.items():
+				setattr(self, varname, value)
+		module = importlib.import_module("cable_car.%s_messages" % self.transport)
+		globals().update({ name: module.__dict__[name] for name in module.__dict__})
 		Message.register_messages()
 		self.messengers = []
 		self.selected_messenger = None
-		self.quitting_time = None
-		self.address_buttons = []
+		self._quitting_time = None
+		self._address_buttons = []
 		for idx in range(4):
 			button = Button(
 				"",
@@ -67,9 +63,9 @@ class GameJoiner(Dialog, BroadcastConnector):
 				disabled = True,
 				index = idx
 			)
-			self.address_buttons.append(button)
+			self._address_buttons.append(button)
 			self.append(button)
-		self.address_buttons[0].margin_top = 10
+		self._address_buttons[0].margin_top = 10
 		self.statusbar = Label(
 			"Waiting for other players to appear on the network",
 			align = ALIGN_LEFT,
@@ -120,11 +116,11 @@ class GameJoiner(Dialog, BroadcastConnector):
 		statusbar, and messengers.
 		"""
 
-		if self.broadcast_enable:
+		if self._broadcast_enable:
 			# Determine what to display on the associated button:
 			for idx in range(len(self.messengers)):
 				msgr = self.messengers[idx]
-				button = self.address_buttons[idx]
+				button = self._address_buttons[idx]
 				if msgr.closed:
 					button.text = "Connection to %s closed" % (msgr.remote_ip)
 					button.disabled = True
@@ -155,12 +151,21 @@ class GameJoiner(Dialog, BroadcastConnector):
 						raise Exception("Messenger received an unexpected action: " + action.__class__.__name__)
 
 		else:
-			self.statusbar.text = "Connected." if self.selected_messenger else "Cancelled."
-			if self.delay_exit:
-				if self.quitting_time is None:
-					self.quitting_time = time() + 1.2
-				elif time() >= self.quitting_time:
-					return self.close()
+			if self._udp_broadcast_exc is None \
+				and self._udp_listen_exc is None \
+				and self._tcp_listen_exc is None:
+				self.statusbar.text = "Connected." if self.selected_messenger else "Cancelled."
+			else:
+				errors = []
+				if self._udp_broadcast_exc: errors.append("Broadcast: " + self._udp_broadcast_exc.__str__())
+				if self._udp_listen_exc: errors.append("Listen: " + self._udp_listen_exc.__str__())
+				if self._tcp_listen_exc: errors.append("Socket: " + self._tcp_listen_exc.__str__())
+				self.statusbar.text = ", ".join(errors)
+			if self.shutdown_delay > 0.0:
+				if self._quitting_time is None:
+					self._quitting_time = time() + self.shutdown_delay
+				elif time() >= self._quitting_time:
+					self.close()
 			else:
 				self.close()
 
@@ -193,17 +198,25 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 
 if __name__ == '__main__':
-	import argparse, sys
+	import argparse, logging, sys
 
 	p = argparse.ArgumentParser()
-	p.add_argument('--loopback', '-l', action='store_true')
+	p.add_argument('--allow-loopback', '-l', action='store_true')
 	p.add_argument('--transport', type=str, default='json')
+	p.add_argument('--udp-port', type=int, default=8222)
+	p.add_argument('--tcp-port', type=int, default=8223)
+	p.add_argument('--verbose', '-v', action='store_true')
 	options = p.parse_args()
 
-	joiner = GameJoiner(options.transport)
-	joiner.allow_loopback = options.loopback
-	joiner.delay_exit = True
-	joiner.timeout = 0.0 if options.loopback else 15.0	# Allow time to start on remote machine
+	logging.basicConfig(
+		stream=sys.stdout,
+		level=logging.DEBUG if options.verbose else logging.ERROR,
+		format="%(relativeCreated)6d [%(filename)24s:%(lineno)3d] %(message)s"
+	)
+
+	joiner = GameJoiner(options)
+	joiner.shutdown_delay = 0.5
+	joiner.timeout = 0.0 if options.allow_loopback else 15.0	# Allow time to start on remote machine
 	joiner.show()
 
 	print("Addresses:")

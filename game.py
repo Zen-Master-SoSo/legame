@@ -27,9 +27,9 @@ class Game:
 	resource_dir		= None		# Directory where game data is located, should contain subfolders "images" and "sounds"
 									# Call "set_resource_dir_from_file(__file__)" from your game before Game.__init__
 	# display settings:
+	fps 				= 60
 	display_flags		= 0
 	display_depth		= 32
-	fps 				= 60
 	window_caption		= ""
 
 	# sound settings:
@@ -72,21 +72,29 @@ class Game:
 		"set_resource_dir_from_file" sets it for you quite easily.
 
 		The "options" argument is expected to be a dictionary, the items of which are
-		set as attributes of the game during initialization. A typical use case would
-		be if you used the "argparse" library to read command-line options, and wish to
-		pass those options to the Game class before starting up modules. i.e.:
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
+
+			quiet
+			fullscreen
+			resource_dump
+			fps
+			display_depth
+
+		A typical use case would be if you used the "argparse" library to read
+		command-line options, and wish to pass those options to the Game class before
+		starting up modules. i.e.:
 
 			import argparse, sys
 			p = argparse.ArgumentParser()
 			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
 			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
-			options = p.parse_args()
-			sys.exit(MyGameClass(options.__dict__).run())
+			sys.exit(MyGameClass(p.parse_args()).run())
 
 		"""
 		Game.current = self
 		if options is not None:
-			for varname, value in options.items():
+			for varname, value in options.__dict__.items():
 				setattr(self, varname, value)
 		if self.resource_dir is None: self.resource_dir = "resources"
 			#raise Exception("No resource_dir defined")

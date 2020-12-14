@@ -1,7 +1,7 @@
 """
 Provides the NetworkGame class, a framework for games played over a network.
 Message transport selection is up to you. The current options are "json" and "byte".
-The the cable_car docs for more info on message transports.
+See the cable_car docs for more info on message transports.
 """
 
 import importlib, cable_car, traceback
@@ -14,41 +14,52 @@ from cable_car.messenger import Messenger
 
 class NetworkGame(Game):
 
-	udp_port		= 8222
-	tcp_port		= 8223
+	udp_port		= 8222		# Port to broadcast on
+	tcp_port		= 8223		# Port to listen on
+	client			= False		# Connect as a client, instead of using udp broadcast
+	server			= False		# Connect as a server, instead of using udp broadcast
+	transport		= "json"	# cable_car transport to use.
 	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
+	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
 
 
-	def __init__(self, transport="json", allow_loopback=False):
+	def __init__(self, options=None):
 		"""
 		Network game constructor.
 		.
 
-		"transport" may be one of either "json" or "byte". See the cable_car
-		documentation for more info on message transports.
+		The "options" argument is expected to be a dictionary, the items of which are
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
 
+			udp_port
+			tcp_port
+			transport
+			xfer_interval
+			fps
+			display_depth
 
 		"""
-		self.transport = transport
-		self.allow_loopback = allow_loopback
-		if not "Message" in dir():
-			try:
-				messages = importlib.import_module("cable_car.%s_messages" % self.transport)
-			except ImportError:
-				raise Exception("%s is not a valid message transport" % self.transport)
-			globals().update({name: messages.__dict__[name] for name in [name for name in messages.__dict__]})
-		self.__joiner = GameJoiner(self.transport)
-		self.__joiner.udp_port = self.udp_port
-		self.__joiner.tcp_port = self.tcp_port
-		self.__joiner.allow_loopback = self.allow_loopback
-		self.messenger = None
+		if options is not None:
+			for varname, value in options.__dict__.items():
+				setattr(self, varname, value)
+		module = importlib.import_module("cable_car.%s_messages" % self.transport)
+		globals().update({ name: module.__dict__[name] for name in module.__dict__})
+		if self.client:
+			self.messenger = Messenger.client_connection(self.tcp_port, self.transport, self.connect_timeout)
+		elif self.server:
+			self.messenger = Messenger.server_connection(self.tcp_port, self.transport, self.connect_timeout)
+		else:
+			self.__joiner = GameJoiner(options)
+			self.messenger = None
 
 
 	def run(self):
-		self.__joiner.show()
-		if not self.__joiner.selected_messenger: return 5
-		self.messenger = self.__joiner.selected_messenger
-		del self.__joiner
+		if self.messenger is None:
+			self.__joiner.show()
+			if not self.__joiner.selected_messenger: return 5
+			self.messenger = self.__joiner.selected_messenger
+			del self.__joiner
 		self._next_xfer = time()
 		try:
 			return Game.run(self)

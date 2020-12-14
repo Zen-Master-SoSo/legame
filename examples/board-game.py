@@ -1,3 +1,7 @@
+"""
+Demonstrates board game moves, jumps, state changes, and animations
+"""
+
 import random
 from pygame import Rect
 from pygame.sprite import Sprite
@@ -166,9 +170,10 @@ class Glow(Flipper, Sprite):
 if __name__ == '__main__':
 	import argparse, sys
 	p = argparse.ArgumentParser()
-	p.add_argument('--quiet', '-q', action='store_true')
-	options = p.parse_args()
-	sys.exit(TestGame(options.__dict__).run())
+	p.epilog = "Demonstrates board game moves, jumps, state changes, and animations"
+	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
+	sys.exit(TestGame(p.parse_args()).run())
 
 
 
