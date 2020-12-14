@@ -3,7 +3,7 @@ Provides classes which are used to do image cycling on a Sprite.
 """
 
 from collections import deque
-from legame.resource_manager import ResourceManager
+from legame.resources import Resources
 from legame.game import Game
 
 

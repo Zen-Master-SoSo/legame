@@ -1,9 +1,11 @@
-"""Provides the Game class, a framework for games"""
+"""
+Provides the Game and GameState classes, a framework for writing games.
+"""
 
 import sys, os, pygame, logging
+from pygame import Rect
 from pygame.locals import *
-from pygame.sprite import Sprite, Rect
-from legame.resource_manager import ResourceManager
+from legame.resources import Resources
 
 
 
@@ -21,14 +23,14 @@ class Game:
 	# Game options:
 	quiet				= False		# Inhibit sound; mixer is not initialized
 	fullscreen			= False
-	resource_dump		= False		# Special debugging mode used by ResourceManager; loads filenames instead of files
+	resource_dump		= False		# Special debugging mode used by Resources; loads filenames instead of files
 
 	# resource manager settings:
 	resource_dir		= None		# Directory where game data is located, should contain subfolders "images" and "sounds"
 									# Call "set_resource_dir_from_file(__file__)" from your game before Game.__init__
 	# display settings:
 	fps 				= 60
-	display_flags		= 0
+	display_flags		= DOUBLEBUF
 	display_depth		= 32
 	window_caption		= ""
 
@@ -61,25 +63,24 @@ class Game:
 	def __init__(self, options=None):
 		"""
 
-		Game class constructor. Starts the necessary pygame modules, creates the
-		ResourceManager and the "sprites" group. You should call this function to
-		initialize your game.
+		Set options, start the necessary pygame modules, instantiate Resources, create
+		the "sprites" group.
 
-		The ResourceManager uses the "resource_dir", an attribute of this class, to
-		locate the directory in which images and sounds can be found. Since this
-		directory is usually in a path relative to the path to your game, you should
-		set this attribute before calling this __init__ function. The helper function
-		"set_resource_dir_from_file" sets it for you quite easily.
+		This function passes the "resource_dir" attribute when instantiating a
+		Resources instance to allow it to find images and sounds. You must set this
+		attribute before calling this function. If you have a "resources" directory
+		beneath the directory containing your game, the helper function
+		"set_resource_dir_from_file" can set it for you quite easily.
 
 		The "options" argument is expected to be a dictionary, the items of which are
 		set as attributes of the game during initialization. Some appropriate key/value
 		pairs to pass to the __init__ function would be:
 
-			quiet
-			fullscreen
-			resource_dump
-			fps
 			display_depth
+			fps
+			fullscreen
+			quiet
+			resource_dump
 
 		A typical use case would be if you used the "argparse" library to read
 		command-line options, and wish to pass those options to the Game class before
@@ -89,7 +90,11 @@ class Game:
 			p = argparse.ArgumentParser()
 			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
 			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
-			sys.exit(MyGameClass(p.parse_args()).run())
+			options = p.parse_args()
+			# Setup logging, etc...
+			.
+			.
+			sys.exit(MyGameClass(options).run())
 
 		"""
 		Game.current = self
@@ -97,8 +102,7 @@ class Game:
 			for varname, value in options.__dict__.items():
 				setattr(self, varname, value)
 		if self.resource_dir is None: self.resource_dir = "resources"
-			#raise Exception("No resource_dir defined")
-		self.resources = ResourceManager(self.resource_dir, self.resource_dump)
+		self.resources = Resources(self.resource_dir, self.resource_dump)
 		pygame.display.init()
 		pygame.font.init()
 		if not self.quiet:
@@ -133,16 +137,23 @@ class Game:
 		"""
 		Set the resource directory to a subfolder of the given file's parent folder.
 		If your main game file is located at:
+
 			"/home/user/some/path/game.py"
+
 		... this function will return:
+
 			"/home/user/some/path/resources"
+
+		... which is a decent place to put your "images" and "sounds" folders.
+							("Use the defaults, Luke")
 		"""
 		self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
 
 
 	def run(self):
 		"""
-		Run the game. The "initial_state" function is called from here, and must return an object of class GameState.
+		Run the game. The "initial_state" function is called from here, and must return
+		an object of class GameState.
 		"""
 		self.show()
 		self._state = self.initial_state()
@@ -151,26 +162,28 @@ class Game:
 		return 0
 
 
-	def show(self):
+	def show(self, background=None):
 		"""
-		Initilizes the screen and shows the initial background. Does not start the game state or begin the _main_loop.
-		It is safe to call this function separately, multiple times, and to allow it to be started by Game.run().
+		Initilizes the screen, setting a background.
+		You don't need to call this function, as it is called in Game.run(). Just make
+		sure that you implement "initial_background".
+		It is safe to call this function multiple times.
 		"""
-		display_size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-		self.background = self.initial_background(display_size)
-		if self.screen is None:
-			if self.fullscreen:
-				self.screen_rect = Rect((0, 0), display_size)
-				self.display_flags |= DOUBLEBUF | FULLSCREEN
-			else:
-				self.screen_rect = self.background.get_rect()
-				self.display_flags |= DOUBLEBUF
-				os.environ['SDL_VIDEO_CENTERED'] = '1'
-			self.screen = pygame.display.set_mode(
-				self.screen_rect.size,
-				self.display_flags,
-				pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
-			)
+		if background is None:
+			display_size = tuple(pygame.display.Info().current_w, pygame.display.Info().current_h)
+			self.background = self.initial_background(display_size)
+		else:
+			self.background = background
+		self.screen_rect = self.background.get_rect()
+		if self.fullscreen:
+			self.display_flags |= FULLSCREEN
+		else:
+			os.environ['SDL_VIDEO_CENTERED'] = '1'
+		self.screen = pygame.display.set_mode(
+			self.screen_rect.size,
+			self.display_flags,
+			pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
+		)
 		self.screen.blit(self.background, (0,0))
 		pygame.display.set_caption(self.window_caption)
 		pygame.display.flip()
@@ -178,7 +191,8 @@ class Game:
 
 	def shutdown(self):
 		"""
-		Triggers the _main_loop to exit. The _main_loop will finish its current iteration before doing so.
+		Triggers the _main_loop to exit. The _main_loop will finish its current
+		iteration before doing so.
 		"""
 		self._stay_in_loop = False
 
@@ -217,7 +231,8 @@ class Game:
 
 	def exit_loop(self):
 		"""
-		Called when _main_loop() exits, after the final round of moving sprites and updating the display.
+		Called when _main_loop() exits, after the final round of moving sprites and
+		updating the display.
 		"""
 		pass
 
@@ -362,7 +377,8 @@ class GameState:
 	def enter_state(self):
 		"""
 		Function called when the Game transitions TO this state.
-		Any information needed to be passed to this GameState should be passed as keyword args to the constructor.
+		Any information needed to be passed to this GameState should be passed as
+		keyword args to the constructor.
 		"""
 		pass
 
@@ -409,7 +425,7 @@ class GameState:
 
 	def activeevent(self, event):
 		"""
-		event will contain: gain, state
+		"event" will contain: gain, state
 		"""
 		pass
 
@@ -417,7 +433,7 @@ class GameState:
 	def keydown(self, event):
 		"""
 		Key down event passed to this GameState.
-		event will contain: key, mod, unicode, scancode
+		"event" will contain: key, mod, unicode, scancode
 		"""
 		pass
 
@@ -425,7 +441,7 @@ class GameState:
 	def keyup(self, event):
 		"""
 		Key up event passed to this GameState.
-		event will contain: key, mod
+		"event" will contain: key, mod
 		"""
 		pass
 
@@ -433,7 +449,7 @@ class GameState:
 	def mousemotion(self, event):
 		"""
 		Mouse move event passed to this GameState.
-		event will contain:	pos, rel, buttons
+		"event" will contain: pos, rel, buttons
 		"""
 		pass
 
@@ -441,7 +457,7 @@ class GameState:
 	def mousebuttondown(self, event):
 		"""
 		Mouse down event passed to this GameState.
-		event will contain:	pos, button
+		"event" will contain: pos, button
 		"""
 		pass
 
@@ -449,7 +465,7 @@ class GameState:
 	def mousebuttonup(self, event):
 		"""
 		Mouse up event passed to this GameState.
-		event will contain: pos, button
+		"event" will contain: pos, button
 		"""
 		pass
 
@@ -457,7 +473,7 @@ class GameState:
 	def joyaxismotion(self, event):
 		"""
 		Joystick motion event passed to this GameState.
-		event will contain:	instance_id, axis, value
+		"event" will contain: instance_id, axis, value
 		"""
 		pass
 
@@ -465,7 +481,7 @@ class GameState:
 	def joyballmotion(self, event):
 		"""
 		Joystick ball motion event passed to this GameState.
-		event will contain:	instance_id, ball, rel
+		"event" will contain: instance_id, ball, rel
 		"""
 		pass
 
@@ -473,7 +489,7 @@ class GameState:
 	def joyhatmotion(self, event):
 		"""
 		Joystick hat motion event passed to this GameState.
-		event will contain: instance_id, hat, value
+		"event" will contain: instance_id, hat, value
 		"""
 		pass
 
@@ -481,7 +497,7 @@ class GameState:
 	def joybuttondown(self, event):
 		"""
 		Joystick button down event passed to this GameState.
-		event will contain: instance_id, button
+		"event" will contain: instance_id, button
 		"""
 		pass
 
@@ -489,7 +505,7 @@ class GameState:
 	def joybuttonup(self, event):
 		"""
 		Joystick button up event passed to this GameState.
-		event will contain:	instance_id, button
+		"event" will contain: instance_id, button
 		"""
 		pass
 
@@ -497,7 +513,7 @@ class GameState:
 	def quit(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
-		event will be empty
+		"event" will be empty
 		"""
 		Game.current.shutdown()
 
@@ -505,7 +521,7 @@ class GameState:
 	def videoresize(self, event):
 		"""
 		Event handler called when the window / display is resized.
-		event will contain: size, w, h
+		"event" will contain: size, w, h
 		"""
 		pass
 
@@ -513,7 +529,7 @@ class GameState:
 	def videoexpose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
-		event will be empty
+		"event" will be empty
 		"""
 		pass
 
@@ -521,8 +537,8 @@ class GameState:
 
 class GameStateFinal(GameState):
 	"""
-	Final GameState - cannot be replaced even if a new GameState is instantiated after this one.
-	See exit_states.py for an example.
+	Final GameState; cannot be replaced even if a new GameState is instantiated
+	after this one. See exit_states.py for an example.
 	"""
 	pass
 

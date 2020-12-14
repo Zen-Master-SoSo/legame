@@ -1,7 +1,5 @@
 """
 Provides the NetworkGame class, a framework for games played over a network.
-Message transport selection is up to you. The current options are "json" and "byte".
-See the cable_car docs for more info on message transports.
 """
 
 import importlib, cable_car, traceback
@@ -13,6 +11,18 @@ from cable_car.messenger import Messenger
 
 
 class NetworkGame(Game):
+	"""
+	Basic framework for a game to be played over a network. Requires: cable_car.
+	.
+	There are two basic methods to use to connect to other computers on the
+	network. You can use "broadcast connections", which announce your availability
+	using UDP broadcast, or by specifying either "client" or "server" mode in the
+	given "options". If neither "client" or "server" is given, broadcast is used
+	by default.
+
+	Message transport selection is up to you. The current options are "json" and "byte".
+	See the cable_car docs for more info on message transports.
+	"""
 
 	udp_port		= 8222		# Port to broadcast on
 	tcp_port		= 8223		# Port to listen on
@@ -32,12 +42,20 @@ class NetworkGame(Game):
 		set as attributes of the game during initialization. Some appropriate key/value
 		pairs to pass to the __init__ function would be:
 
-			udp_port
+			client
+			server
 			tcp_port
+			udp_port
 			transport
 			xfer_interval
-			fps
+
+		... in addition to the common Game class options:
+
 			display_depth
+			fps
+			fullscreen
+			quiet
+			resource_dump
 
 		"""
 		if options is not None:
