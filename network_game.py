@@ -5,7 +5,7 @@ Provides the NetworkGame class, a framework for games played over a network.
 import importlib, cable_car, traceback
 from time import time, sleep
 from legame.game import Game, GameState
-from legame.joiner import GameJoiner
+from legame.joiner import BroadcastJoiner
 from legame.exit_states import GSQuit
 from cable_car.messenger import Messenger
 
@@ -63,13 +63,7 @@ class NetworkGame(Game):
 				setattr(self, varname, value)
 		module = importlib.import_module("cable_car.%s_messages" % self.transport)
 		globals().update({ name: module.__dict__[name] for name in module.__dict__})
-		if self.client:
-			self.messenger = Messenger.client_connection(self.tcp_port, self.transport, self.connect_timeout)
-		elif self.server:
-			self.messenger = Messenger.server_connection(self.tcp_port, self.transport, self.connect_timeout)
-		else:
-			self.__joiner = GameJoiner(options)
-			self.messenger = None
+		self.__joiner = BroadcastJoiner(options)
 
 
 	def run(self):

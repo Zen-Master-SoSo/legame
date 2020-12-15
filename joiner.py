@@ -1,5 +1,5 @@
 """
-Provides the GameJoiner class, a subclass of Dialog and BroadcastConnector
+Provides the BroadcastJoiner class, a subclass of Dialog and BroadcastConnector
 which returns a Messenger object already connected to another player over the
 network.
 """
@@ -11,10 +11,15 @@ from cable_car.broadcast_connector import BroadcastConnector
 from cable_car.messenger import Messenger
 
 
-class GameJoiner(Dialog, BroadcastConnector):
+class BroadcastJoiner(Dialog, BroadcastConnector):
 	"""
-	A dialog which allows the user to announce availabiity to play a game over the network and
-	then invite or accept an invitation from others.
+	A dialog which allows the user to connect to another player over the network.
+	.
+	There are two basic methods to use to connect to other computers on the
+	network. You can use "broadcast connections", which announce your availability
+	using UDP broadcast, or by specifying either "client" or "server" mode in the
+	given "options". If neither "client" or "server" is given, broadcast is used
+	by default.
 
 	You must pass the name of your selected "transport" to the constuctor. Currently, the
 	cable_car Messenger supports two transports; "json" or "byte". The "json" transport is a lot
@@ -24,7 +29,7 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 	Example:
 
-		joiner = GameJoiner("byte")
+		joiner = BroadcastJoiner("byte")
 
 	"""
 
@@ -38,6 +43,22 @@ class GameJoiner(Dialog, BroadcastConnector):
 
 
 	def __init__(self, options=None):
+		"""
+		The "options" argument is expected to be a dictionary, the items of which are
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
+
+			client
+			server
+			tcp_port
+			udp_port
+			transport
+
+		... in addition to the common Game class options:
+
+			display_depth
+
+		"""
 		Dialog.__init__(self)
 		if options is not None:
 			for varname, value in options.__dict__.items():
@@ -197,15 +218,65 @@ class GameJoiner(Dialog, BroadcastConnector):
 				msgr.close()
 
 
+class ClientServerJoiner(Dialog):
+
+
+	tcp_port		= 8223		# Port to connect to / listen on
+	transport		= "json"	# cable_car transport to use.
+	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
+	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
+
+	@classmethod
+	def client_connection(cls, tcp_port=8222, transport="json", timeout=10.0):
+		connector = LoopbackClient(tcp_port)
+		connector.timeout = timeout
+		connector.connect()
+		if connector.socket is None:
+			raise Exception("Could not connect to server")
+		return Messenger(connector.socket)
+
+
+	@classmethod
+	def server_connection(cls, tcp_port=8222, transport="json", timeout=10.0):
+		connector = LoopbackServer(tcp_port)
+		connector.timeout = timeout
+		connector.connect()
+		if connector.socket is None:
+			raise Exception("No clients connected")
+		return Messenger(connector.socket)
+
+
+	def __init__(self, options=None):
+		"""
+		The "options" argument is expected to be a dictionary, the items of which are
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
+
+			tcp_port
+			udp_port
+			transport
+
+		"""
+		Dialog.__init__(self)
+		if options is not None:
+			for varname, value in options.__dict__.items():
+				setattr(self, varname, value)
+		module = importlib.import_module("cable_car.%s_messages" % self.transport)
+		globals().update({ name: module.__dict__[name] for name in module.__dict__})
+		Message.register_messages()
+		self.messenger = None
+
+
+
 if __name__ == '__main__':
 	import argparse, logging, sys
 
 	p = argparse.ArgumentParser()
-	p.add_argument('--allow-loopback', '-l', action='store_true')
-	p.add_argument('--transport', type=str, default='json')
-	p.add_argument('--udp-port', type=int, default=8222)
-	p.add_argument('--tcp-port', type=int, default=8223)
-	p.add_argument('--verbose', '-v', action='store_true')
+	p.add_argument("--transport", type=str, default="json")
+	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
+	p.add_argument("--udp-port", type=int, default=8222)
+	p.add_argument("--tcp-port", type=int, default=8223)
+	p.add_argument("--broadcast", "-b", action="store_true", help="Connect to a remote machine using broadcast discovery.")
 	options = p.parse_args()
 
 	logging.basicConfig(
@@ -214,16 +285,20 @@ if __name__ == '__main__':
 		format="%(relativeCreated)6d [%(filename)24s:%(lineno)3d] %(message)s"
 	)
 
-	joiner = GameJoiner(options)
-	joiner.shutdown_delay = 0.5
-	joiner.timeout = 0.0 if options.allow_loopback else 15.0	# Allow time to start on remote machine
-	joiner.show()
+	if options.broadcast:
 
-	print("Addresses:")
-	print(joiner.addresses())
-	print("Messengers:")
-	print([messenger.remote_ip for messenger in joiner.messengers])
-	print("Selected:")
-	print(joiner.selected_messenger.remote_ip if joiner.selected_messenger else None)
+		joiner = BroadcastJoiner(options)
+		joiner.shutdown_delay = 0.5
+		joiner.timeout = 0.0 if options.allow_loopback else 15.0	# Allow time to start on remote machine
+		joiner.show()
 
+		print("Addresses:")
+		print(joiner.addresses())
+		print("Messengers:")
+		print([messenger.remote_ip for messenger in joiner.messengers])
+		print("Selected:")
+		print(joiner.selected_messenger.remote_ip if joiner.selected_messenger else None)
+
+
+	else:
 
