@@ -7,7 +7,7 @@ from legame.game import *
 from legame.board_game import *
 from legame.flipper import *
 from legame.network_game import NetworkGame
-from legame.exit_states import GSQuit
+from legame.exit_states import ExitAnimation
 
 
 class TestGame(BoardGame, NetworkGame):
@@ -69,7 +69,11 @@ class GSWhoGoesFirst(GSBase):
 
 	def handle_message(self, message):
 		if isinstance(message, MsgPickAColor):
-			if message.number == self.picked.number or message.color == self.picked.color:
+			if message.number == self.picked.number:
+				logging.debug("Picked the same number - trying again")
+				self.pick_a_color()
+			elif message.color == self.picked.color:
+				logging.debug("Picked the same color - trying again")
 				self.pick_a_color()
 			else:
 				Game.current.my_color = self.picked.color
@@ -102,7 +106,6 @@ class GSMyMove(GSBase):
 					send(MsgAdd(cell=cell))
 					GSWaitYourTurn()
 					return
-		send(MsgQuit())
 		GSQuit()
 
 
@@ -124,6 +127,13 @@ class GSWaitYourTurn(GSBase):
 			raise Exception("Unexpected message: %s" % message)
 		GSMyMove()
 
+
+
+class GSQuit(GameStateFinal):
+
+	def enter_state(self):
+		send(MsgQuit())
+		ExitAnimation("bye-bye.png")
 
 
 

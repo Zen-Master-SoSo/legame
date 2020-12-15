@@ -50,6 +50,7 @@ class Game:
 	# internal state management:
 	_state				= None		# It's pretty important to keep this managed, hence, it's "protected"
 	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
+	__next_state		= None		# Next game state waiting for change at end of main loop
 
 
 	LAYER_BG			= 1			#
@@ -197,11 +198,30 @@ class Game:
 		self._stay_in_loop = False
 
 
+	def change_state(self, game_state):
+		"""
+		Lines up the next game state. The next time through main_loop, the new state
+		will be current.
+
+		It is possible that this function will be called more than once during a single
+		game loop cycle. For example, a player might make a move and transition to a
+		game state which waits for the opponent to move, at almost the same time as
+		receiving a message from their opponent that they left the game.
+
+		In such circumstances, the last call to this function takes precedence - with
+		one caveat. If any game state subclasses GameStateFinal, the game state may not
+		be changed at all.
+		"""
+		if isinstance(self.__next_state, GameStateFinal):
+			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
+		else:
+			self.__next_state = game_state
+
+
 	##### MAIN LOOP #####
 
 	def _main_loop(self):
 		self.clock = pygame.time.Clock()
-		self._next_state = None
 		while self._stay_in_loop:
 			self._state.loop_start()
 			for event in pygame.event.get(): self._event_handlers[event.type](event)
@@ -209,11 +229,11 @@ class Game:
 			self.sprites.update()
 			self.sprites.clear(self.screen, self.background)
 			pygame.display.update(self.sprites.draw(self.screen))
-			if self._next_state:
-				self._state.exit_state(self._next_state);
-				self._state = self._next_state
-				self._next_state = None		# Note: we must clear next state before entering the new state, in
-				self._state.enter_state()	# case the "enter_state" function of the new state sets "_next_state"
+			if self.__next_state:
+				self._state.exit_state(self.__next_state);
+				self._state = self.__next_state
+				self.__next_state = None		# Note: we must clear next state here, in case the "enter_state"
+				self._state.enter_state()		# function of the new state calls "change_state"
 			self.clock.tick(self.fps)
 		for cls in self.__class__.mro():
 			if "exit_loop" in cls.__dict__:
@@ -368,10 +388,7 @@ class GameState:
 		state will not be changed.
 		"""
 		for varname, value in kwargs.items(): setattr(self, varname, value)
-		if isinstance(Game.current._state, GameStateFinal):
-			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
-		else:
-			Game.current._next_state = self
+		Game.current.change_state(self)
 
 
 	def enter_state(self):

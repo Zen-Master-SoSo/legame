@@ -80,23 +80,23 @@ class JoinerDialog(Dialog):
 
 class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 	"""
-	A dialog which allows the user to connect to another player over the network.
-	.
-	There are two basic methods to use to connect to other computers on the
-	network. You can use "broadcast connections", which announce your availability
-	using UDP broadcast, or by specifying either "client" or "server" mode in the
-	given "options". If neither "client" or "server" is given, broadcast is used
-	by default.
+	A dialog which allows the user to connect to another player over the network by
+	sending UDP broadcast messages and listening for connection attempts from
+	machines which have received broadcast packets.
 
-	You must pass the name of your selected "transport" to the constuctor. Currently, the
-	cable_car Messenger supports two transports; "json" or "byte". The "json" transport is a lot
-	easier to implement, but requires more network bandwidth and may be slow for very busy
-	network games. In contrast, the "byte" transport is very lightweight, but requires that you
-	write message encoding and decoding routines yourself.
+	When a connection is made, user and host name is sent to the remote computer.
+	This is displayed on the buttons on this dialog, and the user can select one of
+	the remote computers by clicking on one of the buttons.
 
-	Example:
+	This class uses the cable_car Messenger class which allows for two different
+	types of transport to be used; "json" or "byte". The "json" transport is a lot
+	easier to implement, but requires more network bandwidth and may be slow for
+	very busy network games. In contrast, the "byte" transport is very lightweight,
+	but requires that you write message encoding and decoding routines yourself.
 
-		joiner = BroadcastJoiner("byte")
+	The default transport is "json", but this can be overridden by defining a class
+	variable in a subclass, or by passing "transport=byte" as an option to the
+	__init__ function.
 
 	"""
 
