@@ -170,7 +170,7 @@ class Game:
 		It is safe to call this function multiple times.
 		"""
 		if background is None:
-			display_size = tuple(pygame.display.Info().current_w, pygame.display.Info().current_h)
+			display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
 			self.background = self.initial_background(display_size)
 		else:
 			self.background = background
