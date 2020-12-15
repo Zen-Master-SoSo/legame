@@ -4,33 +4,18 @@ which returns a Messenger object already connected to another player over the
 network.
 """
 
-import importlib
-from pygame_dialog import Dialog, Button, Label, ALIGN_LEFT
+import importlib, re, threading
 from time import time
+from socket import socket, AF_INET, SOCK_DGRAM
+from pygame_dialog import Dialog, Button, Label, Textbox, Radio, HorizontalLayout, ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
 from cable_car.broadcast_connector import BroadcastConnector
+from cable_car.direct_connect import DirectClient, DirectServer
 from cable_car.messenger import Messenger
 
 
-class BroadcastJoiner(Dialog, BroadcastConnector):
+class JoinerDialog(Dialog):
 	"""
-	A dialog which allows the user to connect to another player over the network.
-	.
-	There are two basic methods to use to connect to other computers on the
-	network. You can use "broadcast connections", which announce your availability
-	using UDP broadcast, or by specifying either "client" or "server" mode in the
-	given "options". If neither "client" or "server" is given, broadcast is used
-	by default.
-
-	You must pass the name of your selected "transport" to the constuctor. Currently, the
-	cable_car Messenger supports two transports; "json" or "byte". The "json" transport is a lot
-	easier to implement, but requires more network bandwidth and may be slow for very busy
-	network games. In contrast, the "byte" transport is very lightweight, but requires that you
-	write message encoding and decoding routines yourself.
-
-	Example:
-
-		joiner = BroadcastJoiner("byte")
-
+	Base class of dialog which allows the user to connect to another player over the network.
 	"""
 
 	transport					= "json"
@@ -54,21 +39,73 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 			udp_port
 			transport
 
-		... in addition to the common Game class options:
-
-			display_depth
-
 		"""
-		Dialog.__init__(self)
 		if options is not None:
 			for varname, value in options.__dict__.items():
 				setattr(self, varname, value)
+		Dialog.__init__(self)
 		module = importlib.import_module("cable_car.%s_messages" % self.transport)
 		globals().update({ name: module.__dict__[name] for name in module.__dict__})
 		Message.register_messages()
+		self.statusbar = Label(
+			"",
+			align = ALIGN_LEFT,
+			font_size = 15,
+			width = 580,
+			foreground_color = self.foreground_color,
+			background_color = self.background_color
+		)
+
+
+	def close(self):
+		"""
+		Override Dialog.close()
+		Reset _connect_enable so that connection threads exit.
+		Setup pause before closing.
+		"""
+		self._connect_enable = False
+		self._quitting_time = time() + self.shutdown_delay
+		self.loop_end = self._closing
+
+
+	def _closing(self):
+		"""
+		Function which replaces "loop_end" when complete.
+		Pauses before closing the dialog.
+		"""
+		if time() >= self._quitting_time:
+			self._run_loop = False
+
+
+
+
+
+class BroadcastJoiner(JoinerDialog, BroadcastConnector):
+	"""
+	A dialog which allows the user to connect to another player over the network.
+	.
+	There are two basic methods to use to connect to other computers on the
+	network. You can use "broadcast connections", which announce your availability
+	using UDP broadcast, or by specifying either "client" or "server" mode in the
+	given "options". If neither "client" or "server" is given, broadcast is used
+	by default.
+
+	You must pass the name of your selected "transport" to the constuctor. Currently, the
+	cable_car Messenger supports two transports; "json" or "byte". The "json" transport is a lot
+	easier to implement, but requires more network bandwidth and may be slow for very busy
+	network games. In contrast, the "byte" transport is very lightweight, but requires that you
+	write message encoding and decoding routines yourself.
+
+	Example:
+
+		joiner = BroadcastJoiner("byte")
+
+	"""
+
+	def __init__(self, options=None):
+		JoinerDialog.__init__(self, options)
 		self.messengers = []
 		self.selected_messenger = None
-		self._quitting_time = None
 		self._address_buttons = []
 		for idx in range(4):
 			button = Button(
@@ -87,14 +124,7 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 			self._address_buttons.append(button)
 			self.append(button)
 		self._address_buttons[0].margin_top = 10
-		self.statusbar = Label(
-			"Waiting for other players to appear on the network",
-			align = ALIGN_LEFT,
-			font_size = 15,
-			width = 580,
-			foreground_color = self.foreground_color,
-			background_color = self.background_color
-		)
+		self.statusbar.text = "Waiting for other players to appear on the network"
 		self.append(self.statusbar)
 		self.on_connect_function = self.on_connect
 
@@ -103,14 +133,8 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 		self.initialize_display()
 		self._start_connector_threads()
 		self._main_loop()
-		self.stop_broadcasting()
+		self._connect_enable = False
 		self.join_threads()
-		if self.__close_thread:
-			self.__close_thread.join()
-		if self.selected_messenger:
-			return
-		for msgr in self.messengers:
-			msgr.close()
 
 
 	def on_connect(self, sock):
@@ -137,7 +161,7 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 		statusbar, and messengers.
 		"""
 
-		if self._broadcast_enable:
+		if self._connect_enable:
 			# Determine what to display on the associated button:
 			for idx in range(len(self.messengers)):
 				msgr = self.messengers[idx]
@@ -182,13 +206,7 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 				if self._udp_listen_exc: errors.append("Listen: " + self._udp_listen_exc.__str__())
 				if self._tcp_listen_exc: errors.append("Socket: " + self._tcp_listen_exc.__str__())
 				self.statusbar.text = ", ".join(errors)
-			if self.shutdown_delay > 0.0:
-				if self._quitting_time is None:
-					self._quitting_time = time() + self.shutdown_delay
-				elif time() >= self._quitting_time:
-					self.close()
-			else:
-				self.close()
+			self.close()
 
 
 	def _button_click(self, button):
@@ -212,59 +230,126 @@ class BroadcastJoiner(Dialog, BroadcastConnector):
 		Sets the "selected_messenger" and exits the game joiner.
 		"""
 		self.selected_messenger = messenger
-		self.stop_broadcasting()
 		for msgr in self.messengers:
 			if msgr is not self.selected_messenger:
 				msgr.close()
+		self.close()
 
 
-class ClientServerJoiner(Dialog):
+
+class DirectJoiner(JoinerDialog):
 
 
-	tcp_port		= 8223		# Port to connect to / listen on
-	transport		= "json"	# cable_car transport to use.
-	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
-	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
+	tcp_port			= 8223		# Port to connect to / listen on
+	transport			= "json"	# cable_car transport to use.
+	timeout				= None		# Absolute limit on how long to wait.
 
-	@classmethod
-	def client_connection(cls, tcp_port=8222, transport="json", timeout=10.0):
-		connector = LoopbackClient(tcp_port)
-		connector.timeout = timeout
-		connector.connect()
-		if connector.socket is None:
-			raise Exception("Could not connect to server")
-		return Messenger(connector.socket)
-
-
-	@classmethod
-	def server_connection(cls, tcp_port=8222, transport="json", timeout=10.0):
-		connector = LoopbackServer(tcp_port)
-		connector.timeout = timeout
-		connector.connect()
-		if connector.socket is None:
-			raise Exception("No clients connected")
-		return Messenger(connector.socket)
+	__connector			= None		# Instance of DirectClient or DirectServer
+	__connect_thread	= None		# Connector thread
+	__connect_exc		= None		# Exception raised in self.__connector thread
+	__connect_complete	= False
 
 
 	def __init__(self, options=None):
-		"""
-		The "options" argument is expected to be a dictionary, the items of which are
-		set as attributes of the game during initialization. Some appropriate key/value
-		pairs to pass to the __init__ function would be:
-
-			tcp_port
-			udp_port
-			transport
-
-		"""
-		Dialog.__init__(self)
-		if options is not None:
-			for varname, value in options.__dict__.items():
-				setattr(self, varname, value)
-		module = importlib.import_module("cable_car.%s_messages" % self.transport)
-		globals().update({ name: module.__dict__[name] for name in module.__dict__})
-		Message.register_messages()
+		JoinerDialog.__init__(self, options)
 		self.messenger = None
+		self.append(HorizontalLayout(
+			Radio("mode", "Client", click_handler=self.mode_select),
+			Radio("mode", "Server", click_handler=self.mode_select)
+		))
+		sock = socket(AF_INET, SOCK_DGRAM)
+		sock.connect(('8.8.8.8', 7))
+		self.ip_entry = Textbox(sock.getsockname()[0], font_size=32, width=300, disabled=True, align=ALIGN_CENTER)
+		self.append(self.ip_entry)
+		self.start_button = Button("Connect", disabled=True, click_handler=self.start)
+		self.append(self.start_button)
+		self.statusbar.text = "Select the mode (client or server)"
+		self.append(self.statusbar)
+
+
+	def show(self):
+		self.initialize_display()
+		self._main_loop()
+		self._connect_enable = False
+		if self.__connect_thread: self.__connect_thread.join()
+
+
+	def mode_select(self, radio):
+		self.ip_entry.enabled = radio.text == "Client"
+		self.start_button.enabled = re.match("^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$", self.ip_entry.text)
+
+
+	def start(self, pos):
+		if Radio.selected_value("mode") == "Client":
+			if re.match("^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$", self.ip_entry.text):
+				self.disable_widgets()
+				self.__connect_thread = threading.Thread(target=self.client_connect)
+				self.statusbar.text = "Connecting to %s ..." % self.ip_entry.text
+			else:
+				self.ip_entry.focus()
+				self.statusbar.text = "You must enter a valid ip address"
+				return
+		else:
+			self.disable_widgets()
+			self.__connect_thread = threading.Thread(target=self.server_connect)
+			self.statusbar.text = "Listening for client connection ..."
+		self.__connect_thread.start()
+
+
+	def client_connect(self):
+		self.__connect(DirectClient(self.tcp_port, self.ip_entry.text))
+
+
+	def server_connect(self):
+		self.__connect(DirectServer(self.tcp_port, self.ip_entry.text))
+
+
+	def __connect(self, connector):
+		self.__connector = connector
+		self.__connector.timeout = self.timeout
+		self.__connector.connect()
+		self.__connect_complete = True
+		if self.__connector.socket is not None:
+			self.messenger = Messenger(self.__connector.socket)
+			self.messenger.id_sent = False
+			self.messenger.id_received = False
+
+
+	def disable_widgets(self):
+		for widget in self.widgets(): widget.disabled = True
+
+
+	def loop_end(self):
+		"""
+		Function called each time through Dialog._main_loop()
+		"""
+		if self.messenger:
+			if self.messenger.closed:
+				self.statusbar.text = "Connection to %s closed" % (self.messenger.remote_ip)
+			else:
+				if self.messenger.id_sent and self.messenger.id_received:
+					self.statusbar.text = "%s at %s connected" % (self.messenger.remote_user, self.messenger.remote_hostname)
+					self.close()
+				elif not self.messenger.id_sent:
+					self.statusbar.text = "Connected to %s" % (self.messenger.remote_ip)
+					self.messenger.send(MsgIdentify())
+					self.messenger.id_sent = True
+				self.messenger.xfer()
+				action = self.messenger.get()
+				if action is not None:
+					if isinstance(action, MsgIdentify):
+						self.messenger.id_received = True
+						self.messenger.remote_hostname = action.hostname
+						self.messenger.remote_user = action.username
+					else:
+						self.__connector.cancel()
+						err = "Messenger received an unexpected action: " + action.__class__.__name__
+						logging.error(err)
+						self.statusbar.text = err
+		elif self.__connect_complete:
+			# Only happens when connector thread faults out.
+			self.close()
+
 
 
 
@@ -289,7 +374,7 @@ if __name__ == '__main__':
 
 		joiner = BroadcastJoiner(options)
 		joiner.shutdown_delay = 0.5
-		joiner.timeout = 0.0 if options.allow_loopback else 15.0	# Allow time to start on remote machine
+		joiner.timeout = 15.0
 		joiner.show()
 
 		print("Addresses:")
@@ -301,4 +386,12 @@ if __name__ == '__main__':
 
 
 	else:
+
+		joiner = DirectJoiner(options)
+		joiner.shutdown_delay = 0.5
+		joiner.timeout = 15.0
+		joiner.show()
+
+		print("Messenger:")
+		print("None" if joiner.messenger is None else joiner.messenger.remote_ip)
 
