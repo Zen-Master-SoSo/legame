@@ -8,10 +8,12 @@ from legame.board_game import *
 from legame.flipper import *
 from legame.network_game import NetworkGame
 from legame.exit_states import GSQuit
-from cable_car.json_messages import Message, MsgIdentify, MsgJoin, MsgRetry, MsgQuit
 
 
 class TestGame(BoardGame, NetworkGame):
+
+	xfer_interval	= 0.1		# Number of seconds between calls to service the messenger
+
 
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
@@ -21,7 +23,7 @@ class TestGame(BoardGame, NetworkGame):
 
 
 	def get_board(self):
-		return GameBoard(4, 4)
+		return GameBoard(16, 8)
 
 
 	def initial_state(self):
@@ -30,32 +32,6 @@ class TestGame(BoardGame, NetworkGame):
 		statusbar = Game.current.statusbar
 		send = Game.current.messenger.send
 		return GSWhoGoesFirst()
-
-
-
-# Messages:
-
-class MsgAdd(Message):
-
-	def encoded_attributes(self):
-		return { "cell" : (self.cell.row, self.cell.column) }
-
-
-	def decode_attributes(self, attributes):
-		self.cell = Cell(attributes["cell"][0], attributes["cell"][1])
-
-
-	def rotate(self):
-		self.cell = board.rotate(self.cell)
-		return self
-
-
-
-class MsgPickAColor(Message):
-
-	def __init__(self):
-		self.color = random.choice(["r", "g", "b"])
-		self.number = random.randint(0,999)
 
 
 
@@ -114,7 +90,7 @@ class GSMyMove(GSBase):
 
 	def enter_state(self):
 		statusbar.write("GSMyMove")
-		Game.current.set_timeout(self.timeout, 250)
+		Game.current.set_timeout(self.timeout, 100)
 
 
 	def timeout(self, args):
@@ -199,10 +175,10 @@ if __name__ == '__main__':
 
 	p = argparse.ArgumentParser()
 	p.epilog = "Demonstrates network game functions."
+	p.add_argument("--transport", type=str, default="json")
 	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
 	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	p.add_argument('--client', '-c', action='store_true', help="Connect as the client instead of using broadcast discovery.")
-	p.add_argument('--server', '-s', action='store_true', help="Connect as the server instead of using broadcast discovery.")
+	p.add_argument("--direct", "-d", action="store_true", help="Connect to a remote machine by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 
 	logging.basicConfig(
@@ -210,6 +186,82 @@ if __name__ == '__main__':
 		level=logging.DEBUG if options.verbose else logging.ERROR,
 		format="[%(filename)24s:%(lineno)3d] %(message)s"
 	)
+
+
+	if options.transport == "json":
+		from cable_car.json_messages import Message, MsgQuit
+
+		class MsgAdd(Message):
+
+			def encoded_attributes(self):
+				return { "cell" : (self.cell.column, self.cell.row) }
+
+
+			def decode_attributes(self, attributes):
+				self.cell = Cell(*attributes["cell"])
+
+
+			def rotate(self):
+				self.cell = board.rotate(self.cell)
+				return self
+
+
+		class MsgPickAColor(Message):
+
+			def __init__(self):
+				self.color = random.choice(["r", "g", "b"])
+				self.number = random.randrange(0,1000)
+
+
+	else:
+		from cable_car.byte_messages import Message, MsgQuit
+
+
+		class MsgAdd(Message):
+			code = 0x8
+
+			def encode(self):
+				"""
+				Encode column, row:
+				"""
+				return bytearray([self.cell.column, self.cell.row])
+
+
+			def decode(self, msg_data):
+				"""
+				Read column, row from message data.
+				"""
+				self.cell = Cell(msg_data[0], msg_data[1])
+
+
+			def rotate(self):
+				self.cell = board.rotate(self.cell)
+				return self
+
+
+		class MsgPickAColor(Message):
+			code = 0x9
+
+			def __init__(self):
+				self.color = random.choice(["r", "g", "b"])
+				self.number = random.randrange(0,256)
+
+
+			def encode(self):
+				"""
+				Encode color, number
+				"""
+				return bytearray([self.number]) + self.color.encode("ASCII")
+
+
+			def decode(self, msg_data):
+				"""
+				Read color and number from message data.
+				"""
+				self.number, self.color = msg_data[0], msg_data[1:].decode()
+
+
+
 
 	sys.exit(TestGame(options).run())
 

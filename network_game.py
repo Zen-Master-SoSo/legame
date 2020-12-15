@@ -5,7 +5,7 @@ Provides the NetworkGame class, a framework for games played over a network.
 import importlib, cable_car, traceback
 from time import time, sleep
 from legame.game import Game, GameState
-from legame.joiner import BroadcastJoiner
+from legame.joiner import BroadcastJoiner, DirectJoiner
 from legame.exit_states import GSQuit
 from cable_car.messenger import Messenger
 
@@ -26,8 +26,7 @@ class NetworkGame(Game):
 
 	udp_port		= 8222		# Port to broadcast on
 	tcp_port		= 8223		# Port to listen on
-	client			= False		# Connect as a client, instead of using udp broadcast
-	server			= False		# Connect as a server, instead of using udp broadcast
+	direct			= False		# Connect directly, instead of using udp broadcast
 	transport		= "json"	# cable_car transport to use.
 	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
 	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
@@ -42,8 +41,7 @@ class NetworkGame(Game):
 		set as attributes of the game during initialization. Some appropriate key/value
 		pairs to pass to the __init__ function would be:
 
-			client
-			server
+			direct
 			tcp_port
 			udp_port
 			transport
@@ -63,15 +61,17 @@ class NetworkGame(Game):
 				setattr(self, varname, value)
 		module = importlib.import_module("cable_car.%s_messages" % self.transport)
 		globals().update({ name: module.__dict__[name] for name in module.__dict__})
-		self.__joiner = BroadcastJoiner(options)
+		if self.direct:
+			self.__joiner = DirectJoiner(options)
+		else:
+			self.__joiner = BroadcastJoiner(options)
 
 
 	def run(self):
-		if self.messenger is None:
-			self.__joiner.show()
-			if not self.__joiner.selected_messenger: return 5
-			self.messenger = self.__joiner.selected_messenger
-			del self.__joiner
+		self.__joiner.show()
+		if not self.__joiner.messenger: return 5
+		self.messenger = self.__joiner.messenger
+		del self.__joiner
 		self._next_xfer = time()
 		try:
 			return Game.run(self)

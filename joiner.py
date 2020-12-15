@@ -23,7 +23,7 @@ class JoinerDialog(Dialog):
 	background_color			= (20,20,80)
 	background_color_disabled	= (0,0,40)
 	foreground_color			= (180,180,255)
-	foreground_color_hover		= (20,20,20)
+	foreground_color_hover		= (220,220,255)
 	shutdown_delay				= 0.0
 
 
@@ -51,7 +51,7 @@ class JoinerDialog(Dialog):
 			"",
 			align = ALIGN_LEFT,
 			font_size = 15,
-			width = 580,
+			width = 540,
 			foreground_color = self.foreground_color,
 			background_color = self.background_color
 		)
@@ -75,8 +75,6 @@ class JoinerDialog(Dialog):
 		"""
 		if time() >= self._quitting_time:
 			self._run_loop = False
-
-
 
 
 
@@ -105,7 +103,7 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 	def __init__(self, options=None):
 		JoinerDialog.__init__(self, options)
 		self.messengers = []
-		self.selected_messenger = None
+		self.messenger = None
 		self._address_buttons = []
 		for idx in range(4):
 			button = Button(
@@ -176,15 +174,15 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 					msgr.id_sent = True
 				msgr.xfer()
 				# Handle responses from this Messenger
-				action = msgr.get()
-				if action is not None:
-					if isinstance(action, MsgIdentify):
+				message = msgr.get()
+				if message is not None:
+					if isinstance(message, MsgIdentify):
 						msgr.id_received = True
-						msgr.remote_hostname = action.hostname
-						msgr.remote_user = action.username
+						msgr.remote_hostname = message.hostname
+						msgr.remote_user = message.username
 						button.text = "%s on %s (click to invite)" % (msgr.remote_user, msgr.remote_hostname)
 						button.disabled = False
-					elif isinstance(action, MsgJoin):
+					elif isinstance(message, MsgJoin):
 						if msgr.was_invited:
 							# Player which was invited accepted invitation - select
 							button.text = "%s on %s accepted!" % (msgr.remote_user, msgr.remote_hostname)
@@ -193,13 +191,13 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 							msgr.invited_me = True
 							button.text = "%s on %s wants to play (click to accept)" % (msgr.remote_user, msgr.remote_hostname)
 					else:
-						raise Exception("Messenger received an unexpected action: " + action.__class__.__name__)
+						raise Exception("Messenger received an unexpected message: " + message.__class__.__name__)
 
 		else:
 			if self._udp_broadcast_exc is None \
 				and self._udp_listen_exc is None \
 				and self._tcp_listen_exc is None:
-				self.statusbar.text = "Connected." if self.selected_messenger else "Cancelled."
+				self.statusbar.text = "Connected." if self.messenger else "Cancelled."
 			else:
 				errors = []
 				if self._udp_broadcast_exc: errors.append("Broadcast: " + self._udp_broadcast_exc.__str__())
@@ -227,11 +225,11 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 	def _select(self, messenger):
 		"""
 		Called when accepting an invitation or the other player accepts an invitation.
-		Sets the "selected_messenger" and exits the game joiner.
+		Sets the "messenger" and exits the game joiner.
 		"""
-		self.selected_messenger = messenger
+		self.messenger = messenger
 		for msgr in self.messengers:
-			if msgr is not self.selected_messenger:
+			if msgr is not self.messenger:
 				msgr.close()
 		self.close()
 
@@ -247,21 +245,44 @@ class DirectJoiner(JoinerDialog):
 	__connector			= None		# Instance of DirectClient or DirectServer
 	__connect_thread	= None		# Connector thread
 	__connect_exc		= None		# Exception raised in self.__connector thread
-	__connect_complete	= False
+	__connect_failed	= False
 
 
 	def __init__(self, options=None):
 		JoinerDialog.__init__(self, options)
 		self.messenger = None
 		self.append(HorizontalLayout(
-			Radio("mode", "Client", click_handler=self.mode_select),
-			Radio("mode", "Server", click_handler=self.mode_select)
+			Radio("mode", "Client",
+				foreground_color = self.foreground_color,
+				foreground_color_hover = self.foreground_color_hover,
+				background_color_disabled = self.background_color_disabled,
+				background_color = self.background_color,
+				click_handler = self.mode_select
+			),
+			Radio("mode", "Server",
+				foreground_color = self.foreground_color,
+				foreground_color_hover = self.foreground_color_hover,
+				background_color_disabled = self.background_color_disabled,
+				background_color = self.background_color,
+				click_handler = self.mode_select
+			)
 		))
 		sock = socket(AF_INET, SOCK_DGRAM)
 		sock.connect(('8.8.8.8', 7))
-		self.ip_entry = Textbox(sock.getsockname()[0], font_size=32, width=300, disabled=True, align=ALIGN_CENTER)
+		self.ip_entry = Textbox(sock.getsockname()[0],
+			font_size = 32,
+			disabled = True,
+			align = ALIGN_CENTER
+		)
 		self.append(self.ip_entry)
-		self.start_button = Button("Connect", disabled=True, click_handler=self.start)
+		self.start_button = Button("Connect",
+			disabled = True,
+			foreground_color = self.foreground_color,
+			foreground_color_hover = self.foreground_color_hover,
+			background_color_disabled = self.background_color_disabled,
+			background_color = self.background_color,
+			click_handler = self.start
+		)
 		self.append(self.start_button)
 		self.statusbar.text = "Select the mode (client or server)"
 		self.append(self.statusbar)
@@ -308,9 +329,10 @@ class DirectJoiner(JoinerDialog):
 		self.__connector = connector
 		self.__connector.timeout = self.timeout
 		self.__connector.connect()
-		self.__connect_complete = True
-		if self.__connector.socket is not None:
-			self.messenger = Messenger(self.__connector.socket)
+		if self.__connector.socket is None:
+			self.__connect_failed = True
+		else:
+			self.messenger = Messenger(self.__connector.socket, self.transport)
 			self.messenger.id_sent = False
 			self.messenger.id_received = False
 
@@ -335,18 +357,18 @@ class DirectJoiner(JoinerDialog):
 					self.messenger.send(MsgIdentify())
 					self.messenger.id_sent = True
 				self.messenger.xfer()
-				action = self.messenger.get()
-				if action is not None:
-					if isinstance(action, MsgIdentify):
+				message = self.messenger.get()
+				if message is not None:
+					if isinstance(message, MsgIdentify):
 						self.messenger.id_received = True
-						self.messenger.remote_hostname = action.hostname
-						self.messenger.remote_user = action.username
+						self.messenger.remote_hostname = message.hostname
+						self.messenger.remote_user = message.username
 					else:
 						self.__connector.cancel()
-						err = "Messenger received an unexpected action: " + action.__class__.__name__
+						err = "Messenger received an unexpected message: " + message.__class__.__name__
 						logging.error(err)
 						self.statusbar.text = err
-		elif self.__connect_complete:
+		elif self.__connect_failed:
 			# Only happens when connector thread faults out.
 			self.close()
 
@@ -361,7 +383,7 @@ if __name__ == '__main__':
 	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
 	p.add_argument("--udp-port", type=int, default=8222)
 	p.add_argument("--tcp-port", type=int, default=8223)
-	p.add_argument("--broadcast", "-b", action="store_true", help="Connect to a remote machine using broadcast discovery.")
+	p.add_argument("--direct", "-d", action="store_true", help="Connect to a remote machine by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 
 	logging.basicConfig(
@@ -370,7 +392,14 @@ if __name__ == '__main__':
 		format="%(relativeCreated)6d [%(filename)24s:%(lineno)3d] %(message)s"
 	)
 
-	if options.broadcast:
+	if options.direct:
+
+		joiner = DirectJoiner(options)
+		joiner.shutdown_delay = 0.5
+		joiner.timeout = 15.0
+		joiner.show()
+
+	else:
 
 		joiner = BroadcastJoiner(options)
 		joiner.shutdown_delay = 0.5
@@ -381,17 +410,8 @@ if __name__ == '__main__':
 		print(joiner.addresses())
 		print("Messengers:")
 		print([messenger.remote_ip for messenger in joiner.messengers])
-		print("Selected:")
-		print(joiner.selected_messenger.remote_ip if joiner.selected_messenger else None)
 
+	print("Selected:")
+	print(joiner.messenger.remote_ip if joiner.messenger else None)
 
-	else:
-
-		joiner = DirectJoiner(options)
-		joiner.shutdown_delay = 0.5
-		joiner.timeout = 15.0
-		joiner.show()
-
-		print("Messenger:")
-		print("None" if joiner.messenger is None else joiner.messenger.remote_ip)
 
