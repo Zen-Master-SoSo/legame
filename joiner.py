@@ -13,6 +13,12 @@ from cable_car.direct_connect import DirectClient, DirectServer
 from cable_car.messenger import Messenger
 
 
+def get_my_ip():
+	sock = socket(AF_INET, SOCK_DGRAM)
+	sock.connect(('8.8.8.8', 7))
+	return sock.getsockname()[0]
+
+
 class JoinerDialog(Dialog):
 	"""
 	Base class of dialog which allows the user to connect to another player over the network.
@@ -24,7 +30,7 @@ class JoinerDialog(Dialog):
 	background_color_disabled	= (0,0,40)
 	foreground_color			= (180,180,255)
 	foreground_color_hover		= (220,220,255)
-	shutdown_delay				= 0.0
+	shutdown_delay				= 0.5
 
 
 	def __init__(self, options=None):
@@ -60,8 +66,8 @@ class JoinerDialog(Dialog):
 	def close(self):
 		"""
 		Override Dialog.close()
-		Reset _connect_enable so that connection threads exit.
-		Setup pause before closing.
+		Turn off "_connect_enable" so that connection threads exit.
+		Sets up a pause before closing when "shutdown_delay" is not zero.
 		"""
 		self._connect_enable = False
 		self._quitting_time = time() + self.shutdown_delay
@@ -70,8 +76,8 @@ class JoinerDialog(Dialog):
 
 	def _closing(self):
 		"""
-		Function which replaces "loop_end" when complete.
-		Pauses before closing the dialog.
+		Function which replaces "loop_end" when closing JoinerDialog.
+		Inserts a pause before killing the main loop, closing the dialog.
 		"""
 		if time() >= self._quitting_time:
 			self._run_loop = False
@@ -267,9 +273,7 @@ class DirectJoiner(JoinerDialog):
 				click_handler = self.mode_select
 			)
 		))
-		sock = socket(AF_INET, SOCK_DGRAM)
-		sock.connect(('8.8.8.8', 7))
-		self.ip_entry = Textbox(sock.getsockname()[0],
+		self.ip_entry = Textbox(get_my_ip(),
 			font_size = 32,
 			disabled = True,
 			align = ALIGN_CENTER
@@ -296,8 +300,13 @@ class DirectJoiner(JoinerDialog):
 
 
 	def mode_select(self, radio):
-		self.ip_entry.enabled = radio.text == "Client"
-		self.start_button.enabled = re.match("^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$", self.ip_entry.text)
+		if radio.text == "Client":
+			self.ip_entry.enabled = True
+			self.start_button.enabled = re.match("^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$", self.ip_entry.text)
+		else:
+			self.ip_entry.enabled = False
+			self.start_button.enabled = True
+			self.ip_entry.text = get_my_ip()
 
 
 	def start(self, pos):
@@ -308,13 +317,17 @@ class DirectJoiner(JoinerDialog):
 				self.statusbar.text = "Connecting to %s ..." % self.ip_entry.text
 			else:
 				self.ip_entry.focus()
-				self.statusbar.text = "You must enter a valid ip address"
+				self.statusbar.text = "Enter a valid ip address"
 				return
 		else:
 			self.disable_widgets()
 			self.__connect_thread = threading.Thread(target=self.server_connect)
 			self.statusbar.text = "Listening for client connection ..."
 		self.__connect_thread.start()
+
+
+	def disable_widgets(self):
+		for widget in self.widgets(): widget.disabled = True
 
 
 	def client_connect(self):
@@ -335,10 +348,6 @@ class DirectJoiner(JoinerDialog):
 			self.messenger = Messenger(self.__connector.socket, self.transport)
 			self.messenger.id_sent = False
 			self.messenger.id_received = False
-
-
-	def disable_widgets(self):
-		for widget in self.widgets(): widget.disabled = True
 
 
 	def loop_end(self):
