@@ -17,13 +17,12 @@ class TestGame(BoardGame, NetworkGame):
 
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
-		assert os.path.isdir(self.resource_dir)
 		BoardGame.__init__(self, options)
 		NetworkGame.__init__(self, options)
 
 
 	def get_board(self):
-		return GameBoard(16, 8)
+		return GameBoard(5, 5)
 
 
 	def initial_state(self):
@@ -48,7 +47,7 @@ class GSBase(GameState):
 		Exit game immediately if K_ESCAPE key pressed
 		"""
 		if event.key == K_ESCAPE or event.key == K_q:
-			GSQuit()
+			GSQuit(who = "me")
 
 
 
@@ -58,34 +57,63 @@ class GSWhoGoesFirst(GSBase):
 
 
 	def enter_state(self):
+		logging.debug("Enter state GSWhoGoesFirst")
 		self.pick_a_color()
 
 
 	def pick_a_color(self):
-		self.picked = MsgPickAColor()
-		send(self.picked)
-		statusbar.write("Sent MsgPickAColor (%s:%d)" % (self.picked.color, self.picked.number))
+		logging.debug("pick_a_color()")
+		self.my_roll = MsgPickAColor()
+		self.my_roll.color = random.choice(["r", "g", "b"])
+		self.my_roll.number = random.randrange(1, 255)
+		send(self.my_roll)
+		statusbar.write("Rolling for %s (my number is %d)" % (self.my_roll.color, self.my_roll.number))
 
 
 	def handle_message(self, message):
 		if isinstance(message, MsgPickAColor):
-			if message.number == self.picked.number:
+			if message.number == 0:
+				if message.color == self.my_roll.color:
+					raise Exception("Other machine conceded same color")
+				Game.current.opponent_color = message.color
+				logging.debug("Received concession: %s" % message.color)
+				GSMyMove()
+			elif message.number == self.my_roll.number:
 				logging.debug("Picked the same number - trying again")
 				self.pick_a_color()
-			elif message.color == self.picked.color:
-				logging.debug("Picked the same color - trying again")
-				self.pick_a_color()
+			elif message.color == self.my_roll.color:
+				# Both picked the same color. The one with the higher number gets their pick:
+				if self.my_roll.number > message.number:
+					logging.debug("Got dibs: %s; waiting for concession" % self.my_roll.color)
+					Game.current.my_color = self.my_roll.color
+					# Wait for concession MsgPickAColor with number = 0
+				else:
+					# Send concession MsgPickAColor with number = 0
+					Game.current.opponent_color = message.color
+					colors = ["r", "g", "b"]
+					colors.remove(message.color)
+					Game.current.my_color = random.choice(colors)
+					self.my_roll = MsgPickAColor()
+					self.my_roll.color = Game.current.my_color
+					self.my_roll.number = 0
+					logging.debug("Senging concession: %s" % self.my_roll.color)
+					send(self.my_roll)
+					GSWaitYourTurn()
 			else:
-				Game.current.my_color = self.picked.color
+				# Picked different colors. The one with the higher number moves first:
+				Game.current.my_color = self.my_roll.color
 				Game.current.opponent_color = message.color
-				if message.number > self.picked.number:
+				if message.number > self.my_roll.number:
+					logging.debug("Picked different colors - I move first")
 					GSMyMove()
 				else:
+					logging.debug("Picked different colors - they move first")
 					GSWaitYourTurn()
 		elif isinstance(message, MsgQuit):
-			GSQuit()
+			GSQuit(who = "them")
 		else:
-			raise Exception("Unexpected message: %s" % message)
+			logging.error("Unexpected message during GSWhoGoesFirst: %s" % message)
+			GSQuit(who = "me")
 
 
 
@@ -94,10 +122,6 @@ class GSMyMove(GSBase):
 
 	def enter_state(self):
 		statusbar.write("GSMyMove")
-		Game.current.set_timeout(self.timeout, 100)
-
-
-	def timeout(self, args):
 		for y in range(board.rows):
 			for x in range(board.columns):
 				cell = Cell(x, y)
@@ -106,7 +130,7 @@ class GSMyMove(GSBase):
 					send(MsgAdd(cell=cell))
 					GSWaitYourTurn()
 					return
-		GSQuit()
+		GSQuit(who = "me")
 
 
 
@@ -122,9 +146,10 @@ class GSWaitYourTurn(GSBase):
 			message.rotate()
 			board.set_cell(message.cell, Block(message.cell, Game.current.opponent_color))
 		elif isinstance(message, MsgQuit):
-			GSQuit()
+			GSQuit(who = "them")
 		else:
-			raise Exception("Unexpected message: %s" % message)
+			logging.error("Unexpected message during GSWaitYourTurn: %s" % message)
+			GSQuit(who = "me")
 		GSMyMove()
 
 
@@ -132,7 +157,7 @@ class GSWaitYourTurn(GSBase):
 class GSQuit(GameStateFinal):
 
 	def enter_state(self):
-		send(MsgQuit())
+		if self.who == "me": send(MsgQuit())
 		ExitAnimation("bye-bye.png")
 
 
@@ -217,10 +242,7 @@ if __name__ == '__main__':
 
 
 		class MsgPickAColor(Message):
-
-			def __init__(self):
-				self.color = random.choice(["r", "g", "b"])
-				self.number = random.randrange(0,1000)
+			pass
 
 
 	else:
@@ -251,11 +273,6 @@ if __name__ == '__main__':
 
 		class MsgPickAColor(Message):
 			code = 0x9
-
-			def __init__(self):
-				self.color = random.choice(["r", "g", "b"])
-				self.number = random.randrange(0,256)
-
 
 			def encode(self):
 				"""

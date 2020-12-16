@@ -158,7 +158,8 @@ class Game:
 		"""
 		self.show()
 		self._state = self.initial_state()
-		self._state.enter_state()
+		self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
+		self.__next_state = None	# Clear this, as it was set in "change_state()"
 		self._main_loop()
 		return 0
 
@@ -232,8 +233,8 @@ class Game:
 			if self.__next_state:
 				self._state.exit_state(self.__next_state);
 				self._state = self.__next_state
-				self.__next_state = None		# Note: we must clear next state here, in case the "enter_state"
-				self._state.enter_state()		# function of the new state calls "change_state"
+				self.__next_state = None	# MUST clear __next_state before calling "enter_state()", in case
+				self._state.enter_state()	# enter_state() calls "change_state()" and lines up a new "__next_state"
 			self.clock.tick(self.fps)
 		for cls in self.__class__.mro():
 			if "exit_loop" in cls.__dict__:
@@ -349,7 +350,7 @@ class Game:
 				self.__timer_callbacks[timer_index] = callback
 				self.__timer_arguments[timer_index] = arguments
 				self.__timer_recur_flag[timer_index] = recur
-				logging.debug("Timer %d calling %s in %d millis" % (timer_index, callback.__name__, milliseconds))
+				# logging.debug("Timer %d calling %s in %d millis" % (timer_index, callback.__name__, milliseconds))
 				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
 				return timer_index
 		raise Exception("Too many timers!")

@@ -49,7 +49,7 @@ class ExitAnimation(Sprite):
 		self.rect.top = -self.rect.height
 		self.rect.centerx = Game.current.screen_rect.centerx
 		self.__frame_step = (Game.current.screen_rect.centery - self.rect.centery) \
-			// self.anim_duration // Game.current.clock.get_fps()
+			// self.anim_duration // Game.current.fps
 
 
 	def update(self):
