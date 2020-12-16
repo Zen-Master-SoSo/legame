@@ -3,7 +3,6 @@ Provides the Game and GameState classes, a framework for writing games.
 """
 
 import sys, os, pygame, logging
-from pygame import Rect
 from pygame.locals import *
 from legame.resources import Resources
 
@@ -32,7 +31,7 @@ class Game:
 	fps 				= 60
 	display_flags		= DOUBLEBUF
 	display_depth		= 32
-	window_caption		= ""
+	caption				= ""
 
 	# sound settings:
 	mixer_frequency		= 22050
@@ -181,14 +180,23 @@ class Game:
 			self.display_flags |= FULLSCREEN
 		else:
 			os.environ['SDL_VIDEO_CENTERED'] = '1'
+		if self.icon is not None:
+			pygame.display.set_icon(pygame.image.load(os.path.join(self.resources.image_folder, self.icon)))
+		pygame.display.set_caption(self.caption)
 		self.screen = pygame.display.set_mode(
 			self.screen_rect.size,
 			self.display_flags,
 			pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
 		)
 		self.screen.blit(self.background, (0,0))
-		pygame.display.set_caption(self.window_caption)
 		pygame.display.flip()
+
+
+	def get_icon(self):
+		"""
+		Get a surface to use as the window icon.
+		"""
+		return None
 
 
 	def shutdown(self):
