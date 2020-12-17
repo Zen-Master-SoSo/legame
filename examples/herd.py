@@ -2,7 +2,7 @@ from random import seed, randrange, uniform
 from pygame.sprite import Sprite
 from pygame import Rect, Surface
 from pygame.draw import circle
-from pygame.locals import *
+from pygame.locals import SRCALPHA, K_ESCAPE, K_q
 from legame.game import Game, GameState
 from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from legame.neighbors import Neighborhood, Neighbor

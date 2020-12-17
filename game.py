@@ -3,7 +3,7 @@ Provides the Game and GameState classes, a framework for writing games.
 """
 
 import sys, os, pygame, logging
-from pygame.locals import *
+from pygame.locals import ACTIVEEVENT, DOUBLEBUF, FULLSCREEN, JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, NUMEVENTS, QUIT, USEREVENT, VIDEOEXPOSE, VIDEORESIZE
 from legame.resources import Resources
 
 
@@ -32,6 +32,7 @@ class Game:
 	display_flags		= DOUBLEBUF
 	display_depth		= 32
 	caption				= ""
+	icon				= None
 
 	# sound settings:
 	mixer_frequency		= 22050
@@ -126,8 +127,8 @@ class Game:
 			VIDEOEXPOSE:		self._videoexpose,		# 17
 		}
 		# Fill-in the remaining timer events:
-		for event_type in range(USEREVENT, NUMEVENTS+1):
-			self._event_handlers[event_type] = self._timer_event
+		for event_type in range(USEREVENT, NUMEVENTS + 1):
+			self._event_handlers[event_type] = self.__timer_event
 		self.__timer_callbacks = [None for x in range(8)]
 		self.__timer_arguments = [None for x in range(8)]
 		self.__timer_recur_flag = [None for x in range(8)]
@@ -192,13 +193,6 @@ class Game:
 		pygame.display.flip()
 
 
-	def get_icon(self):
-		"""
-		Get a surface to use as the window icon.
-		"""
-		return None
-
-
 	def shutdown(self):
 		"""
 		Triggers the _main_loop to exit. The _main_loop will finish its current
@@ -227,7 +221,7 @@ class Game:
 			self.__next_state = game_state
 
 
-	##### MAIN LOOP #####
+	##################################################################################################################
 
 	def _main_loop(self):
 		self.clock = pygame.time.Clock()
@@ -247,6 +241,9 @@ class Game:
 		for cls in self.__class__.mro():
 			if "exit_loop" in cls.__dict__:
 				cls.exit_loop(self)
+
+
+	##################################################################################################################
 
 
 	def _end_loop(self):
@@ -347,7 +344,6 @@ class Game:
 		"""
 		Clears a timer previously set using "set_timeout()"
 		"""
-		# logging.debug("Clearing timer %d for timer_index %d" % (USEREVENT + timer_index, timer_index))
 		pygame.time.set_timer(USEREVENT + timer_index, 0)
 		self.__timer_callbacks[timer_index] = None
 
@@ -358,21 +354,20 @@ class Game:
 				self.__timer_callbacks[timer_index] = callback
 				self.__timer_arguments[timer_index] = arguments
 				self.__timer_recur_flag[timer_index] = recur
-				# logging.debug("Timer %d calling %s in %d millis" % (timer_index, callback.__name__, milliseconds))
 				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
 				return timer_index
 		raise Exception("Too many timers!")
 
 
-	def _timer_event(self, event):
+	def __timer_event(self, event):
 		"""
-		Called from the pygame event pump when a timer times out. Executes a timer event.
-		You should not call or override this function.
+		Called from the pygame event pump when a timer times out.
+		Executes a timer event.
 		"""
 		timer_index = event.type - USEREVENT	# Subtract USEREVENT constant since our indexes start with 0
-		if timer_index > 7:
-			raise IndexError("Timer event out of range: " + event_type)
-		if self.__timer_callbacks[timer_index] is not None:
+		if self.__timer_callbacks[timer_index] is None:
+			logging.warning("Timer event raised when corresponding callback not set")
+		else:
 			self.__timer_callbacks[timer_index](self.__timer_arguments[timer_index])
 			if not self.__timer_recur_flag[timer_index]:
 				self.clear_timeout(timer_index)
@@ -402,7 +397,7 @@ class GameState:
 
 	def enter_state(self):
 		"""
-		Function called when the Game transitions TO this state.
+		Function called when the Game transitions to this state.
 		Any information needed to be passed to this GameState should be passed as
 		keyword args to the constructor.
 		"""
@@ -411,7 +406,7 @@ class GameState:
 
 	def exit_state(self, next_state):
 		"""
-		Function called when the Game transitions OUT OF this state.
+		Function called when the Game transitions out of this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
 		pass

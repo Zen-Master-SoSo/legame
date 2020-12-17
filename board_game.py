@@ -2,7 +2,6 @@
 
 from math import floor
 from pygame.font import SysFont
-from pygame.locals import *
 from pygame.cursors import arrow, broken_x
 from pygame import Rect, Surface, mouse
 from pygame.draw import line

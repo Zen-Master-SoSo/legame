@@ -1,0 +1,3772 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>legame.sprite_enhancement API documentation</title>
+    <meta name="description" content="Provides classes for easier positioning and moving of sprites." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+    <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_EAST">COMPASS_EAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_NORTH">COMPASS_NORTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_NORTHEAST">COMPASS_NORTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_NORTHWEST">COMPASS_NORTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_SOUTH">COMPASS_SOUTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_SOUTHEAST">COMPASS_SOUTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_SOUTHWEST">COMPASS_SOUTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.COMPASS_WEST">COMPASS_WEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_EAST">DEGREES_EAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_NORTH">DEGREES_NORTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_NORTHEAST">DEGREES_NORTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_NORTHWEST">DEGREES_NORTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_SOUTH">DEGREES_SOUTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_SOUTHEAST">DEGREES_SOUTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_SOUTHWEST">DEGREES_SOUTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.DEGREES_WEST">DEGREES_WEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.HALF_PI">HALF_PI</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_BOTTOM">OFFSCREEN_BOTTOM</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_BOTTOMLEFT">OFFSCREEN_BOTTOMLEFT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_BOTTOMRIGHT">OFFSCREEN_BOTTOMRIGHT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_LEFT">OFFSCREEN_LEFT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_RIGHT">OFFSCREEN_RIGHT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_TOP">OFFSCREEN_TOP</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_TOPLEFT">OFFSCREEN_TOPLEFT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.OFFSCREEN_TOPRIGHT">OFFSCREEN_TOPRIGHT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.PI">PI</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.QUARTER_PI">QUARTER_PI</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_135">RADIANS_135</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_180">RADIANS_180</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_45">RADIANS_45</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_90">RADIANS_90</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_EAST">RADIANS_EAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NEG135">RADIANS_NEG135</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NEG45">RADIANS_NEG45</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NEG90">RADIANS_NEG90</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NORTH">RADIANS_NORTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NORTHEAST">RADIANS_NORTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_NORTHWEST">RADIANS_NORTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_SOUTH">RADIANS_SOUTH</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_SOUTHEAST">RADIANS_SOUTHEAST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_SOUTHWEST">RADIANS_SOUTHWEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_WEST">RADIANS_WEST</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.RADIANS_ZERO">RADIANS_ZERO</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.SIDE_BOTTOM">SIDE_BOTTOM</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.SIDE_LEFT">SIDE_LEFT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.SIDE_RIGHT">SIDE_RIGHT</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.SIDE_TOP">SIDE_TOP</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.TWO_PI">TWO_PI</a></li>
+  </ul>
+
+    </li>
+
+    <li class="set"><h3><a href="#header-functions">Functions</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#legame.sprite_enhancement.vector">vector</a></li>
+  </ul>
+
+    </li>
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.sprite_enhancement.BoxedInSprite">BoxedInSprite</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.sprite_enhancement.BoxedInSprite.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.BoxedInSprite.nearest_boundary">nearest_boundary</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.BoxedInSprite.update">update</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.sprite_enhancement.CenteredSprite.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.sprite_enhancement.MovingSprite">MovingSprite</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.angle_to_thing">angle_to_thing</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.angle_to_vector">angle_to_vector</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.cartesian_motion">cartesian_motion</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.direction_to_thing">direction_to_thing</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.direction_to_vector">direction_to_vector</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.distance_to_thing">distance_to_thing</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.distance_to_vector">distance_to_vector</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.ew_direction">ew_direction</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.increment_turning_speed">increment_turning_speed</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.is_directionless">is_directionless</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.is_offscreen">is_offscreen</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.make_heading">make_heading</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.no_motion">no_motion</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.ns_direction">ns_direction</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.radians_to_thing">radians_to_thing</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.radians_to_vector">radians_to_vector</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.seek_motion">seek_motion</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.set_motion_polar">set_motion_polar</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.shift_position">shift_position</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.travel_to">travel_to</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.turn_away_from">turn_away_from</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.turn_towards">turn_towards</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.update">update</a></li>
+    <li class="mono"><a href="#legame.sprite_enhancement.MovingSprite.update_rect">update_rect</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">legame.sprite_enhancement</span> module</h1>
+  <p>Provides classes for easier positioning and moving of sprites.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement" class="source">
+    <pre><code>"""
+Provides classes for easier positioning and moving of sprites.
+"""
+
+import math
+from pygame import Rect
+from pygame.math import Vector2 as Vector
+from legame.locals import *
+
+
+
+def vector(target):
+	"""
+	Returns a Vector from the given tuple, Vector, or CenteredSprite.
+	Raises ValueError if impossible to convert.
+	"""
+	if isinstance(target, CenteredSprite): return target.position
+	if isinstance(target, Vector): return target
+	if isinstance(target, tuple): return Vector(target)
+	raise ValueError("Invalid target: %s" % target)
+
+
+
+class CenteredSprite:
+
+	height				= 10
+	width				= 10
+
+
+	def __init__(self, x=0.0, y=0.0):
+		"""
+		CenteredSprite constructor.
+		Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+		at the x/y position of this Sprite.
+		"x" and "y" must be float values which define the position of the object.
+		"""
+		self.position = Vector(x, y)
+		self.rect = Rect(
+			self.position.x - self.width / 2.0,
+			self.position.y - self.height / 2.0,
+			self.width,
+			self.height
+		)
+
+
+	@property
+	def x(self):
+		"""
+		Gets the "x" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		return self.position.x
+
+	@x.setter
+	def x(self, value):
+		"""
+		Sets the "x" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		self.position.x = value
+
+
+	@property
+	def y(self):
+		"""
+		Gets the "y" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		return self.position.y
+
+	@y.setter
+	def y(self, value):
+		"""
+		Sets the "y" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		self.position.y = value
+
+
+	def update_rect(self):
+		"""
+		Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.
+		"""
+		self.rect.centerx = int(self.position.x)
+		self.rect.centery = int(self.position.y)
+		return self
+
+
+
+class MovingSprite(CenteredSprite):
+	"""
+	A class compatible with pygame.Sprite which tracks position, motion, rotation in 2d space.
+	"""
+
+	max_speed			= 100.0	# Absolute speed limit for this thing
+	min_speed			= 0.5	# ...and the slowest its allowed to go
+	accel_rate			= 1.0	# Value added to speed each frame when accelerating
+	decel_rate			= 1.0	# Value subtracted from speed each frame when decelerating
+	turning_speed		= 0.0	# Current turning speed (rotation in degrees per frame)
+	max_turning_speed	= 360	# Max degrees per frame this can turn; 360 = unlimited
+	destination			= None  # Necessary for seek_motion
+	_motion_function	= None	# Function called to move this on Sprite.update()
+	_arrival_function	= None	# Function called when destination reached by seeking motion
+
+
+	def __init__(self, x=0.0, y=0.0, speed=None, direction=None):
+		"""
+		MovingSprite constructor.
+		"x" and "y" must be float values which define the position of the object.
+		"speed" must be a float value which sets the magnitude of the motion vector of the object.
+		"direction" must be a float value which sets the motion direction of the object in degrees.
+
+		If you would like to use a motion vector made up of x/y values, create a
+		"motion" vector with the values you need, and skip this function completely,
+		like so:
+
+			class MySprite(MovingSprite):
+				def __init__(self):
+					CenteredSprite.__init__(self, <x>, <y>)			# Sets Sprite.rect
+					self.motion = Vector(<x>, <y>)					# Cartesian
+					self._motion_function = self.cartesian_motion	# (example)
+
+		"""
+		CenteredSprite.__init__(self, x, y)
+		self._motion_function = self.cartesian_motion
+		self.motion = Vector()
+		if speed is None or direction is None: return
+		self.motion.from_polar((speed, direction))
+
+
+	@property
+	def speed(self):
+		"""
+		Get the "magnitude" of this object's motion vector.
+		"""
+		return self.motion.magnitude()
+
+	@speed.setter
+	def speed(self, value):
+		"""
+		Sets the "magnitude" of this object's motion vector.
+		"""
+		try:
+			self.motion.scale_to_length(value)
+		except ValueError as e:
+			self.motion.from_polar((value, 0.0))
+
+
+	@property
+	def direction(self):
+		"""
+		Gets the screen direction of this MovingSprite in degrees
+		"""
+		mag, deg = self.motion.as_polar()
+		return deg
+
+	@direction.setter
+	def direction(self, degrees):
+		"""
+		Sets the screen direction of this MovingSprite to the given degrees.
+		"""
+		mag = self.motion.magnitude()
+		if mag == 0.0:
+			self.motion.from_polar((2.22e-222, degrees))
+		else:
+			self.motion.from_polar((mag, degrees))
+
+
+	def update(self):
+		"""
+		Regular cyclic update task, as called from pygame.Sprite.
+		Calls the current move function, which by default is "cartesian_motion".
+		"""
+		self._motion_function()
+
+
+	def shift_position(self, x, y):
+		"""
+		Does a relative cartesian move the position of the object by x, y.
+		"""
+		self.position.x += x
+		self.position.y += y
+		self.rect.centerx = int(self.position.x)
+		self.rect.centery = int(self.position.y)
+		return self
+
+
+	def set_motion_polar(self, magnitude, degrees):
+		"""
+		Set the current motion vector from the given magnitude, degrees.
+		"""
+		self.motion.from_polar((magnitude, degrees))
+
+
+	def travel_to(self, target, on_arrival=None):
+		"""
+		High-level command which sets this MovingSprite on a path towards a given target.
+		Each subsequent call to "move()" will move the Thing one frame closer to the target.
+		When travel is complete, the optional "on_arrival" function will be called.
+		"""
+		self.destination = vector(target)
+		self._motion_function = self.seek_motion
+		self._arrival_function = on_arrival
+		return self.make_heading()
+
+
+	def make_heading(self):
+		"""
+		Sets the initial speed and direction of an object provided a destination
+		using the "travel_to()" function.
+
+		The default implementation sets this object's direction to the direction to its
+		destination, without taking into consideration turning speed. The speed of this
+		MovingSprite is set to it's acceration rate, unless it's already moving faster.
+
+		A true physical moving thing most likely cannot change speed and direction in
+		such an immediate fashion, unless the things you hear about "off world" vehicles
+		visiting our planet are really true. You're free to model that, I suppose.
+
+		This implementation is sufficient for game pieces such as used in BoardGame,
+		but should be overridden in order to create more sophisticated motion.
+		"""
+		speed = max(self.speed, self.accel_rate)
+		self.motion = (self.destination - self.position)
+		self.motion.scale_to_length(speed)
+		return self
+
+
+	####################################################################################
+	# Move routines which may be called in the "update()" function of the parent Sprite:
+	# Various movement methods, called from the "update" method, depending upon the
+	# instance and circumstances. The "update" method calls the "_motion_function"
+	# which is a reference to one of these methods, or a method in a derived class.
+	####################################################################################
+
+
+	def no_motion(self):
+		"""
+		A "_motion_function" which does nothing.
+		"""
+		pass
+
+
+	def cartesian_motion(self):
+		"""
+		Moves one frame by adding the x/y values of this MovingSprite's "motion" vector to the
+		x/y values of this MovingSprite's "position" vector.
+		This is the default "_motion_function".
+		"""
+		self.position.x += self.motion.x
+		self.position.y += self.motion.y
+		return self.update_rect()
+
+
+	def seek_motion(self):
+		"""
+		One of the "_motion_function" methods, called from "update". This method points
+		the sprite towards its current "destination" vector and accelerates towards it,
+		decelerating to zero when it approaches.
+
+		This is the move function set in the "travel_to" method.
+
+		This implementation is sufficient for game pieces as used in BoardGame,
+		but should be overridden in order to create more sophisticated motion.
+		"""
+		remaining_distance = (self.destination - self.position).magnitude()
+		if remaining_distance <= self.decel_rate:
+			self.position = self.destination
+			self.rect.centerx = int(self.position.x)
+			self.rect.centery = int(self.position.y)
+			self.speed = 0.0
+			self._motion_function = self.no_motion
+			if self._arrival_function:
+				self._arrival_function()
+		elif remaining_distance <= triangular(self.speed, self.decel_rate):
+			# coming up on target_pos; decelerate:
+			self.speed = max(self.min_speed, self.speed - self.decel_rate)
+		else:
+			# still far away from target_pos; accelate towards it:
+			self.speed = min(self.max_speed, self.speed + self.accel_rate)
+		return self.cartesian_motion()
+
+
+	####################################################################################
+	# High-level movement functions
+	####################################################################################
+
+
+	def turn_towards(self, vector):
+		"""
+		Turn incrementally towards the given position vector, taking into account this
+		MovingSprite's current and max turning speed.
+		"""
+		self.increment_turning_speed(self.direction_to_vector(vector))
+		self.direction += self.turning_speed
+
+
+	def turn_away_from(self, vector):
+		"""
+		Turn incrementally away from the given position vector, taking into account
+		this MovingSprite's current and max turning speed.
+		"""
+		self.increment_turning_speed(self.direction_to_vector(vector) + 180)
+		self.direction += self.turning_speed
+
+
+	def increment_turning_speed(self, direction):
+		"""
+		Incrementally adjust this MovingSprite's "turning_speed" attribute towards or
+		away from the given screen direction in degrees, taking into account this
+		MovingSprite's current and max turning speed.
+
+		Affects only the "turning_speed" attribute - does NOT change the "motion" vector.
+		"""
+		desired_turn = turning_degrees(self.direction - direction)
+		turn_mag = abs(desired_turn)
+		if turn_mag < self.max_turning_speed:
+			self.direction = direction
+			self.turning_speed = 0.0
+		elif abs(self.turning_speed) < self.max_turning_speed:
+			self.turning_speed -= math.copysign(self.max_turning_speed, desired_turn)
+
+
+	####################################################################################
+	# Relative position methods:
+	####################################################################################
+
+	def distance_to_vector(self, vector):
+		"""
+		Returns a float - the distance in pixels from this MovingSprite to the given
+		position vector.
+		"""
+		return self.position.distance_to(vector)
+
+
+	def distance_to_thing(self, thing):
+		"""
+		Returns a float - the distance in pixels from this MovingSprite to the given
+		"thing-like" object.
+		"""
+		return self.position.distance_to(thing.position)
+
+
+	def direction_to_vector(self, vector):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given position vector. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+		"""
+		return (vector - self.position).as_polar()[1]
+
+
+	def direction_to_thing(self, thing):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+		"""
+		return (thing.position - self.position).as_polar()[1]
+
+
+	def angle_to_vector(self, vector):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given position vector. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+
+		Alias of "direction_to_vector".
+		"""
+		return (vector - self.position).as_polar()[1]
+
+
+	def angle_to_thing(self, thing):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+
+		Alias of "direction_to_thing".
+		"""
+		return (thing.position - self.position).as_polar()[1]
+
+
+	def radians_to_vector(self, vector):
+		"""
+		Returns the world angle in radians from this MovingSprite's position to the
+		given position vector. Returns non-normalized radians (float).
+
+		If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+		"""
+		return math.radians((vector - self.position).as_polar()[1])
+
+
+	def radians_to_thing(self, vector):
+		"""
+		Returns the world angle in radians from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized radians (float).
+
+		If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+		"""
+		return math.radians((thing.position - self.position).as_polar()[1])
+
+
+	####################################################################################
+	# Status methods:
+	####################################################################################
+
+	def is_offscreen(self, screen_rect):
+		"""
+		Returns one of the "OFFSCREEN_<direction>" constants if this MovingSprite's position
+		if outside of the boundaries of the Surface it is to be rendered on.
+		"""
+		if self.rect.colliderect(screen_rect):
+			bits = 0
+			if self.position.x < 0:
+				bits |= OFFSCREEN_LEFT
+			elif self.position.x > screen_rect.width:
+				bits |= OFFSCREEN_RIGHT
+			if self.position.y < 0:
+				bits |= OFFSCREEN_TOP
+			elif self.position.y > screen_rect.height:
+				bits |= OFFSCREEN_BOTTOM
+			return bits
+		return 0
+
+
+	def is_directionless(self):
+		"""
+		Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
+		cannot be determined.
+		"""
+		return self.motion.x == 0 and self.motion.y == 0
+
+
+	def ns_direction(self):
+		"""
+		Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative
+		"""
+		return COMPASS_NORTH if self.motion.y < 0 else COMPASS_SOUTH
+
+
+	def ew_direction(self):
+		"""
+		Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative
+		"""
+		return COMPASS_WEST if self.motion.x < 0 else COMPASS_EAST
+
+
+	def __str__(self):
+		if self.is_directionless():
+			return "<Motionless %s at %.1f / %.1f>" % (type(self).__name__, self.position.x, self.position.y)
+		return "<%s at %.1f / %.1f, moving %d degrees at %.1f pixels-per-second>" % \
+			(type(self).__name__, self.position.x, self.position.y, self.motion.degrees, self.motion.magnitude())
+
+
+
+class BoxedInSprite:
+	"""
+	A class which can add boundary checking to a MovingSprite.
+	"""
+
+
+	def __init__ (self, boundary):
+		"""
+		Initialize boundary checking.
+		"boundary" is a pygame Rect within which movement is to be constrained.
+		Tip: Rect.inflate() can be used to reduce the size of a Rect with a margin around the outside.
+		So if you want to restrict movement of a 40px x 40px sprite, such that the outer edges of the
+		sprite never leave the screen, you can create a boundary Rect that is 20px (half of the width
+		/ height) smaller than the screen Rect using:
+
+			(Screen Rect).inflate(-20)
+
+		"""
+		self.boundary = boundary
+
+
+	def nearest_boundary(self):
+		"""
+		Determine if near one of the boundary walls.
+		Returns None if not near.
+		Returns a tuple of (<distance from>, <which wall>) if outside boundary.
+		<distance from> is nearest distance to the wall, not distance along MovingSprite's direction
+		<which wall> is one of the SIDE_<side> constants defined in locals
+		"""
+		if self.x < self.boundary.left:
+			# Near the west wall
+			return (self.x, SIDE_LEFT)
+		if self.y < self.boundary.top:
+			# Near the north wall
+			return (self.y, SIDE_TOP)
+		if self.x > self.boundary.right:
+			# Near the east wall
+			return (self.boundary.right - self.x, SIDE_RIGHT)
+		if self.y > self.boundary.bottom:
+			# Near the south wall
+			return (self.boundary.bottom - self.y, SIDE_BOTTOM)
+		return None
+
+
+	def update(self):
+		tup = self.nearest_boundary()
+		if tup is not None:
+			if tup[1] == SIDE_TOP or tup[1] == SIDE_BOTTOM:
+				self.motion.y = - self.motion.y
+			else:
+				self.motion.x = - self.motion.x
+		self.cartesian_motion()
+
+
+
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+    <h2 class="section-title" id="header-variables">Module variables</h2>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_EAST" class="name">var <span class="ident">COMPASS_EAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_NORTH" class="name">var <span class="ident">COMPASS_NORTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_NORTHEAST" class="name">var <span class="ident">COMPASS_NORTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_NORTHWEST" class="name">var <span class="ident">COMPASS_NORTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_SOUTH" class="name">var <span class="ident">COMPASS_SOUTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_SOUTHEAST" class="name">var <span class="ident">COMPASS_SOUTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_SOUTHWEST" class="name">var <span class="ident">COMPASS_SOUTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.COMPASS_WEST" class="name">var <span class="ident">COMPASS_WEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_EAST" class="name">var <span class="ident">DEGREES_EAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_NORTH" class="name">var <span class="ident">DEGREES_NORTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_NORTHEAST" class="name">var <span class="ident">DEGREES_NORTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_NORTHWEST" class="name">var <span class="ident">DEGREES_NORTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_SOUTH" class="name">var <span class="ident">DEGREES_SOUTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_SOUTHEAST" class="name">var <span class="ident">DEGREES_SOUTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_SOUTHWEST" class="name">var <span class="ident">DEGREES_SOUTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.DEGREES_WEST" class="name">var <span class="ident">DEGREES_WEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.HALF_PI" class="name">var <span class="ident">HALF_PI</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_BOTTOM" class="name">var <span class="ident">OFFSCREEN_BOTTOM</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_BOTTOMLEFT" class="name">var <span class="ident">OFFSCREEN_BOTTOMLEFT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_BOTTOMRIGHT" class="name">var <span class="ident">OFFSCREEN_BOTTOMRIGHT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_LEFT" class="name">var <span class="ident">OFFSCREEN_LEFT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_RIGHT" class="name">var <span class="ident">OFFSCREEN_RIGHT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_TOP" class="name">var <span class="ident">OFFSCREEN_TOP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_TOPLEFT" class="name">var <span class="ident">OFFSCREEN_TOPLEFT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.OFFSCREEN_TOPRIGHT" class="name">var <span class="ident">OFFSCREEN_TOPRIGHT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.PI" class="name">var <span class="ident">PI</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.QUARTER_PI" class="name">var <span class="ident">QUARTER_PI</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_135" class="name">var <span class="ident">RADIANS_135</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_180" class="name">var <span class="ident">RADIANS_180</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_45" class="name">var <span class="ident">RADIANS_45</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_90" class="name">var <span class="ident">RADIANS_90</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_EAST" class="name">var <span class="ident">RADIANS_EAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NEG135" class="name">var <span class="ident">RADIANS_NEG135</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NEG45" class="name">var <span class="ident">RADIANS_NEG45</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NEG90" class="name">var <span class="ident">RADIANS_NEG90</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NORTH" class="name">var <span class="ident">RADIANS_NORTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NORTHEAST" class="name">var <span class="ident">RADIANS_NORTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_NORTHWEST" class="name">var <span class="ident">RADIANS_NORTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_SOUTH" class="name">var <span class="ident">RADIANS_SOUTH</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_SOUTHEAST" class="name">var <span class="ident">RADIANS_SOUTHEAST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_SOUTHWEST" class="name">var <span class="ident">RADIANS_SOUTHWEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_WEST" class="name">var <span class="ident">RADIANS_WEST</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.RADIANS_ZERO" class="name">var <span class="ident">RADIANS_ZERO</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.SIDE_BOTTOM" class="name">var <span class="ident">SIDE_BOTTOM</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.SIDE_LEFT" class="name">var <span class="ident">SIDE_LEFT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.SIDE_RIGHT" class="name">var <span class="ident">SIDE_RIGHT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.SIDE_TOP" class="name">var <span class="ident">SIDE_TOP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.sprite_enhancement.TWO_PI" class="name">var <span class="ident">TWO_PI</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+
+    <h2 class="section-title" id="header-functions">Functions</h2>
+      
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.vector">
+    <p>def <span class="ident">vector</span>(</p><p>target)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a Vector from the given tuple, Vector, or CenteredSprite.
+Raises ValueError if impossible to convert.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.vector', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.vector" class="source">
+    <pre><code>def vector(target):
+	"""
+	Returns a Vector from the given tuple, Vector, or CenteredSprite.
+	Raises ValueError if impossible to convert.
+	"""
+	if isinstance(target, CenteredSprite): return target.position
+	if isinstance(target, Vector): return target
+	if isinstance(target, tuple): return Vector(target)
+	raise ValueError("Invalid target: %s" % target)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="legame.sprite_enhancement.BoxedInSprite" class="name">class <span class="ident">BoxedInSprite</span></p>
+      
+  
+    <div class="desc"><p>A class which can add boundary checking to a MovingSprite.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.BoxedInSprite', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.BoxedInSprite" class="source">
+    <pre><code>class BoxedInSprite:
+	"""
+	A class which can add boundary checking to a MovingSprite.
+	"""
+
+
+	def __init__ (self, boundary):
+		"""
+		Initialize boundary checking.
+		"boundary" is a pygame Rect within which movement is to be constrained.
+		Tip: Rect.inflate() can be used to reduce the size of a Rect with a margin around the outside.
+		So if you want to restrict movement of a 40px x 40px sprite, such that the outer edges of the
+		sprite never leave the screen, you can create a boundary Rect that is 20px (half of the width
+		/ height) smaller than the screen Rect using:
+
+			(Screen Rect).inflate(-20)
+
+		"""
+		self.boundary = boundary
+
+
+	def nearest_boundary(self):
+		"""
+		Determine if near one of the boundary walls.
+		Returns None if not near.
+		Returns a tuple of (<distance from>, <which wall>) if outside boundary.
+		<distance from> is nearest distance to the wall, not distance along MovingSprite's direction
+		<which wall> is one of the SIDE_<side> constants defined in locals
+		"""
+		if self.x < self.boundary.left:
+			# Near the west wall
+			return (self.x, SIDE_LEFT)
+		if self.y < self.boundary.top:
+			# Near the north wall
+			return (self.y, SIDE_TOP)
+		if self.x > self.boundary.right:
+			# Near the east wall
+			return (self.boundary.right - self.x, SIDE_RIGHT)
+		if self.y > self.boundary.bottom:
+			# Near the south wall
+			return (self.boundary.bottom - self.y, SIDE_BOTTOM)
+		return None
+
+
+	def update(self):
+		tup = self.nearest_boundary()
+		if tup is not None:
+			if tup[1] == SIDE_TOP or tup[1] == SIDE_BOTTOM:
+				self.motion.y = - self.motion.y
+			else:
+				self.motion.x = - self.motion.x
+		self.cartesian_motion()
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.sprite_enhancement.BoxedInSprite">BoxedInSprite</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.BoxedInSprite.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, boundary)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Initialize boundary checking.
+"boundary" is a pygame Rect within which movement is to be constrained.
+Tip: Rect.inflate() can be used to reduce the size of a Rect with a margin around the outside.
+So if you want to restrict movement of a 40px x 40px sprite, such that the outer edges of the
+sprite never leave the screen, you can create a boundary Rect that is 20px (half of the width
+/ height) smaller than the screen Rect using:</p>
+<pre><code>    (Screen Rect).inflate(-20)
+</code></pre></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.BoxedInSprite.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.BoxedInSprite.__init__" class="source">
+    <pre><code>def __init__ (self, boundary):
+	"""
+	Initialize boundary checking.
+	"boundary" is a pygame Rect within which movement is to be constrained.
+	Tip: Rect.inflate() can be used to reduce the size of a Rect with a margin around the outside.
+	So if you want to restrict movement of a 40px x 40px sprite, such that the outer edges of the
+	sprite never leave the screen, you can create a boundary Rect that is 20px (half of the width
+	/ height) smaller than the screen Rect using:
+		(Screen Rect).inflate(-20)
+	"""
+	self.boundary = boundary
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.BoxedInSprite.nearest_boundary">
+    <p>def <span class="ident">nearest_boundary</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Determine if near one of the boundary walls.
+Returns None if not near.
+Returns a tuple of (<distance from>, <which wall>) if outside boundary.
+<distance from> is nearest distance to the wall, not distance along MovingSprite's direction
+<which wall> is one of the SIDE_<side> constants defined in locals</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.BoxedInSprite.nearest_boundary', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.BoxedInSprite.nearest_boundary" class="source">
+    <pre><code>def nearest_boundary(self):
+	"""
+	Determine if near one of the boundary walls.
+	Returns None if not near.
+	Returns a tuple of (<distance from>, <which wall>) if outside boundary.
+	<distance from> is nearest distance to the wall, not distance along MovingSprite's direction
+	<which wall> is one of the SIDE_<side> constants defined in locals
+	"""
+	if self.x < self.boundary.left:
+		# Near the west wall
+		return (self.x, SIDE_LEFT)
+	if self.y < self.boundary.top:
+		# Near the north wall
+		return (self.y, SIDE_TOP)
+	if self.x > self.boundary.right:
+		# Near the east wall
+		return (self.boundary.right - self.x, SIDE_RIGHT)
+	if self.y > self.boundary.bottom:
+		# Near the south wall
+		return (self.boundary.bottom - self.y, SIDE_BOTTOM)
+	return None
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.BoxedInSprite.update">
+    <p>def <span class="ident">update</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.BoxedInSprite.update', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.BoxedInSprite.update" class="source">
+    <pre><code>def update(self):
+	tup = self.nearest_boundary()
+	if tup is not None:
+		if tup[1] == SIDE_TOP or tup[1] == SIDE_BOTTOM:
+			self.motion.y = - self.motion.y
+		else:
+			self.motion.x = - self.motion.x
+	self.cartesian_motion()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="legame.sprite_enhancement.BoxedInSprite.boundary" class="name">var <span class="ident">boundary</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="legame.sprite_enhancement.CenteredSprite" class="name">class <span class="ident">CenteredSprite</span></p>
+      
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.CenteredSprite', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.CenteredSprite" class="source">
+    <pre><code>class CenteredSprite:
+
+	height				= 10
+	width				= 10
+
+
+	def __init__(self, x=0.0, y=0.0):
+		"""
+		CenteredSprite constructor.
+		Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+		at the x/y position of this Sprite.
+		"x" and "y" must be float values which define the position of the object.
+		"""
+		self.position = Vector(x, y)
+		self.rect = Rect(
+			self.position.x - self.width / 2.0,
+			self.position.y - self.height / 2.0,
+			self.width,
+			self.height
+		)
+
+
+	@property
+	def x(self):
+		"""
+		Gets the "x" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		return self.position.x
+
+	@x.setter
+	def x(self, value):
+		"""
+		Sets the "x" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		self.position.x = value
+
+
+	@property
+	def y(self):
+		"""
+		Gets the "y" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		return self.position.y
+
+	@y.setter
+	def y(self, value):
+		"""
+		Sets the "y" value of this object's positiong vector, relative to the Surface on which this
+		object is to be rendered.
+		"""
+		self.position.y = value
+
+
+	def update_rect(self):
+		"""
+		Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.
+		"""
+		self.rect.centerx = int(self.position.x)
+		self.rect.centery = int(self.position.y)
+		return self
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.height" class="name">var <span class="ident">height</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.width" class="name">var <span class="ident">width</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.CenteredSprite.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, x=0.0, y=0.0)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>CenteredSprite constructor.
+Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+at the x/y position of this Sprite.
+"x" and "y" must be float values which define the position of the object.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.CenteredSprite.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.CenteredSprite.__init__" class="source">
+    <pre><code>def __init__(self, x=0.0, y=0.0):
+	"""
+	CenteredSprite constructor.
+	Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+	at the x/y position of this Sprite.
+	"x" and "y" must be float values which define the position of the object.
+	"""
+	self.position = Vector(x, y)
+	self.rect = Rect(
+		self.position.x - self.width / 2.0,
+		self.position.y - self.height / 2.0,
+		self.width,
+		self.height
+	)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.CenteredSprite.update_rect">
+    <p>def <span class="ident">update_rect</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.CenteredSprite.update_rect', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.CenteredSprite.update_rect" class="source">
+    <pre><code>def update_rect(self):
+	"""
+	Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.
+	"""
+	self.rect.centerx = int(self.position.x)
+	self.rect.centery = int(self.position.y)
+	return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.position" class="name">var <span class="ident">position</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.rect" class="name">var <span class="ident">rect</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.x" class="name">var <span class="ident">x</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Gets the "x" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.CenteredSprite.y" class="name">var <span class="ident">y</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Gets the "y" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="legame.sprite_enhancement.MovingSprite" class="name">class <span class="ident">MovingSprite</span></p>
+      
+  
+    <div class="desc"><p>A class compatible with pygame.Sprite which tracks position, motion, rotation in 2d space.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite" class="source">
+    <pre><code>class MovingSprite(CenteredSprite):
+	"""
+	A class compatible with pygame.Sprite which tracks position, motion, rotation in 2d space.
+	"""
+
+	max_speed			= 100.0	# Absolute speed limit for this thing
+	min_speed			= 0.5	# ...and the slowest its allowed to go
+	accel_rate			= 1.0	# Value added to speed each frame when accelerating
+	decel_rate			= 1.0	# Value subtracted from speed each frame when decelerating
+	turning_speed		= 0.0	# Current turning speed (rotation in degrees per frame)
+	max_turning_speed	= 360	# Max degrees per frame this can turn; 360 = unlimited
+	destination			= None  # Necessary for seek_motion
+	_motion_function	= None	# Function called to move this on Sprite.update()
+	_arrival_function	= None	# Function called when destination reached by seeking motion
+
+
+	def __init__(self, x=0.0, y=0.0, speed=None, direction=None):
+		"""
+		MovingSprite constructor.
+		"x" and "y" must be float values which define the position of the object.
+		"speed" must be a float value which sets the magnitude of the motion vector of the object.
+		"direction" must be a float value which sets the motion direction of the object in degrees.
+
+		If you would like to use a motion vector made up of x/y values, create a
+		"motion" vector with the values you need, and skip this function completely,
+		like so:
+
+			class MySprite(MovingSprite):
+				def __init__(self):
+					CenteredSprite.__init__(self, <x>, <y>)			# Sets Sprite.rect
+					self.motion = Vector(<x>, <y>)					# Cartesian
+					self._motion_function = self.cartesian_motion	# (example)
+
+		"""
+		CenteredSprite.__init__(self, x, y)
+		self._motion_function = self.cartesian_motion
+		self.motion = Vector()
+		if speed is None or direction is None: return
+		self.motion.from_polar((speed, direction))
+
+
+	@property
+	def speed(self):
+		"""
+		Get the "magnitude" of this object's motion vector.
+		"""
+		return self.motion.magnitude()
+
+	@speed.setter
+	def speed(self, value):
+		"""
+		Sets the "magnitude" of this object's motion vector.
+		"""
+		try:
+			self.motion.scale_to_length(value)
+		except ValueError as e:
+			self.motion.from_polar((value, 0.0))
+
+
+	@property
+	def direction(self):
+		"""
+		Gets the screen direction of this MovingSprite in degrees
+		"""
+		mag, deg = self.motion.as_polar()
+		return deg
+
+	@direction.setter
+	def direction(self, degrees):
+		"""
+		Sets the screen direction of this MovingSprite to the given degrees.
+		"""
+		mag = self.motion.magnitude()
+		if mag == 0.0:
+			self.motion.from_polar((2.22e-222, degrees))
+		else:
+			self.motion.from_polar((mag, degrees))
+
+
+	def update(self):
+		"""
+		Regular cyclic update task, as called from pygame.Sprite.
+		Calls the current move function, which by default is "cartesian_motion".
+		"""
+		self._motion_function()
+
+
+	def shift_position(self, x, y):
+		"""
+		Does a relative cartesian move the position of the object by x, y.
+		"""
+		self.position.x += x
+		self.position.y += y
+		self.rect.centerx = int(self.position.x)
+		self.rect.centery = int(self.position.y)
+		return self
+
+
+	def set_motion_polar(self, magnitude, degrees):
+		"""
+		Set the current motion vector from the given magnitude, degrees.
+		"""
+		self.motion.from_polar((magnitude, degrees))
+
+
+	def travel_to(self, target, on_arrival=None):
+		"""
+		High-level command which sets this MovingSprite on a path towards a given target.
+		Each subsequent call to "move()" will move the Thing one frame closer to the target.
+		When travel is complete, the optional "on_arrival" function will be called.
+		"""
+		self.destination = vector(target)
+		self._motion_function = self.seek_motion
+		self._arrival_function = on_arrival
+		return self.make_heading()
+
+
+	def make_heading(self):
+		"""
+		Sets the initial speed and direction of an object provided a destination
+		using the "travel_to()" function.
+
+		The default implementation sets this object's direction to the direction to its
+		destination, without taking into consideration turning speed. The speed of this
+		MovingSprite is set to it's acceration rate, unless it's already moving faster.
+
+		A true physical moving thing most likely cannot change speed and direction in
+		such an immediate fashion, unless the things you hear about "off world" vehicles
+		visiting our planet are really true. You're free to model that, I suppose.
+
+		This implementation is sufficient for game pieces such as used in BoardGame,
+		but should be overridden in order to create more sophisticated motion.
+		"""
+		speed = max(self.speed, self.accel_rate)
+		self.motion = (self.destination - self.position)
+		self.motion.scale_to_length(speed)
+		return self
+
+
+	####################################################################################
+	# Move routines which may be called in the "update()" function of the parent Sprite:
+	# Various movement methods, called from the "update" method, depending upon the
+	# instance and circumstances. The "update" method calls the "_motion_function"
+	# which is a reference to one of these methods, or a method in a derived class.
+	####################################################################################
+
+
+	def no_motion(self):
+		"""
+		A "_motion_function" which does nothing.
+		"""
+		pass
+
+
+	def cartesian_motion(self):
+		"""
+		Moves one frame by adding the x/y values of this MovingSprite's "motion" vector to the
+		x/y values of this MovingSprite's "position" vector.
+		This is the default "_motion_function".
+		"""
+		self.position.x += self.motion.x
+		self.position.y += self.motion.y
+		return self.update_rect()
+
+
+	def seek_motion(self):
+		"""
+		One of the "_motion_function" methods, called from "update". This method points
+		the sprite towards its current "destination" vector and accelerates towards it,
+		decelerating to zero when it approaches.
+
+		This is the move function set in the "travel_to" method.
+
+		This implementation is sufficient for game pieces as used in BoardGame,
+		but should be overridden in order to create more sophisticated motion.
+		"""
+		remaining_distance = (self.destination - self.position).magnitude()
+		if remaining_distance <= self.decel_rate:
+			self.position = self.destination
+			self.rect.centerx = int(self.position.x)
+			self.rect.centery = int(self.position.y)
+			self.speed = 0.0
+			self._motion_function = self.no_motion
+			if self._arrival_function:
+				self._arrival_function()
+		elif remaining_distance <= triangular(self.speed, self.decel_rate):
+			# coming up on target_pos; decelerate:
+			self.speed = max(self.min_speed, self.speed - self.decel_rate)
+		else:
+			# still far away from target_pos; accelate towards it:
+			self.speed = min(self.max_speed, self.speed + self.accel_rate)
+		return self.cartesian_motion()
+
+
+	####################################################################################
+	# High-level movement functions
+	####################################################################################
+
+
+	def turn_towards(self, vector):
+		"""
+		Turn incrementally towards the given position vector, taking into account this
+		MovingSprite's current and max turning speed.
+		"""
+		self.increment_turning_speed(self.direction_to_vector(vector))
+		self.direction += self.turning_speed
+
+
+	def turn_away_from(self, vector):
+		"""
+		Turn incrementally away from the given position vector, taking into account
+		this MovingSprite's current and max turning speed.
+		"""
+		self.increment_turning_speed(self.direction_to_vector(vector) + 180)
+		self.direction += self.turning_speed
+
+
+	def increment_turning_speed(self, direction):
+		"""
+		Incrementally adjust this MovingSprite's "turning_speed" attribute towards or
+		away from the given screen direction in degrees, taking into account this
+		MovingSprite's current and max turning speed.
+
+		Affects only the "turning_speed" attribute - does NOT change the "motion" vector.
+		"""
+		desired_turn = turning_degrees(self.direction - direction)
+		turn_mag = abs(desired_turn)
+		if turn_mag < self.max_turning_speed:
+			self.direction = direction
+			self.turning_speed = 0.0
+		elif abs(self.turning_speed) < self.max_turning_speed:
+			self.turning_speed -= math.copysign(self.max_turning_speed, desired_turn)
+
+
+	####################################################################################
+	# Relative position methods:
+	####################################################################################
+
+	def distance_to_vector(self, vector):
+		"""
+		Returns a float - the distance in pixels from this MovingSprite to the given
+		position vector.
+		"""
+		return self.position.distance_to(vector)
+
+
+	def distance_to_thing(self, thing):
+		"""
+		Returns a float - the distance in pixels from this MovingSprite to the given
+		"thing-like" object.
+		"""
+		return self.position.distance_to(thing.position)
+
+
+	def direction_to_vector(self, vector):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given position vector. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+		"""
+		return (vector - self.position).as_polar()[1]
+
+
+	def direction_to_thing(self, thing):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+		"""
+		return (thing.position - self.position).as_polar()[1]
+
+
+	def angle_to_vector(self, vector):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given position vector. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+
+		Alias of "direction_to_vector".
+		"""
+		return (vector - self.position).as_polar()[1]
+
+
+	def angle_to_thing(self, thing):
+		"""
+		Returns the world angle in degrees from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized degrees (float).
+
+		If you need a Vector instead of an angle in radians, use Vector subtraction.
+
+		Alias of "direction_to_thing".
+		"""
+		return (thing.position - self.position).as_polar()[1]
+
+
+	def radians_to_vector(self, vector):
+		"""
+		Returns the world angle in radians from this MovingSprite's position to the
+		given position vector. Returns non-normalized radians (float).
+
+		If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+		"""
+		return math.radians((vector - self.position).as_polar()[1])
+
+
+	def radians_to_thing(self, vector):
+		"""
+		Returns the world angle in radians from this MovingSprite's position to the
+		given "thing-like" object's position. Returns non-normalized radians (float).
+
+		If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+		"""
+		return math.radians((thing.position - self.position).as_polar()[1])
+
+
+	####################################################################################
+	# Status methods:
+	####################################################################################
+
+	def is_offscreen(self, screen_rect):
+		"""
+		Returns one of the "OFFSCREEN_<direction>" constants if this MovingSprite's position
+		if outside of the boundaries of the Surface it is to be rendered on.
+		"""
+		if self.rect.colliderect(screen_rect):
+			bits = 0
+			if self.position.x < 0:
+				bits |= OFFSCREEN_LEFT
+			elif self.position.x > screen_rect.width:
+				bits |= OFFSCREEN_RIGHT
+			if self.position.y < 0:
+				bits |= OFFSCREEN_TOP
+			elif self.position.y > screen_rect.height:
+				bits |= OFFSCREEN_BOTTOM
+			return bits
+		return 0
+
+
+	def is_directionless(self):
+		"""
+		Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
+		cannot be determined.
+		"""
+		return self.motion.x == 0 and self.motion.y == 0
+
+
+	def ns_direction(self):
+		"""
+		Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative
+		"""
+		return COMPASS_NORTH if self.motion.y < 0 else COMPASS_SOUTH
+
+
+	def ew_direction(self):
+		"""
+		Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative
+		"""
+		return COMPASS_WEST if self.motion.x < 0 else COMPASS_EAST
+
+
+	def __str__(self):
+		if self.is_directionless():
+			return "<Motionless %s at %.1f / %.1f>" % (type(self).__name__, self.position.x, self.position.y)
+		return "<%s at %.1f / %.1f, moving %d degrees at %.1f pixels-per-second>" % \
+			(type(self).__name__, self.position.x, self.position.y, self.motion.degrees, self.motion.magnitude())
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.sprite_enhancement.MovingSprite">MovingSprite</a></li>
+          <li><a href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.accel_rate" class="name">var <span class="ident">accel_rate</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.decel_rate" class="name">var <span class="ident">decel_rate</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.destination" class="name">var <span class="ident">destination</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.height" class="name">var <span class="ident">height</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.max_speed" class="name">var <span class="ident">max_speed</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.max_turning_speed" class="name">var <span class="ident">max_turning_speed</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.min_speed" class="name">var <span class="ident">min_speed</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.turning_speed" class="name">var <span class="ident">turning_speed</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.width" class="name">var <span class="ident">width</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, x=0.0, y=0.0, speed=None, direction=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>MovingSprite constructor.
+"x" and "y" must be float values which define the position of the object.
+"speed" must be a float value which sets the magnitude of the motion vector of the object.
+"direction" must be a float value which sets the motion direction of the object in degrees.</p>
+<p>If you would like to use a motion vector made up of x/y values, create a
+"motion" vector with the values you need, and skip this function completely,
+like so:</p>
+<pre><code>    class MySprite(MovingSprite):
+            def __init__(self):
+                    CenteredSprite.__init__(self, &lt;x&gt;, &lt;y&gt;)                 # Sets Sprite.rect
+                    self.motion = Vector(&lt;x&gt;, &lt;y&gt;)                                  # Cartesian
+                    self._motion_function = self.cartesian_motion   # (example)
+</code></pre></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.__init__" class="source">
+    <pre><code>def __init__(self, x=0.0, y=0.0, speed=None, direction=None):
+	"""
+	MovingSprite constructor.
+	"x" and "y" must be float values which define the position of the object.
+	"speed" must be a float value which sets the magnitude of the motion vector of the object.
+	"direction" must be a float value which sets the motion direction of the object in degrees.
+	If you would like to use a motion vector made up of x/y values, create a
+	"motion" vector with the values you need, and skip this function completely,
+	like so:
+		class MySprite(MovingSprite):
+			def __init__(self):
+				CenteredSprite.__init__(self, <x>, <y>)			# Sets Sprite.rect
+				self.motion = Vector(<x>, <y>)					# Cartesian
+				self._motion_function = self.cartesian_motion	# (example)
+	"""
+	CenteredSprite.__init__(self, x, y)
+	self._motion_function = self.cartesian_motion
+	self.motion = Vector()
+	if speed is None or direction is None: return
+	self.motion.from_polar((speed, direction))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.angle_to_thing">
+    <p>def <span class="ident">angle_to_thing</span>(</p><p>self, thing)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p>
+<p>Alias of "direction_to_thing".</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.angle_to_thing', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.angle_to_thing" class="source">
+    <pre><code>def angle_to_thing(self, thing):
+	"""
+	Returns the world angle in degrees from this MovingSprite's position to the
+	given "thing-like" object's position. Returns non-normalized degrees (float).
+	If you need a Vector instead of an angle in radians, use Vector subtraction.
+	Alias of "direction_to_thing".
+	"""
+	return (thing.position - self.position).as_polar()[1]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.angle_to_vector">
+    <p>def <span class="ident">angle_to_vector</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given position vector. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p>
+<p>Alias of "direction_to_vector".</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.angle_to_vector', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.angle_to_vector" class="source">
+    <pre><code>def angle_to_vector(self, vector):
+	"""
+	Returns the world angle in degrees from this MovingSprite's position to the
+	given position vector. Returns non-normalized degrees (float).
+	If you need a Vector instead of an angle in radians, use Vector subtraction.
+	Alias of "direction_to_vector".
+	"""
+	return (vector - self.position).as_polar()[1]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.cartesian_motion">
+    <p>def <span class="ident">cartesian_motion</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Moves one frame by adding the x/y values of this MovingSprite's "motion" vector to the
+x/y values of this MovingSprite's "position" vector.
+This is the default "_motion_function".</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.cartesian_motion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.cartesian_motion" class="source">
+    <pre><code>def cartesian_motion(self):
+	"""
+	Moves one frame by adding the x/y values of this MovingSprite's "motion" vector to the
+	x/y values of this MovingSprite's "position" vector.
+	This is the default "_motion_function".
+	"""
+	self.position.x += self.motion.x
+	self.position.y += self.motion.y
+	return self.update_rect()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.direction_to_thing">
+    <p>def <span class="ident">direction_to_thing</span>(</p><p>self, thing)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.direction_to_thing', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.direction_to_thing" class="source">
+    <pre><code>def direction_to_thing(self, thing):
+	"""
+	Returns the world angle in degrees from this MovingSprite's position to the
+	given "thing-like" object's position. Returns non-normalized degrees (float).
+	If you need a Vector instead of an angle in radians, use Vector subtraction.
+	"""
+	return (thing.position - self.position).as_polar()[1]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.direction_to_vector">
+    <p>def <span class="ident">direction_to_vector</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given position vector. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.direction_to_vector', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.direction_to_vector" class="source">
+    <pre><code>def direction_to_vector(self, vector):
+	"""
+	Returns the world angle in degrees from this MovingSprite's position to the
+	given position vector. Returns non-normalized degrees (float).
+	If you need a Vector instead of an angle in radians, use Vector subtraction.
+	"""
+	return (vector - self.position).as_polar()[1]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.distance_to_thing">
+    <p>def <span class="ident">distance_to_thing</span>(</p><p>self, thing)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a float - the distance in pixels from this MovingSprite to the given
+"thing-like" object.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.distance_to_thing', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.distance_to_thing" class="source">
+    <pre><code>def distance_to_thing(self, thing):
+	"""
+	Returns a float - the distance in pixels from this MovingSprite to the given
+	"thing-like" object.
+	"""
+	return self.position.distance_to(thing.position)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.distance_to_vector">
+    <p>def <span class="ident">distance_to_vector</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns a float - the distance in pixels from this MovingSprite to the given
+position vector.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.distance_to_vector', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.distance_to_vector" class="source">
+    <pre><code>def distance_to_vector(self, vector):
+	"""
+	Returns a float - the distance in pixels from this MovingSprite to the given
+	position vector.
+	"""
+	return self.position.distance_to(vector)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.ew_direction">
+    <p>def <span class="ident">ew_direction</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.ew_direction', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.ew_direction" class="source">
+    <pre><code>def ew_direction(self):
+	"""
+	Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative
+	"""
+	return COMPASS_WEST if self.motion.x < 0 else COMPASS_EAST
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.increment_turning_speed">
+    <p>def <span class="ident">increment_turning_speed</span>(</p><p>self, direction)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Incrementally adjust this MovingSprite's "turning_speed" attribute towards or
+away from the given screen direction in degrees, taking into account this
+MovingSprite's current and max turning speed.</p>
+<p>Affects only the "turning_speed" attribute - does NOT change the "motion" vector.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.increment_turning_speed', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.increment_turning_speed" class="source">
+    <pre><code>def increment_turning_speed(self, direction):
+	"""
+	Incrementally adjust this MovingSprite's "turning_speed" attribute towards or
+	away from the given screen direction in degrees, taking into account this
+	MovingSprite's current and max turning speed.
+	Affects only the "turning_speed" attribute - does NOT change the "motion" vector.
+	"""
+	desired_turn = turning_degrees(self.direction - direction)
+	turn_mag = abs(desired_turn)
+	if turn_mag < self.max_turning_speed:
+		self.direction = direction
+		self.turning_speed = 0.0
+	elif abs(self.turning_speed) < self.max_turning_speed:
+		self.turning_speed -= math.copysign(self.max_turning_speed, desired_turn)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.is_directionless">
+    <p>def <span class="ident">is_directionless</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
+cannot be determined.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.is_directionless', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.is_directionless" class="source">
+    <pre><code>def is_directionless(self):
+	"""
+	Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
+	cannot be determined.
+	"""
+	return self.motion.x == 0 and self.motion.y == 0
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.is_offscreen">
+    <p>def <span class="ident">is_offscreen</span>(</p><p>self, screen_rect)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns one of the "OFFSCREEN_<direction>" constants if this MovingSprite's position
+if outside of the boundaries of the Surface it is to be rendered on.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.is_offscreen', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.is_offscreen" class="source">
+    <pre><code>def is_offscreen(self, screen_rect):
+	"""
+	Returns one of the "OFFSCREEN_<direction>" constants if this MovingSprite's position
+	if outside of the boundaries of the Surface it is to be rendered on.
+	"""
+	if self.rect.colliderect(screen_rect):
+		bits = 0
+		if self.position.x < 0:
+			bits |= OFFSCREEN_LEFT
+		elif self.position.x > screen_rect.width:
+			bits |= OFFSCREEN_RIGHT
+		if self.position.y < 0:
+			bits |= OFFSCREEN_TOP
+		elif self.position.y > screen_rect.height:
+			bits |= OFFSCREEN_BOTTOM
+		return bits
+	return 0
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.make_heading">
+    <p>def <span class="ident">make_heading</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Sets the initial speed and direction of an object provided a destination
+using the "travel_to()" function.</p>
+<p>The default implementation sets this object's direction to the direction to its
+destination, without taking into consideration turning speed. The speed of this
+MovingSprite is set to it's acceration rate, unless it's already moving faster.</p>
+<p>A true physical moving thing most likely cannot change speed and direction in
+such an immediate fashion, unless the things you hear about "off world" vehicles
+visiting our planet are really true. You're free to model that, I suppose.</p>
+<p>This implementation is sufficient for game pieces such as used in BoardGame,
+but should be overridden in order to create more sophisticated motion.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.make_heading', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.make_heading" class="source">
+    <pre><code>def make_heading(self):
+	"""
+	Sets the initial speed and direction of an object provided a destination
+	using the "travel_to()" function.
+	The default implementation sets this object's direction to the direction to its
+	destination, without taking into consideration turning speed. The speed of this
+	MovingSprite is set to it's acceration rate, unless it's already moving faster.
+	A true physical moving thing most likely cannot change speed and direction in
+	such an immediate fashion, unless the things you hear about "off world" vehicles
+	visiting our planet are really true. You're free to model that, I suppose.
+	This implementation is sufficient for game pieces such as used in BoardGame,
+	but should be overridden in order to create more sophisticated motion.
+	"""
+	speed = max(self.speed, self.accel_rate)
+	self.motion = (self.destination - self.position)
+	self.motion.scale_to_length(speed)
+	return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.no_motion">
+    <p>def <span class="ident">no_motion</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>A "_motion_function" which does nothing.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.no_motion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.no_motion" class="source">
+    <pre><code>def no_motion(self):
+	"""
+	A "_motion_function" which does nothing.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.ns_direction">
+    <p>def <span class="ident">ns_direction</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.ns_direction', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.ns_direction" class="source">
+    <pre><code>def ns_direction(self):
+	"""
+	Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative
+	"""
+	return COMPASS_NORTH if self.motion.y < 0 else COMPASS_SOUTH
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.radians_to_thing">
+    <p>def <span class="ident">radians_to_thing</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in radians from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized radians (float).</p>
+<p>If you need a Vector, simply subtract this MovingSprite's position from the vector's.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.radians_to_thing', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.radians_to_thing" class="source">
+    <pre><code>def radians_to_thing(self, vector):
+	"""
+	Returns the world angle in radians from this MovingSprite's position to the
+	given "thing-like" object's position. Returns non-normalized radians (float).
+	If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+	"""
+	return math.radians((thing.position - self.position).as_polar()[1])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.radians_to_vector">
+    <p>def <span class="ident">radians_to_vector</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Returns the world angle in radians from this MovingSprite's position to the
+given position vector. Returns non-normalized radians (float).</p>
+<p>If you need a Vector, simply subtract this MovingSprite's position from the vector's.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.radians_to_vector', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.radians_to_vector" class="source">
+    <pre><code>def radians_to_vector(self, vector):
+	"""
+	Returns the world angle in radians from this MovingSprite's position to the
+	given position vector. Returns non-normalized radians (float).
+	If you need a Vector, simply subtract this MovingSprite's position from the vector's.
+	"""
+	return math.radians((vector - self.position).as_polar()[1])
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.seek_motion">
+    <p>def <span class="ident">seek_motion</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>One of the "_motion_function" methods, called from "update". This method points
+the sprite towards its current "destination" vector and accelerates towards it,
+decelerating to zero when it approaches.</p>
+<p>This is the move function set in the "travel_to" method.</p>
+<p>This implementation is sufficient for game pieces as used in BoardGame,
+but should be overridden in order to create more sophisticated motion.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.seek_motion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.seek_motion" class="source">
+    <pre><code>def seek_motion(self):
+	"""
+	One of the "_motion_function" methods, called from "update". This method points
+	the sprite towards its current "destination" vector and accelerates towards it,
+	decelerating to zero when it approaches.
+	This is the move function set in the "travel_to" method.
+	This implementation is sufficient for game pieces as used in BoardGame,
+	but should be overridden in order to create more sophisticated motion.
+	"""
+	remaining_distance = (self.destination - self.position).magnitude()
+	if remaining_distance <= self.decel_rate:
+		self.position = self.destination
+		self.rect.centerx = int(self.position.x)
+		self.rect.centery = int(self.position.y)
+		self.speed = 0.0
+		self._motion_function = self.no_motion
+		if self._arrival_function:
+			self._arrival_function()
+	elif remaining_distance <= triangular(self.speed, self.decel_rate):
+		# coming up on target_pos; decelerate:
+		self.speed = max(self.min_speed, self.speed - self.decel_rate)
+	else:
+		# still far away from target_pos; accelate towards it:
+		self.speed = min(self.max_speed, self.speed + self.accel_rate)
+	return self.cartesian_motion()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.set_motion_polar">
+    <p>def <span class="ident">set_motion_polar</span>(</p><p>self, magnitude, degrees)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the current motion vector from the given magnitude, degrees.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.set_motion_polar', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.set_motion_polar" class="source">
+    <pre><code>def set_motion_polar(self, magnitude, degrees):
+	"""
+	Set the current motion vector from the given magnitude, degrees.
+	"""
+	self.motion.from_polar((magnitude, degrees))
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.shift_position">
+    <p>def <span class="ident">shift_position</span>(</p><p>self, x, y)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Does a relative cartesian move the position of the object by x, y.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.shift_position', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.shift_position" class="source">
+    <pre><code>def shift_position(self, x, y):
+	"""
+	Does a relative cartesian move the position of the object by x, y.
+	"""
+	self.position.x += x
+	self.position.y += y
+	self.rect.centerx = int(self.position.x)
+	self.rect.centery = int(self.position.y)
+	return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.travel_to">
+    <p>def <span class="ident">travel_to</span>(</p><p>self, target, on_arrival=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>High-level command which sets this MovingSprite on a path towards a given target.
+Each subsequent call to "move()" will move the Thing one frame closer to the target.
+When travel is complete, the optional "on_arrival" function will be called.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.travel_to', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.travel_to" class="source">
+    <pre><code>def travel_to(self, target, on_arrival=None):
+	"""
+	High-level command which sets this MovingSprite on a path towards a given target.
+	Each subsequent call to "move()" will move the Thing one frame closer to the target.
+	When travel is complete, the optional "on_arrival" function will be called.
+	"""
+	self.destination = vector(target)
+	self._motion_function = self.seek_motion
+	self._arrival_function = on_arrival
+	return self.make_heading()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.turn_away_from">
+    <p>def <span class="ident">turn_away_from</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Turn incrementally away from the given position vector, taking into account
+this MovingSprite's current and max turning speed.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.turn_away_from', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.turn_away_from" class="source">
+    <pre><code>def turn_away_from(self, vector):
+	"""
+	Turn incrementally away from the given position vector, taking into account
+	this MovingSprite's current and max turning speed.
+	"""
+	self.increment_turning_speed(self.direction_to_vector(vector) + 180)
+	self.direction += self.turning_speed
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.turn_towards">
+    <p>def <span class="ident">turn_towards</span>(</p><p>self, vector)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Turn incrementally towards the given position vector, taking into account this
+MovingSprite's current and max turning speed.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.turn_towards', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.turn_towards" class="source">
+    <pre><code>def turn_towards(self, vector):
+	"""
+	Turn incrementally towards the given position vector, taking into account this
+	MovingSprite's current and max turning speed.
+	"""
+	self.increment_turning_speed(self.direction_to_vector(vector))
+	self.direction += self.turning_speed
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.update">
+    <p>def <span class="ident">update</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Regular cyclic update task, as called from pygame.Sprite.
+Calls the current move function, which by default is "cartesian_motion".</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.update', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.update" class="source">
+    <pre><code>def update(self):
+	"""
+	Regular cyclic update task, as called from pygame.Sprite.
+	Calls the current move function, which by default is "cartesian_motion".
+	"""
+	self._motion_function()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.sprite_enhancement.MovingSprite.update_rect">
+    <p>def <span class="ident">update_rect</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.sprite_enhancement.MovingSprite.update_rect', this);">Show source &equiv;</a></p>
+  <div id="source-legame.sprite_enhancement.MovingSprite.update_rect" class="source">
+    <pre><code>def update_rect(self):
+	"""
+	Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.
+	"""
+	self.rect.centerx = int(self.position.x)
+	self.rect.centery = int(self.position.y)
+	return self
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.direction" class="name">var <span class="ident">direction</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Gets the screen direction of this MovingSprite in degrees</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.motion" class="name">var <span class="ident">motion</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.speed" class="name">var <span class="ident">speed</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Get the "magnitude" of this object's motion vector.</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.x" class="name">var <span class="ident">x</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Gets the "x" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.sprite_enhancement.MovingSprite.y" class="name">var <span class="ident">y</span></p>
+            
+
+            
+  
+    <div class="desc"><p>Gets the "y" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>

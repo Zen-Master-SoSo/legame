@@ -1,0 +1,4219 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+    <title>legame.game API documentation</title>
+    <meta name="description" content="Provides the Game and GameState classes, a framework for writing games." />
+
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+  
+  <style type="text/css">
+  
+* {
+  box-sizing: border-box;
+}
+/*! normalize.css v1.1.1 | MIT License | git.io/normalize */
+
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+
+/**
+ * Correct `block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Correct `inline-block` display not defined in IE 6/7/8/9 and Firefox 3.
+ */
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+/**
+ * Prevent modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+
+audio:not([controls]) {
+    display: none;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Firefox 3, and Safari 4.
+ * Known issue: no IE 6 support.
+ */
+
+[hidden] {
+    display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+/**
+ * 1. Prevent system color scheme's background color being used in Firefox, IE,
+ *    and Opera.
+ * 2. Prevent system color scheme's text color being used in Firefox, IE, and
+ *    Opera.
+ * 3. Correct text resizing oddly in IE 6/7 when body `font-size` is set using
+ *    `em` units.
+ * 4. Prevent iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+
+html {
+    background: #fff; /* 1 */
+    color: #000; /* 2 */
+    font-size: 100%; /* 3 */
+    -webkit-text-size-adjust: 100%; /* 4 */
+    -ms-text-size-adjust: 100%; /* 4 */
+}
+
+/**
+ * Address `font-family` inconsistency between `textarea` and other form
+ * elements.
+ */
+
+html,
+button,
+input,
+select,
+textarea {
+    font-family: sans-serif;
+}
+
+/**
+ * Address margins handled incorrectly in IE 6/7.
+ */
+
+body {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+
+a:focus {
+    outline: thin dotted;
+}
+
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+/**
+ * Address font sizes and margins set differently in IE 6/7.
+ * Address font sizes within `section` and `article` in Firefox 4+, Safari 5,
+ * and Chrome.
+ */
+
+h1 {
+    font-size: 2em;
+    margin: 0.67em 0;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin: 0.83em 0;
+}
+
+h3 {
+    font-size: 1.17em;
+    margin: 1em 0;
+}
+
+h4 {
+    font-size: 1em;
+    margin: 1.33em 0;
+}
+
+h5 {
+    font-size: 0.83em;
+    margin: 1.67em 0;
+}
+
+h6 {
+    font-size: 0.67em;
+    margin: 2.33em 0;
+}
+
+/**
+ * Address styling not present in IE 7/8/9, Safari 5, and Chrome.
+ */
+
+abbr[title] {
+    border-bottom: 1px dotted;
+}
+
+/**
+ * Address style set to `bolder` in Firefox 3+, Safari 4/5, and Chrome.
+ */
+
+b,
+strong {
+    font-weight: bold;
+}
+
+blockquote {
+    margin: 1em 40px;
+}
+
+/**
+ * Address styling not present in Safari 5 and Chrome.
+ */
+
+dfn {
+    font-style: italic;
+}
+
+/**
+ * Address differences between Firefox and other browsers.
+ * Known issue: no IE 6/7 normalization.
+ */
+
+hr {
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    height: 0;
+}
+
+/**
+ * Address styling not present in IE 6/7/8/9.
+ */
+
+mark {
+    background: #ff0;
+    color: #000;
+}
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+p,
+pre {
+    margin: 1em 0;
+}
+
+/**
+ * Correct font family set oddly in IE 6, Safari 4/5, and Chrome.
+ */
+
+code,
+kbd,
+pre,
+samp {
+    font-family: monospace, serif;
+    _font-family: 'courier new', monospace;
+    font-size: 1em;
+}
+
+/**
+ * Improve readability of pre-formatted text in all browsers.
+ */
+
+pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/**
+ * Address CSS quotes not supported in IE 6/7.
+ */
+
+q {
+    quotes: none;
+}
+
+/**
+ * Address `quotes` property not supported in Safari 4.
+ */
+
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/**
+ * Address inconsistent and variable font size in all browsers.
+ */
+
+small {
+    font-size: 80%;
+}
+
+/**
+ * Prevent `sub` and `sup` affecting `line-height` in all browsers.
+ */
+
+sub,
+sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    top: -0.5em;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Lists
+   ========================================================================== */
+
+/**
+ * Address margins set differently in IE 6/7.
+ */
+
+dl,
+menu,
+ol,
+ul {
+    margin: 1em 0;
+}
+
+dd {
+    margin: 0 0 0 40px;
+}
+
+/**
+ * Address paddings set differently in IE 6/7.
+ */
+
+menu,
+ol,
+ul {
+    padding: 0 0 0 40px;
+}
+
+/**
+ * Correct list images handled incorrectly in IE 7.
+ */
+
+nav ul,
+nav ol {
+    list-style: none;
+    list-style-image: none;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+
+/**
+ * 1. Remove border when inside `a` element in IE 6/7/8/9 and Firefox 3.
+ * 2. Improve image quality when scaled in IE 7.
+ */
+
+img {
+    border: 0; /* 1 */
+    -ms-interpolation-mode: bicubic; /* 2 */
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+
+/**
+ * Address margin not present in IE 6/7/8/9, Safari 5, and Opera 11.
+ */
+
+figure {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+/**
+ * Correct margin displayed oddly in IE 6/7.
+ */
+
+form {
+    margin: 0;
+}
+
+/**
+ * Define consistent border, margin, and padding.
+ */
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+/**
+ * 1. Correct color not being inherited in IE 6/7/8/9.
+ * 2. Correct text not wrapping in Firefox 3.
+ * 3. Correct alignment displayed oddly in IE 6/7.
+ */
+
+legend {
+    border: 0; /* 1 */
+    padding: 0;
+    white-space: normal; /* 2 */
+    *margin-left: -7px; /* 3 */
+}
+
+/**
+ * 1. Correct font size not being inherited in all browsers.
+ * 2. Address margins set differently in IE 6/7, Firefox 3+, Safari 5,
+ *    and Chrome.
+ * 3. Improve appearance and consistency in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+    font-size: 100%; /* 1 */
+    margin: 0; /* 2 */
+    vertical-align: baseline; /* 3 */
+    *vertical-align: middle; /* 3 */
+}
+
+/**
+ * Address Firefox 3+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+
+button,
+input {
+    line-height: normal;
+}
+
+/**
+ * Address inconsistent `text-transform` inheritance for `button` and `select`.
+ * All other form control elements do not inherit `text-transform` values.
+ * Correct `button` style inheritance in Chrome, Safari 5+, and IE 6+.
+ * Correct `select` style inheritance in Firefox 4+ and Opera.
+ */
+
+button,
+select {
+    text-transform: none;
+}
+
+/**
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Correct inability to style clickable `input` types in iOS.
+ * 3. Improve usability and consistency of cursor style between image-type
+ *    `input` and others.
+ * 4. Remove inner spacing in IE 7 without affecting normal text inputs.
+ *    Known issue: inner spacing remains in IE 6.
+ */
+
+button,
+html input[type="button"], /* 1 */
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+    *overflow: visible;  /* 4 */
+}
+
+/**
+ * Re-set default cursor for disabled elements.
+ */
+
+button[disabled],
+html input[disabled] {
+    cursor: default;
+}
+
+/**
+ * 1. Address box sizing set to content-box in IE 8/9.
+ * 2. Remove excess padding in IE 8/9.
+ * 3. Remove excess padding in IE 7.
+ *    Known issue: excess padding remains in IE 6.
+ */
+
+input[type="checkbox"],
+input[type="radio"] {
+    box-sizing: border-box; /* 1 */
+    padding: 0; /* 2 */
+    *height: 13px; /* 3 */
+    *width: 13px; /* 3 */
+}
+
+/**
+ * 1. Address `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Address `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+
+input[type="search"] {
+    -webkit-appearance: textfield; /* 1 */
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box; /* 2 */
+    box-sizing: content-box;
+}
+
+/**
+ * Remove inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+/**
+ * Remove inner padding and border in Firefox 3+.
+ */
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/**
+ * 1. Remove default vertical scrollbar in IE 6/7/8/9.
+ * 2. Improve readability and alignment in all browsers.
+ */
+
+textarea {
+    overflow: auto; /* 1 */
+    vertical-align: top; /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+/**
+ * Remove most spacing between table cells.
+ */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+  </style>
+
+  <style type="text/css">
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+  }
+  body {
+    background: #fff;
+    font-family: "Source Sans Pro", "Helvetica Neueue", Helvetica, sans;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6em;
+  }
+  #content {
+    width: 70%;
+    max-width: 850px;
+    float: left;
+    padding: 30px 60px;
+    border-left: 1px solid #ddd;
+  }
+  #sidebar {
+    width: 25%;
+    float: left;
+    padding: 30px;
+    overflow: hidden;
+  }
+  #nav {
+    font-size: 130%;
+    margin: 0 0 15px 0;
+  }
+
+  #top {
+    display: block;
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-size: .85em;
+    text-transform: uppercase;
+  }
+
+  #footer {
+    font-size: .75em;
+    padding: 5px 30px;
+    border-top: 1px solid #ddd;
+    text-align: right;
+  }
+    #footer p {
+      margin: 0 0 0 30px;
+      display: inline-block;
+    }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 300;
+  }
+  h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin: 0 0 .50em 0;
+  }
+
+  h2 {
+    font-size: 1.75em;
+    margin: 1em 0 .50em 0;
+  }
+
+  h3 {
+    margin: 25px 0 10px 0;
+  }
+
+  h4 {
+    margin: 0;
+    font-size: 105%;
+  }
+
+  a {
+    color: #058;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+  }
+
+  a:hover {
+    color: #e08524;
+    transition: color .3s ease-in-out;
+  }
+
+  pre, code, .mono, .name {
+    font-family: "Ubuntu Mono", "Cousine", "DejaVu Sans Mono", monospace;
+  }
+
+  .title .name {
+    font-weight: bold;
+  }
+  .section-title {
+    margin-top: 2em;
+  }
+  .ident {
+    color: #900;
+  }
+
+  code {
+    background: #f9f9f9;
+  } 
+
+  pre {
+    background: #fefefe;
+    border: 1px solid #ddd;
+    box-shadow: 2px 2px 0 #f3f3f3;
+    margin: 0 30px;
+    padding: 15px 30px;
+  }
+
+  .codehilite {
+    margin: 0 30px 10px 30px;
+  }
+
+    .codehilite pre {
+      margin: 0;
+    }
+    .codehilite .err { background: #ff3300; color: #fff !important; } 
+
+  table#module-list {
+    font-size: 110%;
+  }
+
+    table#module-list tr td:first-child {
+      padding-right: 10px;
+      white-space: nowrap;
+    }
+
+    table#module-list td {
+      vertical-align: top;
+      padding-bottom: 8px;
+    }
+
+      table#module-list td p {
+        margin: 0 0 7px 0;
+      }
+
+  .def {
+    display: table;
+  }
+
+    .def p {
+      display: table-cell;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .def p:first-child {
+      white-space: nowrap;
+    }
+
+    .def p:last-child {
+      width: 100%;
+    }
+
+
+  #index {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    ul#index .class_name {
+      /* font-size: 110%; */
+      font-weight: bold;
+    }
+    #index ul {
+      margin: 0;
+    }
+
+  .item {
+    margin: 0 0 15px 0;
+  }
+
+    .item .class {
+      margin: 0 0 25px 30px;
+    }
+
+      .item .class ul.class_list {
+        margin: 0 0 20px 0;
+      }
+
+    .item .name {
+      background: #fafafa;
+      margin: 0;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 3px;
+      display: inline-block;
+      min-width: 40%;
+    }
+      .item .name:hover {
+        background: #f6f6f6;
+      }
+
+    .item .empty_desc {
+      margin: 0 0 5px 0;
+      padding: 0;
+    }
+
+    .item .inheritance {
+      margin: 3px 0 0 30px;
+    }
+
+    .item .inherited {
+      color: #666;
+    }
+
+    .item .desc {
+      padding: 0 8px;
+      margin: 0;
+    }
+
+      .item .desc p {
+        margin: 0 0 10px 0;
+      }
+
+    .source_cont {
+      margin: 0;
+      padding: 0;
+    }
+
+    .source_link a {
+      background: #ffc300;
+      font-weight: 400;
+      font-size: .75em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 1px 1px 0 #f4b700;
+      
+      padding: 3px 8px;
+      border-radius: 2px;
+      transition: background .3s ease-in-out;
+    }
+      .source_link a:hover {
+        background: #FF7200;
+        text-shadow: none;
+        transition: background .3s ease-in-out;
+      }
+
+    .source {
+      display: none;
+      max-height: 600px;
+      overflow-y: scroll;
+      margin-bottom: 15px;
+    }
+
+      .source .codehilite {
+        margin: 0;
+      }
+
+  .desc h1, .desc h2, .desc h3 {
+    font-size: 100% !important;
+  }
+  .clear {
+    clear: both;
+  }
+
+  @media all and (max-width: 950px) {
+    #sidebar {
+      width: 35%;
+    }
+    #content {
+      width: 65%;
+    }
+  }
+  @media all and (max-width: 650px) {
+    #top {
+      display: none;
+    }
+    #sidebar {
+      float: none;
+      width: auto;
+    }
+    #content {
+      float: none;
+      width: auto;
+      padding: 30px;
+    }
+
+    #index ul {
+      padding: 0;
+      margin-bottom: 15px;
+    }
+    #index ul li {
+      display: inline-block;
+      margin-right: 30px;
+    }
+    #footer {
+      text-align: left;
+    }
+    #footer p {
+      display: block;
+      margin: inherit;
+    }
+  }
+
+  /*****************************/
+
+  </style>
+
+
+  <style type="text/css">
+  
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   These examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+  </style>
+
+  <script type="text/javascript">
+  function toggle(id, $link) {
+    $node = document.getElementById(id);
+    if (!$node)
+    return;
+    if (!$node.style.display || $node.style.display == 'none') {
+    $node.style.display = 'block';
+    $link.innerHTML = 'Hide source &nequiv;';
+    } else {
+    $node.style.display = 'none';
+    $link.innerHTML = 'Show source &equiv;';
+    }
+  }
+  </script>
+</head>
+<body>
+<a href="#" id="top">Top</a>
+
+<div id="container">
+    
+  
+  <div id="sidebar">
+    <h1>Index</h1>
+    <ul id="index">
+    <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
+      
+  <ul>
+    <li class="mono"><a href="#legame.game.ACTIVEEVENT">ACTIVEEVENT</a></li>
+    <li class="mono"><a href="#legame.game.DOUBLEBUF">DOUBLEBUF</a></li>
+    <li class="mono"><a href="#legame.game.FULLSCREEN">FULLSCREEN</a></li>
+    <li class="mono"><a href="#legame.game.JOYAXISMOTION">JOYAXISMOTION</a></li>
+    <li class="mono"><a href="#legame.game.JOYBALLMOTION">JOYBALLMOTION</a></li>
+    <li class="mono"><a href="#legame.game.JOYBUTTONDOWN">JOYBUTTONDOWN</a></li>
+    <li class="mono"><a href="#legame.game.JOYBUTTONUP">JOYBUTTONUP</a></li>
+    <li class="mono"><a href="#legame.game.JOYHATMOTION">JOYHATMOTION</a></li>
+    <li class="mono"><a href="#legame.game.KEYDOWN">KEYDOWN</a></li>
+    <li class="mono"><a href="#legame.game.KEYUP">KEYUP</a></li>
+    <li class="mono"><a href="#legame.game.MOUSEBUTTONDOWN">MOUSEBUTTONDOWN</a></li>
+    <li class="mono"><a href="#legame.game.MOUSEBUTTONUP">MOUSEBUTTONUP</a></li>
+    <li class="mono"><a href="#legame.game.MOUSEMOTION">MOUSEMOTION</a></li>
+    <li class="mono"><a href="#legame.game.NUMEVENTS">NUMEVENTS</a></li>
+    <li class="mono"><a href="#legame.game.QUIT">QUIT</a></li>
+    <li class="mono"><a href="#legame.game.USEREVENT">USEREVENT</a></li>
+    <li class="mono"><a href="#legame.game.VIDEOEXPOSE">VIDEOEXPOSE</a></li>
+    <li class="mono"><a href="#legame.game.VIDEORESIZE">VIDEORESIZE</a></li>
+  </ul>
+
+    </li>
+
+
+    <li class="set"><h3><a href="#header-classes">Classes</a></h3>
+      <ul>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.game.Game">Game</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.game.Game.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.game.Game.change_state">change_state</a></li>
+    <li class="mono"><a href="#legame.game.Game.clear_timeout">clear_timeout</a></li>
+    <li class="mono"><a href="#legame.game.Game.exit_loop">exit_loop</a></li>
+    <li class="mono"><a href="#legame.game.Game.play">play</a></li>
+    <li class="mono"><a href="#legame.game.Game.run">run</a></li>
+    <li class="mono"><a href="#legame.game.Game.set_interval">set_interval</a></li>
+    <li class="mono"><a href="#legame.game.Game.set_resource_dir_from_file">set_resource_dir_from_file</a></li>
+    <li class="mono"><a href="#legame.game.Game.set_timeout">set_timeout</a></li>
+    <li class="mono"><a href="#legame.game.Game.show">show</a></li>
+    <li class="mono"><a href="#legame.game.Game.shutdown">shutdown</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.game.GameState">GameState</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.game.GameState.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.game.GameState.activeevent">activeevent</a></li>
+    <li class="mono"><a href="#legame.game.GameState.enter_state">enter_state</a></li>
+    <li class="mono"><a href="#legame.game.GameState.exit_state">exit_state</a></li>
+    <li class="mono"><a href="#legame.game.GameState.joyaxismotion">joyaxismotion</a></li>
+    <li class="mono"><a href="#legame.game.GameState.joyballmotion">joyballmotion</a></li>
+    <li class="mono"><a href="#legame.game.GameState.joybuttondown">joybuttondown</a></li>
+    <li class="mono"><a href="#legame.game.GameState.joybuttonup">joybuttonup</a></li>
+    <li class="mono"><a href="#legame.game.GameState.joyhatmotion">joyhatmotion</a></li>
+    <li class="mono"><a href="#legame.game.GameState.keydown">keydown</a></li>
+    <li class="mono"><a href="#legame.game.GameState.keyup">keyup</a></li>
+    <li class="mono"><a href="#legame.game.GameState.loop_end">loop_end</a></li>
+    <li class="mono"><a href="#legame.game.GameState.loop_start">loop_start</a></li>
+    <li class="mono"><a href="#legame.game.GameState.mousebuttondown">mousebuttondown</a></li>
+    <li class="mono"><a href="#legame.game.GameState.mousebuttonup">mousebuttonup</a></li>
+    <li class="mono"><a href="#legame.game.GameState.mousemotion">mousemotion</a></li>
+    <li class="mono"><a href="#legame.game.GameState.quit">quit</a></li>
+    <li class="mono"><a href="#legame.game.GameState.videoexpose">videoexpose</a></li>
+    <li class="mono"><a href="#legame.game.GameState.videoresize">videoresize</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
+        <span class="class_name"><a href="#legame.game.GameStateFinal">GameStateFinal</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#legame.game.GameStateFinal.__init__">__init__</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.activeevent">activeevent</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.enter_state">enter_state</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.exit_state">exit_state</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.joyaxismotion">joyaxismotion</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.joyballmotion">joyballmotion</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.joybuttondown">joybuttondown</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.joybuttonup">joybuttonup</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.joyhatmotion">joyhatmotion</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.keydown">keydown</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.keyup">keyup</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.loop_end">loop_end</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.loop_start">loop_start</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.mousebuttondown">mousebuttondown</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.mousebuttonup">mousebuttonup</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.mousemotion">mousemotion</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.quit">quit</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.videoexpose">videoexpose</a></li>
+    <li class="mono"><a href="#legame.game.GameStateFinal.videoresize">videoresize</a></li>
+  </ul>
+
+        </li>
+      </ul>
+    </li>
+
+    </ul>
+  </div>
+
+    <article id="content">
+      
+  
+
+  
+
+
+  <header id="section-intro">
+  <h1 class="title"><span class="name">legame.game</span> module</h1>
+  <p>Provides the Game and GameState classes, a framework for writing games.</p>
+  
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game" class="source">
+    <pre><code>"""
+Provides the Game and GameState classes, a framework for writing games.
+"""
+
+import sys, os, pygame, logging
+from pygame.locals import ACTIVEEVENT, DOUBLEBUF, FULLSCREEN, JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, NUMEVENTS, QUIT, USEREVENT, VIDEOEXPOSE, VIDEORESIZE
+from legame.resources import Resources
+
+
+
+class Game:
+	"""
+	This is the base class of games created with the legame library.
+
+	Game.current is a class variable which will contain a reference to the instance
+	of the game currently running, and can be used as a "global" variable thoughout
+	the code.
+	"""
+
+	current				= None		# Not-too-clever substitute for a global variable
+
+	# Game options:
+	quiet				= False		# Inhibit sound; mixer is not initialized
+	fullscreen			= False
+	resource_dump		= False		# Special debugging mode used by Resources; loads filenames instead of files
+
+	# resource manager settings:
+	resource_dir		= None		# Directory where game data is located, should contain subfolders "images" and "sounds"
+									# Call "set_resource_dir_from_file(__file__)" from your game before Game.__init__
+	# display settings:
+	fps 				= 60
+	display_flags		= DOUBLEBUF
+	display_depth		= 32
+	caption				= ""
+	icon				= None
+
+	# sound settings:
+	mixer_frequency		= 22050
+	mixer_bitsize		= -16
+	mixer_channels		= 8
+	mixer_buffer		= 512
+
+	# game objects:
+	screen_rect			= None
+	background			= None
+	screen				= None
+	sprites				= None
+	resources			= None
+
+	# internal state management:
+	_state				= None		# It's pretty important to keep this managed, hence, it's "protected"
+	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
+	__next_state		= None		# Next game state waiting for change at end of main loop
+
+
+	LAYER_BG			= 1			#
+	LAYER_ABOVE_BG		= 2			#
+	LAYER_BELOW_PLAYER	= 4			# Sprite layers
+	LAYER_PLAYER		= 6			#
+	LAYER_ABOVE_PLAYER	= 8			#
+	LAYER_OVERLAY		= 10		#
+
+
+	def __init__(self, options=None):
+		"""
+
+		Set options, start the necessary pygame modules, instantiate Resources, create
+		the "sprites" group.
+
+		This function passes the "resource_dir" attribute when instantiating a
+		Resources instance to allow it to find images and sounds. You must set this
+		attribute before calling this function. If you have a "resources" directory
+		beneath the directory containing your game, the helper function
+		"set_resource_dir_from_file" can set it for you quite easily.
+
+		The "options" argument is expected to be a dictionary, the items of which are
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
+
+			display_depth
+			fps
+			fullscreen
+			quiet
+			resource_dump
+
+		A typical use case would be if you used the "argparse" library to read
+		command-line options, and wish to pass those options to the Game class before
+		starting up modules. i.e.:
+
+			import argparse, sys
+			p = argparse.ArgumentParser()
+			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+			options = p.parse_args()
+			# Setup logging, etc...
+			.
+			.
+			sys.exit(MyGameClass(options).run())
+
+		"""
+		Game.current = self
+		if options is not None:
+			for varname, value in options.__dict__.items():
+				setattr(self, varname, value)
+		if self.resource_dir is None: self.resource_dir = "resources"
+		self.resources = Resources(self.resource_dir, self.resource_dump)
+		pygame.display.init()
+		pygame.font.init()
+		if not self.quiet:
+			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
+			pygame.mixer.init()
+		self.sprites = pygame.sprite.LayeredUpdates()
+		self._event_handlers = {
+			ACTIVEEVENT:		self._activeevent,		# 1
+			KEYDOWN:			self._keydown,			# 2
+			KEYUP:				self._keyup,			# 3
+			MOUSEMOTION:		self._mousemotion,		# 4
+			MOUSEBUTTONDOWN:	self._mousebuttondown,	# 5
+			MOUSEBUTTONUP:		self._mousebuttonup,	# 6
+			JOYAXISMOTION:		self._joyaxismotion,	# 7
+			JOYBALLMOTION:		self._joyballmotion,	# 8
+			JOYHATMOTION:		self._joyhatmotion,		# 9
+			JOYBUTTONDOWN:		self._joybuttondown,	# 10
+			JOYBUTTONUP:		self._joybuttonup,		# 11
+			QUIT:				self._quit,				# 12
+			VIDEORESIZE:		self._videoresize,		# 16
+			VIDEOEXPOSE:		self._videoexpose,		# 17
+		}
+		# Fill-in the remaining timer events:
+		for event_type in range(USEREVENT, NUMEVENTS + 1):
+			self._event_handlers[event_type] = self.__timer_event
+		self.__timer_callbacks = [None for x in range(8)]
+		self.__timer_arguments = [None for x in range(8)]
+		self.__timer_recur_flag = [None for x in range(8)]
+
+
+	def set_resource_dir_from_file(self, filename):
+		"""
+		Set the resource directory to a subfolder of the given file's parent folder.
+		If your main game file is located at:
+
+			"/home/user/some/path/game.py"
+
+		... this function will return:
+
+			"/home/user/some/path/resources"
+
+		... which is a decent place to put your "images" and "sounds" folders.
+							("Use the defaults, Luke")
+		"""
+		self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
+
+
+	def run(self):
+		"""
+		Run the game. The "initial_state" function is called from here, and must return
+		an object of class GameState.
+		"""
+		self.show()
+		self._state = self.initial_state()
+		self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
+		self.__next_state = None	# Clear this, as it was set in "change_state()"
+		self._main_loop()
+		return 0
+
+
+	def show(self, background=None):
+		"""
+		Initilizes the screen, setting a background.
+		You don't need to call this function, as it is called in Game.run(). Just make
+		sure that you implement "initial_background".
+		It is safe to call this function multiple times.
+		"""
+		if background is None:
+			display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
+			self.background = self.initial_background(display_size)
+		else:
+			self.background = background
+		self.screen_rect = self.background.get_rect()
+		if self.fullscreen:
+			self.display_flags |= FULLSCREEN
+		else:
+			os.environ['SDL_VIDEO_CENTERED'] = '1'
+		if self.icon is not None:
+			pygame.display.set_icon(pygame.image.load(os.path.join(self.resources.image_folder, self.icon)))
+		pygame.display.set_caption(self.caption)
+		self.screen = pygame.display.set_mode(
+			self.screen_rect.size,
+			self.display_flags,
+			pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
+		)
+		self.screen.blit(self.background, (0,0))
+		pygame.display.flip()
+
+
+	def shutdown(self):
+		"""
+		Triggers the _main_loop to exit. The _main_loop will finish its current
+		iteration before doing so.
+		"""
+		self._stay_in_loop = False
+
+
+	def change_state(self, game_state):
+		"""
+		Lines up the next game state. The next time through main_loop, the new state
+		will be current.
+
+		It is possible that this function will be called more than once during a single
+		game loop cycle. For example, a player might make a move and transition to a
+		game state which waits for the opponent to move, at almost the same time as
+		receiving a message from their opponent that they left the game.
+
+		In such circumstances, the last call to this function takes precedence - with
+		one caveat. If any game state subclasses GameStateFinal, the game state may not
+		be changed at all.
+		"""
+		if isinstance(self.__next_state, GameStateFinal):
+			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
+		else:
+			self.__next_state = game_state
+
+
+	##################################################################################################################
+
+	def _main_loop(self):
+		self.clock = pygame.time.Clock()
+		while self._stay_in_loop:
+			self._state.loop_start()
+			for event in pygame.event.get(): self._event_handlers[event.type](event)
+			self._end_loop()
+			self.sprites.update()
+			self.sprites.clear(self.screen, self.background)
+			pygame.display.update(self.sprites.draw(self.screen))
+			if self.__next_state:
+				self._state.exit_state(self.__next_state);
+				self._state = self.__next_state
+				self.__next_state = None	# MUST clear __next_state before calling "enter_state()", in case
+				self._state.enter_state()	# enter_state() calls "change_state()" and lines up a new "__next_state"
+			self.clock.tick(self.fps)
+		for cls in self.__class__.mro():
+			if "exit_loop" in cls.__dict__:
+				cls.exit_loop(self)
+
+
+	##################################################################################################################
+
+
+	def _end_loop(self):
+		"""
+		Called at the end of the _main_loop().
+		The default implementation is to call "loop_end()" on the current GameState.
+		This behaviour is overridden in NetworkGame in order to handle message transfer.
+		"""
+		self._state.loop_end()
+
+
+	def exit_loop(self):
+		"""
+		Called when _main_loop() exits, after the final round of moving sprites and
+		updating the display.
+		"""
+		pass
+
+
+	# Event handlers:
+
+	def _activeevent(self, event):
+		self._state.activeevent(event)
+
+	def _keydown(self, event):
+		self._state.keydown(event)
+
+	def _keyup(self, event):
+		self._state.keyup(event)
+
+	def _mousemotion(self, event):
+		self._state.mousemotion(event)
+
+	def _mousebuttondown(self, event):
+		self._state.mousebuttondown(event)
+
+	def _mousebuttonup(self, event):
+		self._state.mousebuttonup(event)
+
+	def _joyaxismotion(self, event):
+		self._state.joyaxismotion(event)
+
+	def _joyballmotion(self, event):
+		self._state.joyballmotion(event)
+
+	def _joyhatmotion(self, event):
+		self._state.joyhatmotion(event)
+
+	def _joybuttondown(self, event):
+		self._state.joybuttondown(event)
+
+	def _joybuttonup(self, event):
+		self._state.joybuttonup(event)
+
+	def _quit(self, event):
+		self._state.quit(event)
+
+	def _videoresize(self, event):
+		self._state.videoresize(event)
+
+	def _videoexpose(self, event):
+		self._state.videoexpose(event)
+
+
+	# Timers:
+
+	def set_timeout(self, callback, milliseconds, **kwargs):
+		"""
+		Starts a timer using pygame.time.set_timer() which executes a given callback
+		only once.
+
+		The given "callback" is a function to execute after the "milliseconds"
+		interval expires. Any keyword arguments after the "milliseconds"
+		argument are passed as a dictionary to the given callback function.
+
+		Returns an (integer) index identifying the timer, which can be used to cancel
+		the timer by calling "clear_timeout()"
+		"""
+		return self.__set_timeout(callback, milliseconds, kwargs, False)
+
+
+	def set_interval(self, callback, milliseconds, **kwargs):
+		"""
+		Starts a timer using pygame.time.set_timer() which executes a given callback
+		at a repeated interval.
+
+		The given "callback" is a function to execute after the "milliseconds"
+		interval expires. Any keyword arguments after the "milliseconds"
+		argument are passed as a dictionary to the given callback function.
+
+		Returns an (integer) index identifying the timer, which can be used to cancel
+		the timer by calling "clear_timeout()"
+		"""
+		return self.__set_timeout(callback, milliseconds, kwargs, True)
+
+
+	def clear_timeout(self, timer_index):
+		"""
+		Clears a timer previously set using "set_timeout()"
+		"""
+		pygame.time.set_timer(USEREVENT + timer_index, 0)
+		self.__timer_callbacks[timer_index] = None
+
+
+	def __set_timeout(self, callback, milliseconds, arguments, recur):
+		for timer_index in range(8):
+			if self.__timer_callbacks[timer_index] is None:
+				self.__timer_callbacks[timer_index] = callback
+				self.__timer_arguments[timer_index] = arguments
+				self.__timer_recur_flag[timer_index] = recur
+				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
+				return timer_index
+		raise Exception("Too many timers!")
+
+
+	def __timer_event(self, event):
+		"""
+		Called from the pygame event pump when a timer times out.
+		Executes a timer event.
+		"""
+		timer_index = event.type - USEREVENT	# Subtract USEREVENT constant since our indexes start with 0
+		if self.__timer_callbacks[timer_index] is None:
+			logging.warning("Timer event raised when corresponding callback not set")
+		else:
+			self.__timer_callbacks[timer_index](self.__timer_arguments[timer_index])
+			if not self.__timer_recur_flag[timer_index]:
+				self.clear_timeout(timer_index)
+
+
+	def play(self, sound_name):
+		"""
+		Play a sound identified by "sound_name". If Game.quiet is True, does nothing.
+		"""
+		if not self.quiet: self.resources.sound(sound_name).play()
+
+
+
+class GameState:
+
+
+	def __init__(self, **kwargs):
+		"""
+		Set up this GameState to be the new game state next time through the main loop.
+		The new state will have attributes set by keyword args passed to this function.
+		If the current game state is an instance of "GameStateFinal", the current game
+		state will not be changed.
+		"""
+		for varname, value in kwargs.items(): setattr(self, varname, value)
+		Game.current.change_state(self)
+
+
+	def enter_state(self):
+		"""
+		Function called when the Game transitions to this state.
+		Any information needed to be passed to this GameState should be passed as
+		keyword args to the constructor.
+		"""
+		pass
+
+
+	def exit_state(self, next_state):
+		"""
+		Function called when the Game transitions out of this state.
+		The "next_state" parameter is the GameState object which will replace this one.
+		"""
+		pass
+
+
+	# Early / late Game._main_loop() events:
+
+	def loop_start(self):
+		"""
+		Called at the beginning of _main_loop() each time through, before processing events.
+		The event loop looks like this:
+		1. loop_start()                              <-- you are here
+		2. event handling (keyboard, mouse, timers)
+		3. loop_end()
+		4. move the sprites
+		5. update the display
+		6. change to new game state (if needed)
+		"""
+		pass
+
+
+	def loop_end(self):
+		"""
+		Called at the end of _main_loop() each time through.
+		The event loop looks like this:
+		1. loop_start()
+		2. event handling (keyboard, mouse, timers)
+		3. loop_end()                                <-- you are here
+		4. move the sprites
+		5. update the display
+		6. change to new game state (if needed)
+		"""
+		pass
+
+
+	# Event handlers called from Game._main_loop():
+
+	def activeevent(self, event):
+		"""
+		"event" will contain: gain, state
+		"""
+		pass
+
+
+	def keydown(self, event):
+		"""
+		Key down event passed to this GameState.
+		"event" will contain: key, mod, unicode, scancode
+		"""
+		pass
+
+
+	def keyup(self, event):
+		"""
+		Key up event passed to this GameState.
+		"event" will contain: key, mod
+		"""
+		pass
+
+
+	def mousemotion(self, event):
+		"""
+		Mouse move event passed to this GameState.
+		"event" will contain: pos, rel, buttons
+		"""
+		pass
+
+
+	def mousebuttondown(self, event):
+		"""
+		Mouse down event passed to this GameState.
+		"event" will contain: pos, button
+		"""
+		pass
+
+
+	def mousebuttonup(self, event):
+		"""
+		Mouse up event passed to this GameState.
+		"event" will contain: pos, button
+		"""
+		pass
+
+
+	def joyaxismotion(self, event):
+		"""
+		Joystick motion event passed to this GameState.
+		"event" will contain: instance_id, axis, value
+		"""
+		pass
+
+
+	def joyballmotion(self, event):
+		"""
+		Joystick ball motion event passed to this GameState.
+		"event" will contain: instance_id, ball, rel
+		"""
+		pass
+
+
+	def joyhatmotion(self, event):
+		"""
+		Joystick hat motion event passed to this GameState.
+		"event" will contain: instance_id, hat, value
+		"""
+		pass
+
+
+	def joybuttondown(self, event):
+		"""
+		Joystick button down event passed to this GameState.
+		"event" will contain: instance_id, button
+		"""
+		pass
+
+
+	def joybuttonup(self, event):
+		"""
+		Joystick button up event passed to this GameState.
+		"event" will contain: instance_id, button
+		"""
+		pass
+
+
+	def quit(self, event):
+		"""
+		Event handler called when the user clicks the window's close button.
+		"event" will be empty
+		"""
+		Game.current.shutdown()
+
+
+	def videoresize(self, event):
+		"""
+		Event handler called when the window / display is resized.
+		"event" will contain: size, w, h
+		"""
+		pass
+
+
+	def videoexpose(self, event):
+		"""
+		Event handler called when the window is exposed(?)
+		"event" will be empty
+		"""
+		pass
+
+
+
+class GameStateFinal(GameState):
+	"""
+	Final GameState; cannot be replaced even if a new GameState is instantiated
+	after this one. See exit_states.py for an example.
+	"""
+	pass
+
+
+
+</code></pre>
+  </div>
+
+  </header>
+
+  <section id="section-items">
+    <h2 class="section-title" id="header-variables">Module variables</h2>
+      <div class="item">
+      <p id="legame.game.ACTIVEEVENT" class="name">var <span class="ident">ACTIVEEVENT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.DOUBLEBUF" class="name">var <span class="ident">DOUBLEBUF</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.FULLSCREEN" class="name">var <span class="ident">FULLSCREEN</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.JOYAXISMOTION" class="name">var <span class="ident">JOYAXISMOTION</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.JOYBALLMOTION" class="name">var <span class="ident">JOYBALLMOTION</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.JOYBUTTONDOWN" class="name">var <span class="ident">JOYBUTTONDOWN</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.JOYBUTTONUP" class="name">var <span class="ident">JOYBUTTONUP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.JOYHATMOTION" class="name">var <span class="ident">JOYHATMOTION</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.KEYDOWN" class="name">var <span class="ident">KEYDOWN</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.KEYUP" class="name">var <span class="ident">KEYUP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.MOUSEBUTTONDOWN" class="name">var <span class="ident">MOUSEBUTTONDOWN</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.MOUSEBUTTONUP" class="name">var <span class="ident">MOUSEBUTTONUP</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.MOUSEMOTION" class="name">var <span class="ident">MOUSEMOTION</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.NUMEVENTS" class="name">var <span class="ident">NUMEVENTS</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.QUIT" class="name">var <span class="ident">QUIT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.USEREVENT" class="name">var <span class="ident">USEREVENT</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.VIDEOEXPOSE" class="name">var <span class="ident">VIDEOEXPOSE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="legame.game.VIDEORESIZE" class="name">var <span class="ident">VIDEORESIZE</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+
+
+    <h2 class="section-title" id="header-classes">Classes</h2>
+      
+      <div class="item">
+      <p id="legame.game.Game" class="name">class <span class="ident">Game</span></p>
+      
+  
+    <div class="desc"><p>This is the base class of games created with the legame library.</p>
+<p>Game.current is a class variable which will contain a reference to the instance
+of the game currently running, and can be used as a "global" variable thoughout
+the code.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game" class="source">
+    <pre><code>class Game:
+	"""
+	This is the base class of games created with the legame library.
+
+	Game.current is a class variable which will contain a reference to the instance
+	of the game currently running, and can be used as a "global" variable thoughout
+	the code.
+	"""
+
+	current				= None		# Not-too-clever substitute for a global variable
+
+	# Game options:
+	quiet				= False		# Inhibit sound; mixer is not initialized
+	fullscreen			= False
+	resource_dump		= False		# Special debugging mode used by Resources; loads filenames instead of files
+
+	# resource manager settings:
+	resource_dir		= None		# Directory where game data is located, should contain subfolders "images" and "sounds"
+									# Call "set_resource_dir_from_file(__file__)" from your game before Game.__init__
+	# display settings:
+	fps 				= 60
+	display_flags		= DOUBLEBUF
+	display_depth		= 32
+	caption				= ""
+	icon				= None
+
+	# sound settings:
+	mixer_frequency		= 22050
+	mixer_bitsize		= -16
+	mixer_channels		= 8
+	mixer_buffer		= 512
+
+	# game objects:
+	screen_rect			= None
+	background			= None
+	screen				= None
+	sprites				= None
+	resources			= None
+
+	# internal state management:
+	_state				= None		# It's pretty important to keep this managed, hence, it's "protected"
+	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
+	__next_state		= None		# Next game state waiting for change at end of main loop
+
+
+	LAYER_BG			= 1			#
+	LAYER_ABOVE_BG		= 2			#
+	LAYER_BELOW_PLAYER	= 4			# Sprite layers
+	LAYER_PLAYER		= 6			#
+	LAYER_ABOVE_PLAYER	= 8			#
+	LAYER_OVERLAY		= 10		#
+
+
+	def __init__(self, options=None):
+		"""
+
+		Set options, start the necessary pygame modules, instantiate Resources, create
+		the "sprites" group.
+
+		This function passes the "resource_dir" attribute when instantiating a
+		Resources instance to allow it to find images and sounds. You must set this
+		attribute before calling this function. If you have a "resources" directory
+		beneath the directory containing your game, the helper function
+		"set_resource_dir_from_file" can set it for you quite easily.
+
+		The "options" argument is expected to be a dictionary, the items of which are
+		set as attributes of the game during initialization. Some appropriate key/value
+		pairs to pass to the __init__ function would be:
+
+			display_depth
+			fps
+			fullscreen
+			quiet
+			resource_dump
+
+		A typical use case would be if you used the "argparse" library to read
+		command-line options, and wish to pass those options to the Game class before
+		starting up modules. i.e.:
+
+			import argparse, sys
+			p = argparse.ArgumentParser()
+			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+			options = p.parse_args()
+			# Setup logging, etc...
+			.
+			.
+			sys.exit(MyGameClass(options).run())
+
+		"""
+		Game.current = self
+		if options is not None:
+			for varname, value in options.__dict__.items():
+				setattr(self, varname, value)
+		if self.resource_dir is None: self.resource_dir = "resources"
+		self.resources = Resources(self.resource_dir, self.resource_dump)
+		pygame.display.init()
+		pygame.font.init()
+		if not self.quiet:
+			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
+			pygame.mixer.init()
+		self.sprites = pygame.sprite.LayeredUpdates()
+		self._event_handlers = {
+			ACTIVEEVENT:		self._activeevent,		# 1
+			KEYDOWN:			self._keydown,			# 2
+			KEYUP:				self._keyup,			# 3
+			MOUSEMOTION:		self._mousemotion,		# 4
+			MOUSEBUTTONDOWN:	self._mousebuttondown,	# 5
+			MOUSEBUTTONUP:		self._mousebuttonup,	# 6
+			JOYAXISMOTION:		self._joyaxismotion,	# 7
+			JOYBALLMOTION:		self._joyballmotion,	# 8
+			JOYHATMOTION:		self._joyhatmotion,		# 9
+			JOYBUTTONDOWN:		self._joybuttondown,	# 10
+			JOYBUTTONUP:		self._joybuttonup,		# 11
+			QUIT:				self._quit,				# 12
+			VIDEORESIZE:		self._videoresize,		# 16
+			VIDEOEXPOSE:		self._videoexpose,		# 17
+		}
+		# Fill-in the remaining timer events:
+		for event_type in range(USEREVENT, NUMEVENTS + 1):
+			self._event_handlers[event_type] = self.__timer_event
+		self.__timer_callbacks = [None for x in range(8)]
+		self.__timer_arguments = [None for x in range(8)]
+		self.__timer_recur_flag = [None for x in range(8)]
+
+
+	def set_resource_dir_from_file(self, filename):
+		"""
+		Set the resource directory to a subfolder of the given file's parent folder.
+		If your main game file is located at:
+
+			"/home/user/some/path/game.py"
+
+		... this function will return:
+
+			"/home/user/some/path/resources"
+
+		... which is a decent place to put your "images" and "sounds" folders.
+							("Use the defaults, Luke")
+		"""
+		self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
+
+
+	def run(self):
+		"""
+		Run the game. The "initial_state" function is called from here, and must return
+		an object of class GameState.
+		"""
+		self.show()
+		self._state = self.initial_state()
+		self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
+		self.__next_state = None	# Clear this, as it was set in "change_state()"
+		self._main_loop()
+		return 0
+
+
+	def show(self, background=None):
+		"""
+		Initilizes the screen, setting a background.
+		You don't need to call this function, as it is called in Game.run(). Just make
+		sure that you implement "initial_background".
+		It is safe to call this function multiple times.
+		"""
+		if background is None:
+			display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
+			self.background = self.initial_background(display_size)
+		else:
+			self.background = background
+		self.screen_rect = self.background.get_rect()
+		if self.fullscreen:
+			self.display_flags |= FULLSCREEN
+		else:
+			os.environ['SDL_VIDEO_CENTERED'] = '1'
+		if self.icon is not None:
+			pygame.display.set_icon(pygame.image.load(os.path.join(self.resources.image_folder, self.icon)))
+		pygame.display.set_caption(self.caption)
+		self.screen = pygame.display.set_mode(
+			self.screen_rect.size,
+			self.display_flags,
+			pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
+		)
+		self.screen.blit(self.background, (0,0))
+		pygame.display.flip()
+
+
+	def shutdown(self):
+		"""
+		Triggers the _main_loop to exit. The _main_loop will finish its current
+		iteration before doing so.
+		"""
+		self._stay_in_loop = False
+
+
+	def change_state(self, game_state):
+		"""
+		Lines up the next game state. The next time through main_loop, the new state
+		will be current.
+
+		It is possible that this function will be called more than once during a single
+		game loop cycle. For example, a player might make a move and transition to a
+		game state which waits for the opponent to move, at almost the same time as
+		receiving a message from their opponent that they left the game.
+
+		In such circumstances, the last call to this function takes precedence - with
+		one caveat. If any game state subclasses GameStateFinal, the game state may not
+		be changed at all.
+		"""
+		if isinstance(self.__next_state, GameStateFinal):
+			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
+		else:
+			self.__next_state = game_state
+
+
+	##################################################################################################################
+
+	def _main_loop(self):
+		self.clock = pygame.time.Clock()
+		while self._stay_in_loop:
+			self._state.loop_start()
+			for event in pygame.event.get(): self._event_handlers[event.type](event)
+			self._end_loop()
+			self.sprites.update()
+			self.sprites.clear(self.screen, self.background)
+			pygame.display.update(self.sprites.draw(self.screen))
+			if self.__next_state:
+				self._state.exit_state(self.__next_state);
+				self._state = self.__next_state
+				self.__next_state = None	# MUST clear __next_state before calling "enter_state()", in case
+				self._state.enter_state()	# enter_state() calls "change_state()" and lines up a new "__next_state"
+			self.clock.tick(self.fps)
+		for cls in self.__class__.mro():
+			if "exit_loop" in cls.__dict__:
+				cls.exit_loop(self)
+
+
+	##################################################################################################################
+
+
+	def _end_loop(self):
+		"""
+		Called at the end of the _main_loop().
+		The default implementation is to call "loop_end()" on the current GameState.
+		This behaviour is overridden in NetworkGame in order to handle message transfer.
+		"""
+		self._state.loop_end()
+
+
+	def exit_loop(self):
+		"""
+		Called when _main_loop() exits, after the final round of moving sprites and
+		updating the display.
+		"""
+		pass
+
+
+	# Event handlers:
+
+	def _activeevent(self, event):
+		self._state.activeevent(event)
+
+	def _keydown(self, event):
+		self._state.keydown(event)
+
+	def _keyup(self, event):
+		self._state.keyup(event)
+
+	def _mousemotion(self, event):
+		self._state.mousemotion(event)
+
+	def _mousebuttondown(self, event):
+		self._state.mousebuttondown(event)
+
+	def _mousebuttonup(self, event):
+		self._state.mousebuttonup(event)
+
+	def _joyaxismotion(self, event):
+		self._state.joyaxismotion(event)
+
+	def _joyballmotion(self, event):
+		self._state.joyballmotion(event)
+
+	def _joyhatmotion(self, event):
+		self._state.joyhatmotion(event)
+
+	def _joybuttondown(self, event):
+		self._state.joybuttondown(event)
+
+	def _joybuttonup(self, event):
+		self._state.joybuttonup(event)
+
+	def _quit(self, event):
+		self._state.quit(event)
+
+	def _videoresize(self, event):
+		self._state.videoresize(event)
+
+	def _videoexpose(self, event):
+		self._state.videoexpose(event)
+
+
+	# Timers:
+
+	def set_timeout(self, callback, milliseconds, **kwargs):
+		"""
+		Starts a timer using pygame.time.set_timer() which executes a given callback
+		only once.
+
+		The given "callback" is a function to execute after the "milliseconds"
+		interval expires. Any keyword arguments after the "milliseconds"
+		argument are passed as a dictionary to the given callback function.
+
+		Returns an (integer) index identifying the timer, which can be used to cancel
+		the timer by calling "clear_timeout()"
+		"""
+		return self.__set_timeout(callback, milliseconds, kwargs, False)
+
+
+	def set_interval(self, callback, milliseconds, **kwargs):
+		"""
+		Starts a timer using pygame.time.set_timer() which executes a given callback
+		at a repeated interval.
+
+		The given "callback" is a function to execute after the "milliseconds"
+		interval expires. Any keyword arguments after the "milliseconds"
+		argument are passed as a dictionary to the given callback function.
+
+		Returns an (integer) index identifying the timer, which can be used to cancel
+		the timer by calling "clear_timeout()"
+		"""
+		return self.__set_timeout(callback, milliseconds, kwargs, True)
+
+
+	def clear_timeout(self, timer_index):
+		"""
+		Clears a timer previously set using "set_timeout()"
+		"""
+		pygame.time.set_timer(USEREVENT + timer_index, 0)
+		self.__timer_callbacks[timer_index] = None
+
+
+	def __set_timeout(self, callback, milliseconds, arguments, recur):
+		for timer_index in range(8):
+			if self.__timer_callbacks[timer_index] is None:
+				self.__timer_callbacks[timer_index] = callback
+				self.__timer_arguments[timer_index] = arguments
+				self.__timer_recur_flag[timer_index] = recur
+				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
+				return timer_index
+		raise Exception("Too many timers!")
+
+
+	def __timer_event(self, event):
+		"""
+		Called from the pygame event pump when a timer times out.
+		Executes a timer event.
+		"""
+		timer_index = event.type - USEREVENT	# Subtract USEREVENT constant since our indexes start with 0
+		if self.__timer_callbacks[timer_index] is None:
+			logging.warning("Timer event raised when corresponding callback not set")
+		else:
+			self.__timer_callbacks[timer_index](self.__timer_arguments[timer_index])
+			if not self.__timer_recur_flag[timer_index]:
+				self.clear_timeout(timer_index)
+
+
+	def play(self, sound_name):
+		"""
+		Play a sound identified by "sound_name". If Game.quiet is True, does nothing.
+		"""
+		if not self.quiet: self.resources.sound(sound_name).play()
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.game.Game">Game</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Class variables</h3>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_ABOVE_BG" class="name">var <span class="ident">LAYER_ABOVE_BG</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_ABOVE_PLAYER" class="name">var <span class="ident">LAYER_ABOVE_PLAYER</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_BELOW_PLAYER" class="name">var <span class="ident">LAYER_BELOW_PLAYER</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_BG" class="name">var <span class="ident">LAYER_BG</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_OVERLAY" class="name">var <span class="ident">LAYER_OVERLAY</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.LAYER_PLAYER" class="name">var <span class="ident">LAYER_PLAYER</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.background" class="name">var <span class="ident">background</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.caption" class="name">var <span class="ident">caption</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.current" class="name">var <span class="ident">current</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.display_depth" class="name">var <span class="ident">display_depth</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.display_flags" class="name">var <span class="ident">display_flags</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.fps" class="name">var <span class="ident">fps</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.fullscreen" class="name">var <span class="ident">fullscreen</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.icon" class="name">var <span class="ident">icon</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.mixer_bitsize" class="name">var <span class="ident">mixer_bitsize</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.mixer_buffer" class="name">var <span class="ident">mixer_buffer</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.mixer_channels" class="name">var <span class="ident">mixer_channels</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.mixer_frequency" class="name">var <span class="ident">mixer_frequency</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.quiet" class="name">var <span class="ident">quiet</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.resource_dir" class="name">var <span class="ident">resource_dir</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.resource_dump" class="name">var <span class="ident">resource_dump</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.resources" class="name">var <span class="ident">resources</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.screen" class="name">var <span class="ident">screen</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.screen_rect" class="name">var <span class="ident">screen_rect</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.sprites" class="name">var <span class="ident">sprites</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, options=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set options, start the necessary pygame modules, instantiate Resources, create
+the "sprites" group.</p>
+<p>This function passes the "resource_dir" attribute when instantiating a
+Resources instance to allow it to find images and sounds. You must set this
+attribute before calling this function. If you have a "resources" directory
+beneath the directory containing your game, the helper function
+"set_resource_dir_from_file" can set it for you quite easily.</p>
+<p>The "options" argument is expected to be a dictionary, the items of which are
+set as attributes of the game during initialization. Some appropriate key/value
+pairs to pass to the <strong>init</strong> function would be:</p>
+<pre><code>    display_depth
+    fps
+    fullscreen
+    quiet
+    resource_dump
+</code></pre>
+<p>A typical use case would be if you used the "argparse" library to read
+command-line options, and wish to pass those options to the Game class before
+starting up modules. i.e.:</p>
+<pre><code>    import argparse, sys
+    p = argparse.ArgumentParser()
+    p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+    p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+    options = p.parse_args()
+    # Setup logging, etc...
+    .
+    .
+    sys.exit(MyGameClass(options).run())
+</code></pre></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.__init__" class="source">
+    <pre><code>def __init__(self, options=None):
+	"""
+	Set options, start the necessary pygame modules, instantiate Resources, create
+	the "sprites" group.
+	This function passes the "resource_dir" attribute when instantiating a
+	Resources instance to allow it to find images and sounds. You must set this
+	attribute before calling this function. If you have a "resources" directory
+	beneath the directory containing your game, the helper function
+	"set_resource_dir_from_file" can set it for you quite easily.
+	The "options" argument is expected to be a dictionary, the items of which are
+	set as attributes of the game during initialization. Some appropriate key/value
+	pairs to pass to the __init__ function would be:
+		display_depth
+		fps
+		fullscreen
+		quiet
+		resource_dump
+	A typical use case would be if you used the "argparse" library to read
+	command-line options, and wish to pass those options to the Game class before
+	starting up modules. i.e.:
+		import argparse, sys
+		p = argparse.ArgumentParser()
+		p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
+		p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+		options = p.parse_args()
+		# Setup logging, etc...
+		.
+		.
+		sys.exit(MyGameClass(options).run())
+	"""
+	Game.current = self
+	if options is not None:
+		for varname, value in options.__dict__.items():
+			setattr(self, varname, value)
+	if self.resource_dir is None: self.resource_dir = "resources"
+	self.resources = Resources(self.resource_dir, self.resource_dump)
+	pygame.display.init()
+	pygame.font.init()
+	if not self.quiet:
+		pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
+		pygame.mixer.init()
+	self.sprites = pygame.sprite.LayeredUpdates()
+	self._event_handlers = {
+		ACTIVEEVENT:		self._activeevent,		# 1
+		KEYDOWN:			self._keydown,			# 2
+		KEYUP:				self._keyup,			# 3
+		MOUSEMOTION:		self._mousemotion,		# 4
+		MOUSEBUTTONDOWN:	self._mousebuttondown,	# 5
+		MOUSEBUTTONUP:		self._mousebuttonup,	# 6
+		JOYAXISMOTION:		self._joyaxismotion,	# 7
+		JOYBALLMOTION:		self._joyballmotion,	# 8
+		JOYHATMOTION:		self._joyhatmotion,		# 9
+		JOYBUTTONDOWN:		self._joybuttondown,	# 10
+		JOYBUTTONUP:		self._joybuttonup,		# 11
+		QUIT:				self._quit,				# 12
+		VIDEORESIZE:		self._videoresize,		# 16
+		VIDEOEXPOSE:		self._videoexpose,		# 17
+	}
+	# Fill-in the remaining timer events:
+	for event_type in range(USEREVENT, NUMEVENTS + 1):
+		self._event_handlers[event_type] = self.__timer_event
+	self.__timer_callbacks = [None for x in range(8)]
+	self.__timer_arguments = [None for x in range(8)]
+	self.__timer_recur_flag = [None for x in range(8)]
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.change_state">
+    <p>def <span class="ident">change_state</span>(</p><p>self, game_state)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Lines up the next game state. The next time through main_loop, the new state
+will be current.</p>
+<p>It is possible that this function will be called more than once during a single
+game loop cycle. For example, a player might make a move and transition to a
+game state which waits for the opponent to move, at almost the same time as
+receiving a message from their opponent that they left the game.</p>
+<p>In such circumstances, the last call to this function takes precedence - with
+one caveat. If any game state subclasses GameStateFinal, the game state may not
+be changed at all.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.change_state', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.change_state" class="source">
+    <pre><code>def change_state(self, game_state):
+	"""
+	Lines up the next game state. The next time through main_loop, the new state
+	will be current.
+	It is possible that this function will be called more than once during a single
+	game loop cycle. For example, a player might make a move and transition to a
+	game state which waits for the opponent to move, at almost the same time as
+	receiving a message from their opponent that they left the game.
+	In such circumstances, the last call to this function takes precedence - with
+	one caveat. If any game state subclasses GameStateFinal, the game state may not
+	be changed at all.
+	"""
+	if isinstance(self.__next_state, GameStateFinal):
+		logging.warn("Changing game state when current state is GameStateFinal is not allowed")
+	else:
+		self.__next_state = game_state
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.clear_timeout">
+    <p>def <span class="ident">clear_timeout</span>(</p><p>self, timer_index)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Clears a timer previously set using "set_timeout()"</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.clear_timeout', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.clear_timeout" class="source">
+    <pre><code>def clear_timeout(self, timer_index):
+	"""
+	Clears a timer previously set using "set_timeout()"
+	"""
+	pygame.time.set_timer(USEREVENT + timer_index, 0)
+	self.__timer_callbacks[timer_index] = None
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.exit_loop">
+    <p>def <span class="ident">exit_loop</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called when _main_loop() exits, after the final round of moving sprites and
+updating the display.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.exit_loop', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.exit_loop" class="source">
+    <pre><code>def exit_loop(self):
+	"""
+	Called when _main_loop() exits, after the final round of moving sprites and
+	updating the display.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.play">
+    <p>def <span class="ident">play</span>(</p><p>self, sound_name)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Play a sound identified by "sound_name". If Game.quiet is True, does nothing.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.play', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.play" class="source">
+    <pre><code>def play(self, sound_name):
+	"""
+	Play a sound identified by "sound_name". If Game.quiet is True, does nothing.
+	"""
+	if not self.quiet: self.resources.sound(sound_name).play()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.run">
+    <p>def <span class="ident">run</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Run the game. The "initial_state" function is called from here, and must return
+an object of class GameState.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.run', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.run" class="source">
+    <pre><code>def run(self):
+	"""
+	Run the game. The "initial_state" function is called from here, and must return
+	an object of class GameState.
+	"""
+	self.show()
+	self._state = self.initial_state()
+	self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
+	self.__next_state = None	# Clear this, as it was set in "change_state()"
+	self._main_loop()
+	return 0
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.set_interval">
+    <p>def <span class="ident">set_interval</span>(</p><p>self, callback, milliseconds, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Starts a timer using pygame.time.set_timer() which executes a given callback
+at a repeated interval.</p>
+<p>The given "callback" is a function to execute after the "milliseconds"
+interval expires. Any keyword arguments after the "milliseconds"
+argument are passed as a dictionary to the given callback function.</p>
+<p>Returns an (integer) index identifying the timer, which can be used to cancel
+the timer by calling "clear_timeout()"</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.set_interval', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.set_interval" class="source">
+    <pre><code>def set_interval(self, callback, milliseconds, **kwargs):
+	"""
+	Starts a timer using pygame.time.set_timer() which executes a given callback
+	at a repeated interval.
+	The given "callback" is a function to execute after the "milliseconds"
+	interval expires. Any keyword arguments after the "milliseconds"
+	argument are passed as a dictionary to the given callback function.
+	Returns an (integer) index identifying the timer, which can be used to cancel
+	the timer by calling "clear_timeout()"
+	"""
+	return self.__set_timeout(callback, milliseconds, kwargs, True)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.set_resource_dir_from_file">
+    <p>def <span class="ident">set_resource_dir_from_file</span>(</p><p>self, filename)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set the resource directory to a subfolder of the given file's parent folder.
+If your main game file is located at:</p>
+<pre><code>    "/home/user/some/path/game.py"
+</code></pre>
+<p>... this function will return:</p>
+<pre><code>    "/home/user/some/path/resources"
+</code></pre>
+<p>... which is a decent place to put your "images" and "sounds" folders.
+                                        ("Use the defaults, Luke")</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.set_resource_dir_from_file', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.set_resource_dir_from_file" class="source">
+    <pre><code>def set_resource_dir_from_file(self, filename):
+	"""
+	Set the resource directory to a subfolder of the given file's parent folder.
+	If your main game file is located at:
+		"/home/user/some/path/game.py"
+	... this function will return:
+		"/home/user/some/path/resources"
+	... which is a decent place to put your "images" and "sounds" folders.
+						("Use the defaults, Luke")
+	"""
+	self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.set_timeout">
+    <p>def <span class="ident">set_timeout</span>(</p><p>self, callback, milliseconds, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Starts a timer using pygame.time.set_timer() which executes a given callback
+only once.</p>
+<p>The given "callback" is a function to execute after the "milliseconds"
+interval expires. Any keyword arguments after the "milliseconds"
+argument are passed as a dictionary to the given callback function.</p>
+<p>Returns an (integer) index identifying the timer, which can be used to cancel
+the timer by calling "clear_timeout()"</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.set_timeout', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.set_timeout" class="source">
+    <pre><code>def set_timeout(self, callback, milliseconds, **kwargs):
+	"""
+	Starts a timer using pygame.time.set_timer() which executes a given callback
+	only once.
+	The given "callback" is a function to execute after the "milliseconds"
+	interval expires. Any keyword arguments after the "milliseconds"
+	argument are passed as a dictionary to the given callback function.
+	Returns an (integer) index identifying the timer, which can be used to cancel
+	the timer by calling "clear_timeout()"
+	"""
+	return self.__set_timeout(callback, milliseconds, kwargs, False)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.show">
+    <p>def <span class="ident">show</span>(</p><p>self, background=None)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Initilizes the screen, setting a background.
+You don't need to call this function, as it is called in Game.run(). Just make
+sure that you implement "initial_background".
+It is safe to call this function multiple times.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.show', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.show" class="source">
+    <pre><code>def show(self, background=None):
+	"""
+	Initilizes the screen, setting a background.
+	You don't need to call this function, as it is called in Game.run(). Just make
+	sure that you implement "initial_background".
+	It is safe to call this function multiple times.
+	"""
+	if background is None:
+		display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
+		self.background = self.initial_background(display_size)
+	else:
+		self.background = background
+	self.screen_rect = self.background.get_rect()
+	if self.fullscreen:
+		self.display_flags |= FULLSCREEN
+	else:
+		os.environ['SDL_VIDEO_CENTERED'] = '1'
+	if self.icon is not None:
+		pygame.display.set_icon(pygame.image.load(os.path.join(self.resources.image_folder, self.icon)))
+	pygame.display.set_caption(self.caption)
+	self.screen = pygame.display.set_mode(
+		self.screen_rect.size,
+		self.display_flags,
+		pygame.display.mode_ok(self.screen_rect.size, self.display_flags, self.display_depth)
+	)
+	self.screen.blit(self.background, (0,0))
+	pygame.display.flip()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.Game.shutdown">
+    <p>def <span class="ident">shutdown</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Triggers the _main_loop to exit. The _main_loop will finish its current
+iteration before doing so.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.Game.shutdown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.Game.shutdown" class="source">
+    <pre><code>def shutdown(self):
+	"""
+	Triggers the _main_loop to exit. The _main_loop will finish its current
+	iteration before doing so.
+	"""
+	self._stay_in_loop = False
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="legame.game.Game.resources" class="name">var <span class="ident">resources</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="legame.game.Game.sprites" class="name">var <span class="ident">sprites</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="legame.game.GameState" class="name">class <span class="ident">GameState</span></p>
+      
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState" class="source">
+    <pre><code>class GameState:
+
+
+	def __init__(self, **kwargs):
+		"""
+		Set up this GameState to be the new game state next time through the main loop.
+		The new state will have attributes set by keyword args passed to this function.
+		If the current game state is an instance of "GameStateFinal", the current game
+		state will not be changed.
+		"""
+		for varname, value in kwargs.items(): setattr(self, varname, value)
+		Game.current.change_state(self)
+
+
+	def enter_state(self):
+		"""
+		Function called when the Game transitions to this state.
+		Any information needed to be passed to this GameState should be passed as
+		keyword args to the constructor.
+		"""
+		pass
+
+
+	def exit_state(self, next_state):
+		"""
+		Function called when the Game transitions out of this state.
+		The "next_state" parameter is the GameState object which will replace this one.
+		"""
+		pass
+
+
+	# Early / late Game._main_loop() events:
+
+	def loop_start(self):
+		"""
+		Called at the beginning of _main_loop() each time through, before processing events.
+		The event loop looks like this:
+		1. loop_start()                              <-- you are here
+		2. event handling (keyboard, mouse, timers)
+		3. loop_end()
+		4. move the sprites
+		5. update the display
+		6. change to new game state (if needed)
+		"""
+		pass
+
+
+	def loop_end(self):
+		"""
+		Called at the end of _main_loop() each time through.
+		The event loop looks like this:
+		1. loop_start()
+		2. event handling (keyboard, mouse, timers)
+		3. loop_end()                                <-- you are here
+		4. move the sprites
+		5. update the display
+		6. change to new game state (if needed)
+		"""
+		pass
+
+
+	# Event handlers called from Game._main_loop():
+
+	def activeevent(self, event):
+		"""
+		"event" will contain: gain, state
+		"""
+		pass
+
+
+	def keydown(self, event):
+		"""
+		Key down event passed to this GameState.
+		"event" will contain: key, mod, unicode, scancode
+		"""
+		pass
+
+
+	def keyup(self, event):
+		"""
+		Key up event passed to this GameState.
+		"event" will contain: key, mod
+		"""
+		pass
+
+
+	def mousemotion(self, event):
+		"""
+		Mouse move event passed to this GameState.
+		"event" will contain: pos, rel, buttons
+		"""
+		pass
+
+
+	def mousebuttondown(self, event):
+		"""
+		Mouse down event passed to this GameState.
+		"event" will contain: pos, button
+		"""
+		pass
+
+
+	def mousebuttonup(self, event):
+		"""
+		Mouse up event passed to this GameState.
+		"event" will contain: pos, button
+		"""
+		pass
+
+
+	def joyaxismotion(self, event):
+		"""
+		Joystick motion event passed to this GameState.
+		"event" will contain: instance_id, axis, value
+		"""
+		pass
+
+
+	def joyballmotion(self, event):
+		"""
+		Joystick ball motion event passed to this GameState.
+		"event" will contain: instance_id, ball, rel
+		"""
+		pass
+
+
+	def joyhatmotion(self, event):
+		"""
+		Joystick hat motion event passed to this GameState.
+		"event" will contain: instance_id, hat, value
+		"""
+		pass
+
+
+	def joybuttondown(self, event):
+		"""
+		Joystick button down event passed to this GameState.
+		"event" will contain: instance_id, button
+		"""
+		pass
+
+
+	def joybuttonup(self, event):
+		"""
+		Joystick button up event passed to this GameState.
+		"event" will contain: instance_id, button
+		"""
+		pass
+
+
+	def quit(self, event):
+		"""
+		Event handler called when the user clicks the window's close button.
+		"event" will be empty
+		"""
+		Game.current.shutdown()
+
+
+	def videoresize(self, event):
+		"""
+		Event handler called when the window / display is resized.
+		"event" will contain: size, w, h
+		"""
+		pass
+
+
+	def videoexpose(self, event):
+		"""
+		Event handler called when the window is exposed(?)
+		"event" will be empty
+		"""
+		pass
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.game.GameState">GameState</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set up this GameState to be the new game state next time through the main loop.
+The new state will have attributes set by keyword args passed to this function.
+If the current game state is an instance of "GameStateFinal", the current game
+state will not be changed.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.__init__" class="source">
+    <pre><code>def __init__(self, **kwargs):
+	"""
+	Set up this GameState to be the new game state next time through the main loop.
+	The new state will have attributes set by keyword args passed to this function.
+	If the current game state is an instance of "GameStateFinal", the current game
+	state will not be changed.
+	"""
+	for varname, value in kwargs.items(): setattr(self, varname, value)
+	Game.current.change_state(self)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.activeevent">
+    <p>def <span class="ident">activeevent</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>"event" will contain: gain, state</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.activeevent', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.activeevent" class="source">
+    <pre><code>def activeevent(self, event):
+	"""
+	"event" will contain: gain, state
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.enter_state">
+    <p>def <span class="ident">enter_state</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Function called when the Game transitions to this state.
+Any information needed to be passed to this GameState should be passed as
+keyword args to the constructor.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.enter_state', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.enter_state" class="source">
+    <pre><code>def enter_state(self):
+	"""
+	Function called when the Game transitions to this state.
+	Any information needed to be passed to this GameState should be passed as
+	keyword args to the constructor.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.exit_state">
+    <p>def <span class="ident">exit_state</span>(</p><p>self, next_state)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Function called when the Game transitions out of this state.
+The "next_state" parameter is the GameState object which will replace this one.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.exit_state', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.exit_state" class="source">
+    <pre><code>def exit_state(self, next_state):
+	"""
+	Function called when the Game transitions out of this state.
+	The "next_state" parameter is the GameState object which will replace this one.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.joyaxismotion">
+    <p>def <span class="ident">joyaxismotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick motion event passed to this GameState.
+"event" will contain: instance_id, axis, value</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.joyaxismotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.joyaxismotion" class="source">
+    <pre><code>def joyaxismotion(self, event):
+	"""
+	Joystick motion event passed to this GameState.
+	"event" will contain: instance_id, axis, value
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.joyballmotion">
+    <p>def <span class="ident">joyballmotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick ball motion event passed to this GameState.
+"event" will contain: instance_id, ball, rel</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.joyballmotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.joyballmotion" class="source">
+    <pre><code>def joyballmotion(self, event):
+	"""
+	Joystick ball motion event passed to this GameState.
+	"event" will contain: instance_id, ball, rel
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.joybuttondown">
+    <p>def <span class="ident">joybuttondown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick button down event passed to this GameState.
+"event" will contain: instance_id, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.joybuttondown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.joybuttondown" class="source">
+    <pre><code>def joybuttondown(self, event):
+	"""
+	Joystick button down event passed to this GameState.
+	"event" will contain: instance_id, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.joybuttonup">
+    <p>def <span class="ident">joybuttonup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick button up event passed to this GameState.
+"event" will contain: instance_id, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.joybuttonup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.joybuttonup" class="source">
+    <pre><code>def joybuttonup(self, event):
+	"""
+	Joystick button up event passed to this GameState.
+	"event" will contain: instance_id, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.joyhatmotion">
+    <p>def <span class="ident">joyhatmotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick hat motion event passed to this GameState.
+"event" will contain: instance_id, hat, value</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.joyhatmotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.joyhatmotion" class="source">
+    <pre><code>def joyhatmotion(self, event):
+	"""
+	Joystick hat motion event passed to this GameState.
+	"event" will contain: instance_id, hat, value
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.keydown">
+    <p>def <span class="ident">keydown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Key down event passed to this GameState.
+"event" will contain: key, mod, unicode, scancode</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.keydown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.keydown" class="source">
+    <pre><code>def keydown(self, event):
+	"""
+	Key down event passed to this GameState.
+	"event" will contain: key, mod, unicode, scancode
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.keyup">
+    <p>def <span class="ident">keyup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Key up event passed to this GameState.
+"event" will contain: key, mod</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.keyup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.keyup" class="source">
+    <pre><code>def keyup(self, event):
+	"""
+	Key up event passed to this GameState.
+	"event" will contain: key, mod
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.loop_end">
+    <p>def <span class="ident">loop_end</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called at the end of _main_loop() each time through.
+The event loop looks like this:
+1. loop_start()
+2. event handling (keyboard, mouse, timers)
+3. loop_end()                                &lt;-- you are here
+4. move the sprites
+5. update the display
+6. change to new game state (if needed)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.loop_end', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.loop_end" class="source">
+    <pre><code>def loop_end(self):
+	"""
+	Called at the end of _main_loop() each time through.
+	The event loop looks like this:
+	1. loop_start()
+	2. event handling (keyboard, mouse, timers)
+	3. loop_end()                                <-- you are here
+	4. move the sprites
+	5. update the display
+	6. change to new game state (if needed)
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.loop_start">
+    <p>def <span class="ident">loop_start</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called at the beginning of _main_loop() each time through, before processing events.
+The event loop looks like this:
+1. loop_start()                              &lt;-- you are here
+2. event handling (keyboard, mouse, timers)
+3. loop_end()
+4. move the sprites
+5. update the display
+6. change to new game state (if needed)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.loop_start', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.loop_start" class="source">
+    <pre><code>def loop_start(self):
+	"""
+	Called at the beginning of _main_loop() each time through, before processing events.
+	The event loop looks like this:
+	1. loop_start()                              <-- you are here
+	2. event handling (keyboard, mouse, timers)
+	3. loop_end()
+	4. move the sprites
+	5. update the display
+	6. change to new game state (if needed)
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.mousebuttondown">
+    <p>def <span class="ident">mousebuttondown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse down event passed to this GameState.
+"event" will contain: pos, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.mousebuttondown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.mousebuttondown" class="source">
+    <pre><code>def mousebuttondown(self, event):
+	"""
+	Mouse down event passed to this GameState.
+	"event" will contain: pos, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.mousebuttonup">
+    <p>def <span class="ident">mousebuttonup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse up event passed to this GameState.
+"event" will contain: pos, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.mousebuttonup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.mousebuttonup" class="source">
+    <pre><code>def mousebuttonup(self, event):
+	"""
+	Mouse up event passed to this GameState.
+	"event" will contain: pos, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.mousemotion">
+    <p>def <span class="ident">mousemotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse move event passed to this GameState.
+"event" will contain: pos, rel, buttons</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.mousemotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.mousemotion" class="source">
+    <pre><code>def mousemotion(self, event):
+	"""
+	Mouse move event passed to this GameState.
+	"event" will contain: pos, rel, buttons
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.quit">
+    <p>def <span class="ident">quit</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Event handler called when the user clicks the window's close button.
+"event" will be empty</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.quit', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.quit" class="source">
+    <pre><code>def quit(self, event):
+	"""
+	Event handler called when the user clicks the window's close button.
+	"event" will be empty
+	"""
+	Game.current.shutdown()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.videoexpose">
+    <p>def <span class="ident">videoexpose</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Event handler called when the window is exposed(?)
+"event" will be empty</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.videoexpose', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.videoexpose" class="source">
+    <pre><code>def videoexpose(self, event):
+	"""
+	Event handler called when the window is exposed(?)
+	"event" will be empty
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameState.videoresize">
+    <p>def <span class="ident">videoresize</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Event handler called when the window / display is resized.
+"event" will contain: size, w, h</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameState.videoresize', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameState.videoresize" class="source">
+    <pre><code>def videoresize(self, event):
+	"""
+	Event handler called when the window / display is resized.
+	"event" will contain: size, w, h
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="legame.game.GameStateFinal" class="name">class <span class="ident">GameStateFinal</span></p>
+      
+  
+    <div class="desc"><p>Final GameState; cannot be replaced even if a new GameState is instantiated
+after this one. See exit_states.py for an example.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal" class="source">
+    <pre><code>class GameStateFinal(GameState):
+	"""
+	Final GameState; cannot be replaced even if a new GameState is instantiated
+	after this one. See exit_states.py for an example.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#legame.game.GameStateFinal">GameStateFinal</a></li>
+          <li><a href="#legame.game.GameState">GameState</a></li>
+          <li>builtins.object</li>
+          </ul>
+          <h3>Static methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, **kwargs)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Set up this GameState to be the new game state next time through the main loop.
+The new state will have attributes set by keyword args passed to this function.
+If the current game state is an instance of "GameStateFinal", the current game
+state will not be changed.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.__init__" class="source">
+    <pre><code>def __init__(self, **kwargs):
+	"""
+	Set up this GameState to be the new game state next time through the main loop.
+	The new state will have attributes set by keyword args passed to this function.
+	If the current game state is an instance of "GameStateFinal", the current game
+	state will not be changed.
+	"""
+	for varname, value in kwargs.items(): setattr(self, varname, value)
+	Game.current.change_state(self)
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.activeevent">
+    <p>def <span class="ident">activeevent</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>"event" will contain: gain, state</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.activeevent', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.activeevent" class="source">
+    <pre><code>def activeevent(self, event):
+	"""
+	"event" will contain: gain, state
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.enter_state">
+    <p>def <span class="ident">enter_state</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Function called when the Game transitions to this state.
+Any information needed to be passed to this GameState should be passed as
+keyword args to the constructor.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.enter_state', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.enter_state" class="source">
+    <pre><code>def enter_state(self):
+	"""
+	Function called when the Game transitions to this state.
+	Any information needed to be passed to this GameState should be passed as
+	keyword args to the constructor.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.exit_state">
+    <p>def <span class="ident">exit_state</span>(</p><p>self, next_state)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Function called when the Game transitions out of this state.
+The "next_state" parameter is the GameState object which will replace this one.</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.exit_state', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.exit_state" class="source">
+    <pre><code>def exit_state(self, next_state):
+	"""
+	Function called when the Game transitions out of this state.
+	The "next_state" parameter is the GameState object which will replace this one.
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.joyaxismotion">
+    <p>def <span class="ident">joyaxismotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick motion event passed to this GameState.
+"event" will contain: instance_id, axis, value</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.joyaxismotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.joyaxismotion" class="source">
+    <pre><code>def joyaxismotion(self, event):
+	"""
+	Joystick motion event passed to this GameState.
+	"event" will contain: instance_id, axis, value
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.joyballmotion">
+    <p>def <span class="ident">joyballmotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick ball motion event passed to this GameState.
+"event" will contain: instance_id, ball, rel</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.joyballmotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.joyballmotion" class="source">
+    <pre><code>def joyballmotion(self, event):
+	"""
+	Joystick ball motion event passed to this GameState.
+	"event" will contain: instance_id, ball, rel
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.joybuttondown">
+    <p>def <span class="ident">joybuttondown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick button down event passed to this GameState.
+"event" will contain: instance_id, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.joybuttondown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.joybuttondown" class="source">
+    <pre><code>def joybuttondown(self, event):
+	"""
+	Joystick button down event passed to this GameState.
+	"event" will contain: instance_id, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.joybuttonup">
+    <p>def <span class="ident">joybuttonup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick button up event passed to this GameState.
+"event" will contain: instance_id, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.joybuttonup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.joybuttonup" class="source">
+    <pre><code>def joybuttonup(self, event):
+	"""
+	Joystick button up event passed to this GameState.
+	"event" will contain: instance_id, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.joyhatmotion">
+    <p>def <span class="ident">joyhatmotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Joystick hat motion event passed to this GameState.
+"event" will contain: instance_id, hat, value</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.joyhatmotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.joyhatmotion" class="source">
+    <pre><code>def joyhatmotion(self, event):
+	"""
+	Joystick hat motion event passed to this GameState.
+	"event" will contain: instance_id, hat, value
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.keydown">
+    <p>def <span class="ident">keydown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Key down event passed to this GameState.
+"event" will contain: key, mod, unicode, scancode</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.keydown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.keydown" class="source">
+    <pre><code>def keydown(self, event):
+	"""
+	Key down event passed to this GameState.
+	"event" will contain: key, mod, unicode, scancode
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.keyup">
+    <p>def <span class="ident">keyup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Key up event passed to this GameState.
+"event" will contain: key, mod</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.keyup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.keyup" class="source">
+    <pre><code>def keyup(self, event):
+	"""
+	Key up event passed to this GameState.
+	"event" will contain: key, mod
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.loop_end">
+    <p>def <span class="ident">loop_end</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called at the end of _main_loop() each time through.
+The event loop looks like this:
+1. loop_start()
+2. event handling (keyboard, mouse, timers)
+3. loop_end()                                &lt;-- you are here
+4. move the sprites
+5. update the display
+6. change to new game state (if needed)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.loop_end', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.loop_end" class="source">
+    <pre><code>def loop_end(self):
+	"""
+	Called at the end of _main_loop() each time through.
+	The event loop looks like this:
+	1. loop_start()
+	2. event handling (keyboard, mouse, timers)
+	3. loop_end()                                <-- you are here
+	4. move the sprites
+	5. update the display
+	6. change to new game state (if needed)
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.loop_start">
+    <p>def <span class="ident">loop_start</span>(</p><p>self)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Called at the beginning of _main_loop() each time through, before processing events.
+The event loop looks like this:
+1. loop_start()                              &lt;-- you are here
+2. event handling (keyboard, mouse, timers)
+3. loop_end()
+4. move the sprites
+5. update the display
+6. change to new game state (if needed)</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.loop_start', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.loop_start" class="source">
+    <pre><code>def loop_start(self):
+	"""
+	Called at the beginning of _main_loop() each time through, before processing events.
+	The event loop looks like this:
+	1. loop_start()                              <-- you are here
+	2. event handling (keyboard, mouse, timers)
+	3. loop_end()
+	4. move the sprites
+	5. update the display
+	6. change to new game state (if needed)
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.mousebuttondown">
+    <p>def <span class="ident">mousebuttondown</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse down event passed to this GameState.
+"event" will contain: pos, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.mousebuttondown', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.mousebuttondown" class="source">
+    <pre><code>def mousebuttondown(self, event):
+	"""
+	Mouse down event passed to this GameState.
+	"event" will contain: pos, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.mousebuttonup">
+    <p>def <span class="ident">mousebuttonup</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse up event passed to this GameState.
+"event" will contain: pos, button</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.mousebuttonup', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.mousebuttonup" class="source">
+    <pre><code>def mousebuttonup(self, event):
+	"""
+	Mouse up event passed to this GameState.
+	"event" will contain: pos, button
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.mousemotion">
+    <p>def <span class="ident">mousemotion</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Mouse move event passed to this GameState.
+"event" will contain: pos, rel, buttons</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.mousemotion', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.mousemotion" class="source">
+    <pre><code>def mousemotion(self, event):
+	"""
+	Mouse move event passed to this GameState.
+	"event" will contain: pos, rel, buttons
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.quit">
+    <p>def <span class="ident">quit</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Event handler called when the user clicks the window's close button.
+"event" will be empty</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.quit', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.quit" class="source">
+    <pre><code>def quit(self, event):
+	"""
+	Event handler called when the user clicks the window's close button.
+	"event" will be empty
+	"""
+	Game.current.shutdown()
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.videoexpose">
+    <p>def <span class="ident">videoexpose</span>(</p><p>self, event)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#legame.game.GameState">GameState</a></code>.<code><a href="#legame.game.GameState.videoexpose">videoexpose</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Event handler called when the window is exposed(?)
+"event" will be empty</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.videoexpose', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.videoexpose" class="source">
+    <pre><code>def videoexpose(self, event):
+	"""
+	Event handler called when the window is exposed(?)
+	"event" will be empty
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="legame.game.GameStateFinal.videoresize">
+    <p>def <span class="ident">videoresize</span>(</p><p>self, event)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Event handler called when the window / display is resized.
+"event" will contain: size, w, h</p></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-legame.game.GameStateFinal.videoresize', this);">Show source &equiv;</a></p>
+  <div id="source-legame.game.GameStateFinal.videoresize" class="source">
+    <pre><code>def videoresize(self, event):
+	"""
+	Event handler called when the window / display is resized.
+	"event" will contain: size, w, h
+	"""
+	pass
+</code></pre>
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+
+  </section>
+
+    </article>
+  <div class="clear"> </div>
+  <footer id="footer">
+    <p>
+      Documentation generated by
+      <a href="https://github.com/BurntSushi/pdoc">pdoc 0.3.2</a>
+    </p>
+
+    <p>pdoc is in the public domain with the
+      <a href="http://unlicense.org">UNLICENSE</a></p>
+
+    <p>Design by <a href="http://nadh.in">Kailash Nadh</a></p>
+  </footer>
+</div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 Provides the NetworkGame class, a framework for games played over a network.
 """
 
-import importlib, cable_car, traceback
+import importlib, cable_car
 from time import time, sleep
 from legame.game import Game, GameState
 from legame.joiner import BroadcastJoiner, DirectJoiner
@@ -76,7 +76,6 @@ class NetworkGame(Game):
 		try:
 			return Game.run(self)
 		except Exception as e:
-			traceback.print_exc()
 			self.messenger.send(MsgQuit())
 			self.messenger.shutdown()
 			return 1
@@ -97,7 +96,7 @@ class NetworkGame(Game):
 
 
 
-# Dynamically append methods to GameState class which are only used by NetworkGame:
+# Dynamically append methods to the GameState class which are only used by NetworkGame:
 
 def _handle_message(self, message):
 	pass

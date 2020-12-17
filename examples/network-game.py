@@ -3,6 +3,7 @@ Demonstrates sending moves over a network.
 """
 
 import random
+from pygame.locals import K_ESCAPE, K_q
 from legame.game import *
 from legame.board_game import *
 from legame.flipper import *
@@ -39,12 +40,11 @@ class TestGame(BoardGame, NetworkGame):
 class GSBase(GameState):
 	"""
 	Used as the base class of all game states defined in this module.
-	ESCAPE or Q button quits game.
 	"""
 
 	def keydown(self, event):
 		"""
-		Exit game immediately if K_ESCAPE key pressed
+		Exit game immediately if K_ESCAPE or "q" key pressed
 		"""
 		if event.key == K_ESCAPE or event.key == K_q:
 			GSQuit(who = "me")

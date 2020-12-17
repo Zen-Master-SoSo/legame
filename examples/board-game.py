@@ -3,6 +3,7 @@ Demonstrates board game moves, jumps, state changes, and animations
 """
 
 import random
+from pygame.locals import K_ESCAPE, K_q
 from pygame import Rect
 from pygame.sprite import Sprite
 from legame.game import *
@@ -44,7 +45,7 @@ class GSSelect(BoardGameState):
 	"""
 	Game state entered when the user must choose an empty space to fill, or their own block to move.
 	attributes used:
-		cell: the position that the LAST piece moved to, used as a reminder
+		cell: the position that the last piece moved to, used as a reminder
 	Example of changing state to this:
 		GSSelect(cell=(x, y))
 	"""
