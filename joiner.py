@@ -392,7 +392,7 @@ if __name__ == '__main__':
 	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
 	p.add_argument("--udp-port", type=int, default=8222)
 	p.add_argument("--tcp-port", type=int, default=8223)
-	p.add_argument("--direct", "-d", action="store_true", help="Connect to a remote machine by ip address instead of using udp broadcast discovery.")
+	p.add_argument("--direct", "-d", action="store_true", help="Connect by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 
 	logging.basicConfig(
