@@ -59,81 +59,15 @@ The "joiner" module provides classes for connecting to a remote machine using a 
 
 After a "JoinerDialog" connects to a remote machine, the NetworkGame class (a sublcass of Game) communicates with the remote machine, allowing you to send and receive Message objects. I developed the "cable_car" package to provide fast, lightweight, and easy-to-use messaging, and LeGame uses the that package for communicating across the network.
 
-### Put it Together
+## Quick start
 
-Let's say you want to create a battling spaceships game to play over the network. You would create a game class which subclasses NetworkGame:
+I've provided some templates to use to quickly get started on a game. You can find them in the "game-templates" folder.
 
-	class BattleCraft(NetworkGame):
+## Reference
 
-		<snip>
-
-There's only one GameState:
-
-	class GSBattle(GameState):
-
-		def enter_state(self):
-			Game.current.my_ship = SpaceShip(
-				Game.current.screen_rect.centerx, 50,
-				Game.current.my_color
-			)
-			Game.current.their_ship = SpaceShip(
-				Game.current.screen_rect.centerx,
-				Game.current.screen_rect.centery - 50,
-				Game.current.my_color
-			)
-
-		def keydown(self, event):
-			if event.key == K_SPACE:
-				Game.current.my_ship.thrust = True
-			elif event.key == K_LEFT:
-				Game.current.my_ship.rotation -= 1
-			elif event.key == K_RIGHT:
-				Game.current.my_ship.rotation += 1
-			elif event.key == K_ENTER:
-				Game.current.my_ship.shoot()
-
-		def keyup(self, event):
-			if event.key == K_SPACE:
-				Game.current.my_ship.thrust = False
-
-		def handle_message(self, message):
-			if isinstance(message, MsgQuit):
-				GSQuit()	# Transition to the GSQuit game state
-			elif isinstance(message, ShipPosition):
-				message.mirror()
-				Game.current.their_ship.position = message.position
-				Game.current.their_ship.rotation = message.rotation
-			elif ... <you get the point>
+Most of the code is documented using python docstrings. It's all compiled into pdoc -generated html, which you can find in the "docs" folder.
 
 
-Create some images and put them in a folder named "resources/images", off the same folder where your game is. You create sprites which use those images. That class might look like this:
-
-	class SpaceShip(MovingSprite, Sprite):
-
-		def __init__(self, x, y, color):
-			# Set position:
-			MovingSprite.__init__(self, x, y)
-			self.image_set = Game.current.resources.image_set("SpaceShip/" + color)
-			self.color = color
-
-		def update(self):				# Called from Game.sprites.update()
-			if self.thrust:
-				self.speed = max(self.max_speed, self.speed + self.accel)
-			self.image = self.image_set.images[
-				math.floor(self.rotation / self.image_set.count)
-			]
-			self.cartesian_motion()		# Defined in the MovingSprite class
-			Game.current.messenger.send(ShipPosition(self.position, self.rotation))
-
-The above example is incomplete, but is only meant to give you an idea of how to use LeGame.
-
-There are some real, working examples in the "examples" folder.
-
-## Class Reference
-
-Most of the classes are well documented in the code using python docstrings. There's a copy of pdoc -generated documentation in the "docs" folder. Hopefully, that's all you need to get going!
-
-**Have fun!**
 
 
 

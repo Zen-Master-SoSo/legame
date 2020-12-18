@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>legame.sprite_enhancement API documentation</title>
+<meta name="description" content="Provides classes for easier positioning and moving of sprites." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legame.sprite_enhancement</code></h1>
+</header>
+<section id="section-intro">
+<p>Provides classes for easier positioning and moving of sprites.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legame.sprite_enhancement.vector"><code class="name flex">
+<span>def <span class="ident">vector</span></span>(<span>target)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a Vector from the given tuple, Vector, or CenteredSprite.
+Raises ValueError if impossible to convert.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legame.sprite_enhancement.BoxedInSprite"><code class="flex name class">
+<span>class <span class="ident">BoxedInSprite</span></span>
+<span>(</span><span>boundary)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class which can add boundary checking to a MovingSprite.</p>
+<p>Initialize boundary checking.
+"boundary" is a pygame Rect within which movement is to be constrained.
+Tip: Rect.inflate() can be used to reduce the size of a Rect with a margin around the outside.
+So if you want to restrict movement of a 40px x 40px sprite, such that the outer edges of the
+sprite never leave the screen, you can create a boundary Rect that is 20px (half of the width
+/ height) smaller than the screen Rect using:</p>
+<pre><code>    (Screen Rect).inflate(-20)
+</code></pre></div>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legame.examples.herd.Animal" href="examples/herd.html#legame.examples.herd.Animal">Animal</a></li>
+<li><a title="legame.tests.sprite_enhancement_test.Boxed" href="tests/sprite_enhancement_test.html#legame.tests.sprite_enhancement_test.Boxed">Boxed</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.sprite_enhancement.BoxedInSprite.nearest_boundary"><code class="name flex">
+<span>def <span class="ident">nearest_boundary</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Determine if near one of the boundary walls.
+Returns None if not near.
+Returns a tuple of (<distance from>, <which wall>) if outside boundary.
+<distance from> is nearest distance to the wall, not distance along MovingSprite's direction
+<which wall> is one of the SIDE_<side> constants defined in locals</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.BoxedInSprite.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="legame.sprite_enhancement.CenteredSprite"><code class="flex name class">
+<span>class <span class="ident">CenteredSprite</span></span>
+<span>(</span><span>x=0.0, y=0.0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>CenteredSprite constructor.
+Creates a "rect" property as used by pygame.sprite.Sprite, with the center
+at the x/y position of this Sprite.
+"x" and "y" must be float values which define the position of the object.</p></div>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legame.sprite_enhancement.MovingSprite" href="#legame.sprite_enhancement.MovingSprite">MovingSprite</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legame.sprite_enhancement.CenteredSprite.height"><code class="name">var <span class="ident">height</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.CenteredSprite.width"><code class="name">var <span class="ident">width</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legame.sprite_enhancement.CenteredSprite.x"><code class="name">var <span class="ident">x</span></code></dt>
+<dd>
+<div class="desc"><p>Gets the "x" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.CenteredSprite.y"><code class="name">var <span class="ident">y</span></code></dt>
+<dd>
+<div class="desc"><p>Gets the "y" value of this object's positiong vector, relative to the Surface on which this
+object is to be rendered.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.sprite_enhancement.CenteredSprite.update_rect"><code class="name flex">
+<span>def <span class="ident">update_rect</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite"><code class="flex name class">
+<span>class <span class="ident">MovingSprite</span></span>
+<span>(</span><span>x=0.0, y=0.0, speed=None, direction=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class compatible with pygame.Sprite which tracks position, motion, rotation in 2d space.</p>
+<p>MovingSprite constructor.
+"x" and "y" must be float values which define the position of the object.
+"speed" must be a float value which sets the magnitude of the motion vector of the object.
+"direction" must be a float value which sets the motion direction of the object in degrees.</p>
+<p>If you would like to use a motion vector made up of x/y values, create a
+"motion" vector with the values you need, and skip this function completely,
+like so:</p>
+<pre><code>    class MySprite(MovingSprite):
+            def __init__(self):
+                    CenteredSprite.__init__(self, &lt;x&gt;, &lt;y&gt;)                 # Sets Sprite.rect
+                    self.motion = Vector(&lt;x&gt;, &lt;y&gt;)                                  # Cartesian
+                    self._motion_function = self.cartesian_motion   # (example)
+</code></pre></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.sprite_enhancement.CenteredSprite" href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legame.board_game.GamePiece" href="board_game.html#legame.board_game.GamePiece">GamePiece</a></li>
+<li><a title="legame.examples.herd.Animal" href="examples/herd.html#legame.examples.herd.Animal">Animal</a></li>
+<li><a title="legame.examples.seeking-demo.Chaser" href="examples/seeking-demo.html#legame.examples.seeking-demo.Chaser">Chaser</a></li>
+<li><a title="legame.examples.seeking-demo.Mouse" href="examples/seeking-demo.html#legame.examples.seeking-demo.Mouse">Mouse</a></li>
+<li><a title="legame.examples.steering-demo.Chaser" href="examples/steering-demo.html#legame.examples.steering-demo.Chaser">Chaser</a></li>
+<li><a title="legame.examples.steering-demo.Mouse" href="examples/steering-demo.html#legame.examples.steering-demo.Mouse">Mouse</a></li>
+<li><a title="legame.game-templates.game.EmptySprite" href="game-templates/game.html#legame.game-templates.game.EmptySprite">EmptySprite</a></li>
+<li><a title="legame.tests.neighbors_test.Thing" href="tests/neighbors_test.html#legame.tests.neighbors_test.Thing">Thing</a></li>
+<li><a title="legame.tests.sprite_enhancement_test.Boxed" href="tests/sprite_enhancement_test.html#legame.tests.sprite_enhancement_test.Boxed">Boxed</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legame.sprite_enhancement.MovingSprite.accel_rate"><code class="name">var <span class="ident">accel_rate</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.decel_rate"><code class="name">var <span class="ident">decel_rate</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.destination"><code class="name">var <span class="ident">destination</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.max_speed"><code class="name">var <span class="ident">max_speed</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.max_turning_speed"><code class="name">var <span class="ident">max_turning_speed</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.min_speed"><code class="name">var <span class="ident">min_speed</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.turning_speed"><code class="name">var <span class="ident">turning_speed</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legame.sprite_enhancement.MovingSprite.direction"><code class="name">var <span class="ident">direction</span></code></dt>
+<dd>
+<div class="desc"><p>Gets the screen direction of this MovingSprite in degrees</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.speed"><code class="name">var <span class="ident">speed</span></code></dt>
+<dd>
+<div class="desc"><p>Get the "magnitude" of this object's motion vector.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.sprite_enhancement.MovingSprite.angle_to_thing"><code class="name flex">
+<span>def <span class="ident">angle_to_thing</span></span>(<span>self, thing)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p>
+<p>Alias of "direction_to_thing".</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.angle_to_vector"><code class="name flex">
+<span>def <span class="ident">angle_to_vector</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given position vector. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p>
+<p>Alias of "direction_to_vector".</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.cartesian_motion"><code class="name flex">
+<span>def <span class="ident">cartesian_motion</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Moves one frame by adding the x/y values of this MovingSprite's "motion" vector to the
+x/y values of this MovingSprite's "position" vector.
+This is the default "_motion_function".</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.direction_to_thing"><code class="name flex">
+<span>def <span class="ident">direction_to_thing</span></span>(<span>self, thing)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.direction_to_vector"><code class="name flex">
+<span>def <span class="ident">direction_to_vector</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in degrees from this MovingSprite's position to the
+given position vector. Returns non-normalized degrees (float).</p>
+<p>If you need a Vector instead of an angle in radians, use Vector subtraction.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.distance_to_thing"><code class="name flex">
+<span>def <span class="ident">distance_to_thing</span></span>(<span>self, thing)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a float - the distance in pixels from this MovingSprite to the given
+"thing-like" object.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.distance_to_vector"><code class="name flex">
+<span>def <span class="ident">distance_to_vector</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a float - the distance in pixels from this MovingSprite to the given
+position vector.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.ew_direction"><code class="name flex">
+<span>def <span class="ident">ew_direction</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.increment_turning_speed"><code class="name flex">
+<span>def <span class="ident">increment_turning_speed</span></span>(<span>self, direction)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Incrementally adjust this MovingSprite's "turning_speed" attribute towards or
+away from the given screen direction in degrees, taking into account this
+MovingSprite's current and max turning speed.</p>
+<p>Affects only the "turning_speed" attribute - does NOT change the "motion" vector.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.is_directionless"><code class="name flex">
+<span>def <span class="ident">is_directionless</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
+cannot be determined.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.is_offscreen"><code class="name flex">
+<span>def <span class="ident">is_offscreen</span></span>(<span>self, screen_rect)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns one of the "OFFSCREEN_<direction>" constants if this MovingSprite's position
+if outside of the boundaries of the Surface it is to be rendered on.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.make_heading"><code class="name flex">
+<span>def <span class="ident">make_heading</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the initial speed and direction of an object provided a destination
+using the "travel_to()" function.</p>
+<p>The default implementation sets this object's direction to the direction to its
+destination, without taking into consideration turning speed. The speed of this
+MovingSprite is set to it's acceration rate, unless it's already moving faster.</p>
+<p>A true physical moving thing most likely cannot change speed and direction in
+such an immediate fashion, unless the things you hear about "off world" vehicles
+visiting our planet are really true. You're free to model that, I suppose.</p>
+<p>This implementation is sufficient for game pieces such as used in BoardGame,
+but should be overridden in order to create more sophisticated motion.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.no_motion"><code class="name flex">
+<span>def <span class="ident">no_motion</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A "_motion_function" which does nothing.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.ns_direction"><code class="name flex">
+<span>def <span class="ident">ns_direction</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.radians_to_thing"><code class="name flex">
+<span>def <span class="ident">radians_to_thing</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in radians from this MovingSprite's position to the
+given "thing-like" object's position. Returns non-normalized radians (float).</p>
+<p>If you need a Vector, simply subtract this MovingSprite's position from the vector's.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.radians_to_vector"><code class="name flex">
+<span>def <span class="ident">radians_to_vector</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the world angle in radians from this MovingSprite's position to the
+given position vector. Returns non-normalized radians (float).</p>
+<p>If you need a Vector, simply subtract this MovingSprite's position from the vector's.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.seek_motion"><code class="name flex">
+<span>def <span class="ident">seek_motion</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>One of the "_motion_function" methods, called from "update". This method points
+the sprite towards its current "destination" vector and accelerates towards it,
+decelerating to zero when it approaches.</p>
+<p>This is the move function set in the "travel_to" method.</p>
+<p>This implementation is sufficient for game pieces as used in BoardGame,
+but should be overridden in order to create more sophisticated motion.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.set_motion_polar"><code class="name flex">
+<span>def <span class="ident">set_motion_polar</span></span>(<span>self, magnitude, degrees)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the current motion vector from the given magnitude, degrees.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.shift_position"><code class="name flex">
+<span>def <span class="ident">shift_position</span></span>(<span>self, x, y)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Does a relative cartesian move the position of the object by x, y.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.travel_to"><code class="name flex">
+<span>def <span class="ident">travel_to</span></span>(<span>self, target, on_arrival=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>High-level command which sets this MovingSprite on a path towards a given target.
+Each subsequent call to "move()" will move the Thing one frame closer to the target.
+When travel is complete, the optional "on_arrival" function will be called.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.turn_away_from"><code class="name flex">
+<span>def <span class="ident">turn_away_from</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn incrementally away from the given position vector, taking into account
+this MovingSprite's current and max turning speed.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.turn_towards"><code class="name flex">
+<span>def <span class="ident">turn_towards</span></span>(<span>self, vector)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Turn incrementally towards the given position vector, taking into account this
+MovingSprite's current and max turning speed.</p></div>
+</dd>
+<dt id="legame.sprite_enhancement.MovingSprite.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Regular cyclic update task, as called from pygame.Sprite.
+Calls the current move function, which by default is "cartesian_motion".</p></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.sprite_enhancement.CenteredSprite" href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.sprite_enhancement.CenteredSprite.update_rect" href="#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></code></li>
+<li><code><a title="legame.sprite_enhancement.CenteredSprite.x" href="#legame.sprite_enhancement.CenteredSprite.x">x</a></code></li>
+<li><code><a title="legame.sprite_enhancement.CenteredSprite.y" href="#legame.sprite_enhancement.CenteredSprite.y">y</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legame" href="index.html">legame</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legame.sprite_enhancement.vector" href="#legame.sprite_enhancement.vector">vector</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legame.sprite_enhancement.BoxedInSprite" href="#legame.sprite_enhancement.BoxedInSprite">BoxedInSprite</a></code></h4>
+<ul class="">
+<li><code><a title="legame.sprite_enhancement.BoxedInSprite.nearest_boundary" href="#legame.sprite_enhancement.BoxedInSprite.nearest_boundary">nearest_boundary</a></code></li>
+<li><code><a title="legame.sprite_enhancement.BoxedInSprite.update" href="#legame.sprite_enhancement.BoxedInSprite.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.sprite_enhancement.CenteredSprite" href="#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></code></h4>
+<ul class="">
+<li><code><a title="legame.sprite_enhancement.CenteredSprite.update_rect" href="#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.sprite_enhancement.MovingSprite" href="#legame.sprite_enhancement.MovingSprite">MovingSprite</a></code></h4>
+<ul class="">
+<li><code><a title="legame.sprite_enhancement.MovingSprite.angle_to_thing" href="#legame.sprite_enhancement.MovingSprite.angle_to_thing">angle_to_thing</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.angle_to_vector" href="#legame.sprite_enhancement.MovingSprite.angle_to_vector">angle_to_vector</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.cartesian_motion" href="#legame.sprite_enhancement.MovingSprite.cartesian_motion">cartesian_motion</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.direction_to_thing" href="#legame.sprite_enhancement.MovingSprite.direction_to_thing">direction_to_thing</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.direction_to_vector" href="#legame.sprite_enhancement.MovingSprite.direction_to_vector">direction_to_vector</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.distance_to_thing" href="#legame.sprite_enhancement.MovingSprite.distance_to_thing">distance_to_thing</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.distance_to_vector" href="#legame.sprite_enhancement.MovingSprite.distance_to_vector">distance_to_vector</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.ew_direction" href="#legame.sprite_enhancement.MovingSprite.ew_direction">ew_direction</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.increment_turning_speed" href="#legame.sprite_enhancement.MovingSprite.increment_turning_speed">increment_turning_speed</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.is_directionless" href="#legame.sprite_enhancement.MovingSprite.is_directionless">is_directionless</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.is_offscreen" href="#legame.sprite_enhancement.MovingSprite.is_offscreen">is_offscreen</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.make_heading" href="#legame.sprite_enhancement.MovingSprite.make_heading">make_heading</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.no_motion" href="#legame.sprite_enhancement.MovingSprite.no_motion">no_motion</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.ns_direction" href="#legame.sprite_enhancement.MovingSprite.ns_direction">ns_direction</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.radians_to_thing" href="#legame.sprite_enhancement.MovingSprite.radians_to_thing">radians_to_thing</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.radians_to_vector" href="#legame.sprite_enhancement.MovingSprite.radians_to_vector">radians_to_vector</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.seek_motion" href="#legame.sprite_enhancement.MovingSprite.seek_motion">seek_motion</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.set_motion_polar" href="#legame.sprite_enhancement.MovingSprite.set_motion_polar">set_motion_polar</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.shift_position" href="#legame.sprite_enhancement.MovingSprite.shift_position">shift_position</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.travel_to" href="#legame.sprite_enhancement.MovingSprite.travel_to">travel_to</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.turn_away_from" href="#legame.sprite_enhancement.MovingSprite.turn_away_from">turn_away_from</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.turn_towards" href="#legame.sprite_enhancement.MovingSprite.turn_towards">turn_towards</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.update" href="#legame.sprite_enhancement.MovingSprite.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

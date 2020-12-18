@@ -1,4 +1,4 @@
-from herd import *
+from .herd import *
 
 class AlienHerdDemo(HerdDemo):
 

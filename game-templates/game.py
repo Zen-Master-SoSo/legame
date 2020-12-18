@@ -160,10 +160,11 @@ class EmptyGameState(GameState):
 
 
 
-class EmptySprite(MovingSprite, Sprite):
+class EmptySprite(MovingSprite, Flipper, Sprite):
 
 	def __init__(self, x, y):
-		MovingSprite.__init__(x, y)
+		MovingSprite.__init__(self, x, y)
+		Flipper.__init__(self, CycleThrough())
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
 
