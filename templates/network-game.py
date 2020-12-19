@@ -206,7 +206,7 @@ class EmptySprite(MovingSprite, Flipper, Sprite):
 
 	def __init__(self, x, y):
 		MovingSprite.__init__(self, x, y)
-		Flipper.__init__(self, CycleThrough("appear"), CycleBetween("walking"))
+		Flipper.__init__(self, FlipThrough("appear"), FlipBetween("walking"))
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
 

@@ -18,56 +18,56 @@ class Flipper:
 			Game.current.resources.image_set(subclass.__name__, alpha_channel=alpha_channel, color_key=None)
 
 
-	def __init__(self, *cyclers, alpha_channel=True, color_key=None):
+	def __init__(self, *flippers, alpha_channel=True, color_key=None):
 		"""
-		Initialize the image set used by this Thing, set the current ImageCycle to the first
-		ImageCycle object given, and queue up any other ImageCycle given.
+		Initialize the image set used by this Thing, set the current FlipEffect to the first
+		FlipEffect object given, and queue up any other FlipEffect given.
 
 		e.g.:
 
-			Flipper.__init__(self, <cycler>, <cycler>, <cycler>)
+			Flipper.__init__(self, <flipper>, <flipper>, <flipper>)
 
-		See ImageCycle.__init__ for common image cycle options.
+		See FlipEffect.__init__ for common image flipper options.
 		"""
 		self._base_image_set = Game.current.resources.image_set(
 			self.__class__.__name__ if self.image_base is None else self.image_base,
 			alpha_channel=alpha_channel, color_key=color_key
 		)
-		self._cycler_queue = deque()
-		self.queue_cyclers(cyclers)
-		self.next_cycler()
+		self._flipper_queue = deque()
+		self.queue_flippers(flippers)
+		self.next_flipper()
 
 
-	def cycle(self, *cyclers):
+	def flip(self, *flippers):
 		"""
-		Replaces the current ImageCycle with the first ImageCycle object given, and queues any other
-		ImageCycle objects given.
+		Replaces the current FlipEffect with the first FlipEffect object given, and queues any other
+		FlipEffect objects given.
 
 		e.g.:
 
-			thing.cycle(<cycler>, <cycler>, <cycler>)
+			thing.flip(<flipper>, <flipper>, <flipper>)
 
 		"""
-		self._cycler_queue.clear()
-		self.queue_cyclers(cyclers)
-		self.next_cycler()
+		self._flipper_queue.clear()
+		self.queue_flippers(flippers)
+		self.next_flipper()
 
 
-	def queue_cycler(self, cycler):
+	def queue_flipper(self, flipper):
 		"""
-		Appends a single ImageCycle object to the queue.
+		Appends a single FlipEffect object to the queue.
 		"""
-		cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set.variant(cycler.variant)
-		self._cycler_queue.append(cycler)
+		flipper.image_set = self._base_image_set if flipper.variant is None else self._base_image_set.variant(flipper.variant)
+		self._flipper_queue.append(flipper)
 
 
-	def queue_cyclers(self, cyclers):
+	def queue_flippers(self, flippers):
 		"""
-		Appends a list of ImageCycle objects to the queue.
+		Appends a list of FlipEffect objects to the queue.
 		"""
-		for cycler in cyclers:
-			cycler.image_set = self._base_image_set if cycler.variant is None else self._base_image_set.variant(cycler.variant)
-		self._cycler_queue.extend(cyclers)
+		for flipper in flippers:
+			flipper.image_set = self._base_image_set if flipper.variant is None else self._base_image_set.variant(flipper.variant)
+		self._flipper_queue.extend(flippers)
 
 
 	def update(self):
@@ -76,26 +76,26 @@ class Flipper:
 		If your Sprite uses function as the primary "update" function without modifying it,
 		make sure that this function is first in your Sprite's method resolution order (MRO).
 		"""
-		if self.cycler is None:
+		if self.flipper is None:
 			return
-		self.image = self.cycler.update()
-		if self.cycler.done:
-			self.next_cycler()
+		self.image = self.flipper.update()
+		if self.flipper.done:
+			self.next_flipper()
 
 
-	def next_cycler(self):
+	def next_flipper(self):
 		"""
-		Advances to the next ImageCycle in the queue.
+		Advances to the next FlipEffect in the queue.
 		"""
-		if len(self._cycler_queue):
-			self.cycler = self._cycler_queue.popleft()
-			self.image = self.cycler.first_image()
+		if len(self._flipper_queue):
+			self.flipper = self._flipper_queue.popleft()
+			self.image = self.flipper.first_image()
 		else:
-			self.cycler = None
+			self.flipper = None
 
 
 
-class ImageCycle:
+class FlipEffect:
 	"""
 	Sets the image on a Sprite to a member of an ImageSet in sequence
 	"""
@@ -107,7 +107,7 @@ class ImageCycle:
 
 	def __init__(self, variant=None, on_complete=None, **kwargs):
 		"""
-		When an ImageCycle is queued in a Flipper, it gets a reference to the root of the
+		When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 		Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
 		parameter (string).
 
@@ -118,13 +118,13 @@ class ImageCycle:
 
 			loop_forever:		Restart from the beginning after finishing the cycle
 			loops:				Number of loops to cycle through, when not "loop_forever"
-			fps:				Frames-per-second. The ImageCycle will use the game.fps
+			fps:				Frames-per-second. The FlipEffect will use the game.fps
 								to determine how many frames to skip between flips.
 
-		These vary according to the particular ImageCycle subclass you're using. The ones
+		These vary according to the particular FlipEffect subclass you're using. The ones
 		defined in this module include:
 
-			CycleThrough, CycleBetween, and CycleNone
+			FlipThrough, FlipBetween, and FlipNone
 
 		"""
 		self.variant = variant
@@ -141,7 +141,7 @@ class ImageCycle:
 
 	def first_image(self):
 		"""
-		Returns the first image in the set, or the only image in the case of CycleNone.
+		Returns the first image in the set, or the only image in the case of FlipNone.
 		"""
 		return self.image_set.images[self.frame]
 
@@ -162,14 +162,14 @@ class ImageCycle:
 
 
 
-class CycleNone(ImageCycle):
+class FlipNone(FlipEffect):
 	"""
 	Displays only the first image in the ImageSet
 	"""
 
 	def first_image(self):
 		self.done = True
-		return ImageCycle.first_image(self)
+		return FlipEffect.first_image(self)
 
 
 	def advance_frame(self):
@@ -177,7 +177,7 @@ class CycleNone(ImageCycle):
 
 
 
-class CycleThrough(ImageCycle):
+class FlipThrough(FlipEffect):
 	"""
 	Cycles from the start to the end of an ImageSet. If looping, starts again from the beginning,
 	otherwise leaves the frame pointer at the end of the image set.
@@ -198,13 +198,13 @@ class CycleThrough(ImageCycle):
 
 
 
-class CycleBetween(ImageCycle):
+class FlipBetween(FlipEffect):
 	"""
 	Cycles back and forth through an ImageSet; when at the end, backs up to the beginning
 	"""
 
 	def __init__(self, variant=None, **kwargs):
-		ImageCycle.__init__(self, variant, **kwargs)
+		FlipEffect.__init__(self, variant, **kwargs)
 		self.__direction = 1
 
 

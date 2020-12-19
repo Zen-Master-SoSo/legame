@@ -5,7 +5,7 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2 as Vector
 from pygame.locals import SRCALPHA, KEYDOWN, QUIT, K_ESCAPE, K_SPACE, K_RETURN, K_q
 from legame.game import Game, GameState
-from legame.flipper import Flipper, CycleNone, CycleThrough, CycleBetween
+from legame.flipper import Flipper, FlipNone, FlipThrough, FlipBetween
 from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
 from legame.locals import *
 
@@ -188,7 +188,7 @@ class EmptySprite(MovingSprite, Flipper, Sprite):
 
 	def __init__(self, x, y):
 		MovingSprite.__init__(self, x, y)
-		Flipper.__init__(self, CycleThrough("appear"), CycleNone())
+		Flipper.__init__(self, FlipThrough("appear"), FlipNone())
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
 

@@ -130,16 +130,17 @@ using the Flipper class, in which case those images will have not been loaded.
 class ImageSet:
 	"""
 	A class which keeps a group (or groups) of Image objects. ImageSets are used by
-	the "Flipper" and "ImageCycle" classes to provide the images used by these
+	the "Flipper" and "FlipEffect" classes to provide the images used by these
 	classes to animate sprites. You can also use an ImageSet separately as well.
 
 	An ImageSet contains a list of "images", which are pygame Surface objects
-	created from loading image files. Additionally, the ImageSet has a list of
-	"variants", which are themselves ImageSet instances, which may contain images
-	and variants.
+	created from loading image files. Additionally, the ImageSet has a dicitonary
+	of "variants", which are themselves instances of ImageSet which contain images
+	and variants. The "variants" correlate to subfolders. When the top-level
+	ImageSet is loaded, all the variants are loaded as well.
 
-	The "variants" correlate to subfolders below the "images_dir/name" folder. When
-	the top-level ImageSet is loaded, all the variants are loaded as well.
+	Images are referenced with the numeric indexes of "ImageSet.images". Variants
+	are referenced with string keys of "ImageSet.variants".
 
 	The parent ImageSet may or may not contain images. An image set which only
 	contains variants which themselves contain images is perfectly okay. For
@@ -179,19 +180,17 @@ class ImageSet:
 
 		white_pieces = <resources>.image_set("ChessPiece/White")
 
-	Note, however, that the individual IMAGES in the ImageSet instantiated above
+	Note, however, that the individual images in the ImageSet instantiated above
 	would still have numeric indexes, since the "images" attribute is a list, and
 	not a dict. So you may not reference the individual white chess pieces by name,
 	but will have to refer to them by their index, like so:
 
 		white_rook.image = white_pieces.images[5]
 
-	We can be sure that "rook" is the last item in the list (6 pieces, indexes
-	starting at 0), because the ImageSet always sorts the names of the image files
-	after they have been read, and compiles the list in a natural sort order. This
-	is necessary for performative function of the "Flipper" and "ImageCycle"
-	classes, the trade-off being that you simply have to deal with numeric indexes
-	if you wish to directly reference images in an ImageSet.
+	We can be sure that "rook" is the last item in the list with index "5" (out of
+	6 pieces; list indexes always start at 0), because the ImageSet sorts the image
+	files by name using a natural sort order. This is necessary for the the
+	"Flipper" and "FlipEffect" classes.
 
 	By "natural language sorting" we mean that numbers in the file name are sorted
 	in the order that a human would expect. So "2" comes before "10". A simple sort

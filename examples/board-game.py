@@ -123,7 +123,7 @@ class Block(GamePiece, Flipper):
 	def __init__(self, cell, color):
 		self.image_base = "Block/" + color
 		GamePiece.__init__(self, cell, color)
-		Flipper.__init__(self, CycleThrough("enter", fps=25), CycleNone())
+		Flipper.__init__(self, FlipThrough("enter", fps=25), FlipNone())
 		Game.current.play("enter.wav")
 		self.__glow = None
 
@@ -134,7 +134,7 @@ class Block(GamePiece, Flipper):
 
 
 	def jiggle(self):
-		self.cycle(CycleBetween("jiggle", loops=11, fps=30), CycleNone())
+		self.flip(FlipBetween("jiggle", loops=11, fps=30), FlipNone())
 		return self
 
 
@@ -163,7 +163,7 @@ class Glow(Flipper, Sprite):
 		self.rect = self.cell.rect()
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
-		Flipper.__init__(self, CycleBetween(loop_forever=True, frame=frame, fps=30))
+		Flipper.__init__(self, FlipBetween(loop_forever=True, frame=frame, fps=30))
 
 
 

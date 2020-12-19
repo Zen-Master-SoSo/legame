@@ -5,7 +5,7 @@ from pygame.sprite import Sprite
 from pygame.math import Vector2 as Vector
 from pygame.locals import SRCALPHA, KEYDOWN, QUIT, K_ESCAPE, K_SPACE, K_RETURN, K_q
 from legame.game import Game, GameState
-from legame.flipper import Flipper, CycleNone, CycleThrough, CycleBetween
+from legame.flipper import Flipper, FlipNone, FlipThrough, FlipBetween
 from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
 from legame.locals import *
 

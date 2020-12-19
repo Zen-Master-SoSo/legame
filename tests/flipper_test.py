@@ -26,84 +26,84 @@ class FakeGame:
 class Block(Flipper):
 	image_base	= "Block/r"
 	def __init__(self):
-		Flipper.__init__(self, CycleThrough("enter"))
+		Flipper.__init__(self, FlipThrough("enter"))
 
 
-def test_cycle_through_once(thing):
-	assert isinstance(thing.cycler, CycleThrough)
-	assert thing.cycler.loop_forever == False
-	assert thing.cycler.loops == 1
-	assert thing.image == thing.cycler.image_set.images[0]
+def test_flip_through_once(thing):
+	assert isinstance(thing.flipper, FlipThrough)
+	assert thing.flipper.loop_forever == False
+	assert thing.flipper.loops == 1
+	assert thing.image == thing.flipper.image_set.images[0]
 	for frame in [0, 1, 2]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert thing.cycler is None
+	assert thing.flipper is None
 
 
-def test_cycle_through_twice(thing):
-	thing.cycle(CycleThrough("enter", loops=2))
-	assert thing.cycler.loop_forever == False
-	assert(thing.cycler.loops == 2)
+def test_flip_through_twice(thing):
+	thing.flip(FlipThrough("enter", loops=2))
+	assert thing.flipper.loop_forever == False
+	assert(thing.flipper.loops == 2)
 	for frame in [0, 1, 2, 0, 1, 2]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert thing.cycler is None
+	assert thing.flipper is None
 
 
 def test_between_through_once(thing):
-	thing.cycle(CycleBetween("jiggle"))
-	assert isinstance(thing.cycler, CycleBetween)
-	assert thing.cycler.loop_forever == False
-	assert thing.cycler.loops == 1
+	thing.flip(FlipBetween("jiggle"))
+	assert isinstance(thing.flipper, FlipBetween)
+	assert thing.flipper.loop_forever == False
+	assert thing.flipper.loops == 1
 	for frame in [0, 1, 2, 1, 0]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert thing.cycler is None
+	assert thing.flipper is None
 
 
-def test_cycle_between_twice(thing):
-	thing.cycle(CycleBetween("jiggle", loops=2))
-	assert thing.cycler.loop_forever == False
-	assert(thing.cycler.loops == 2)
-	assert(thing.image == thing.cycler.image_set.images[0])
+def test_flip_between_twice(thing):
+	thing.flip(FlipBetween("jiggle", loops=2))
+	assert thing.flipper.loop_forever == False
+	assert(thing.flipper.loops == 2)
+	assert(thing.image == thing.flipper.image_set.images[0])
 	for frame in [0, 1, 2, 1, 0, 1, 2, 1, 0]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert thing.cycler is None
+	assert thing.flipper is None
 
 
-def test_cycle_through_loop_forever(thing):
-	thing.cycle(CycleThrough("enter", loop_forever=True))
-	assert thing.cycler.loop_forever == True
-	assert thing.cycler.frame == 0
+def test_flip_through_loop_forever(thing):
+	thing.flip(FlipThrough("enter", loop_forever=True))
+	assert thing.flipper.loop_forever == True
+	assert thing.flipper.frame == 0
 	for frame in [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
 
 
-def test_two_cycles_queued(thing):
-	thing.cycle(CycleBetween("jiggle"), CycleThrough("enter"))
-	assert(thing.cycler.__class__.__name__ == "CycleBetween")
-	assert thing.cycler.loop_forever == False
-	assert thing.cycler.loops == 1
-	assert thing.cycler.frame == 0
+def test_two_flippers_queued(thing):
+	thing.flip(FlipBetween("jiggle"), FlipThrough("enter"))
+	assert(thing.flipper.__class__.__name__ == "FlipBetween")
+	assert thing.flipper.loop_forever == False
+	assert thing.flipper.loops == 1
+	assert thing.flipper.frame == 0
 	for frame in [0, 1, 2, 1, 0]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert(thing.cycler.__class__.__name__ == "CycleThrough")
-	assert thing.cycler.loop_forever == False
-	assert thing.cycler.loops == 1
-	assert thing.cycler.frame == 0
+	assert(thing.flipper.__class__.__name__ == "FlipThrough")
+	assert thing.flipper.loop_forever == False
+	assert thing.flipper.loops == 1
+	assert thing.flipper.frame == 0
 	for frame in [0, 1, 2]:
-		assert thing.cycler.frame == frame
+		assert thing.flipper.frame == frame
 		thing.update()
-	assert thing.cycler is None
+	assert thing.flipper is None
 
 
 def test_starting_frame(thing):
-	thing.cycle(CycleBetween("jiggle", loop_forever=True, frame=2, fps=30))
-	assert thing.cycler.loop_forever == True
-	assert thing.cycler.frame == 2
+	thing.flip(FlipBetween("jiggle", loop_forever=True, frame=2, fps=30))
+	assert thing.flipper.loop_forever == True
+	assert thing.flipper.frame == 2
 
 
 
