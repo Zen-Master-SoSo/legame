@@ -1,3 +1,8 @@
+"""
+Visual variant of "herd.py" (which demonstrates "neighbor" detection using the
+Neighborhood class.)
+"""
+
 from .herd import *
 
 class AlienHerdDemo(HerdDemo):

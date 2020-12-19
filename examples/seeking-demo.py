@@ -1,3 +1,8 @@
+"""
+Demonstrates seeking behavior of the MovingSprite class found in the
+"sprite_enhancement" module.
+"""
+
 import random, pygame
 from pygame import Rect, Surface
 from pygame.draw import polygon, circle, line

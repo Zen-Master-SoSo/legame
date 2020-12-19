@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>legame.templates.network-board-game API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legame.templates.network-board-game</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legame.templates.network-board-game.EmptyGameState"><code class="flex name class">
+<span>class <span class="ident">EmptyGameState</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Example GameState subclass.
+Trim out whatever you don't need. All of these functions are included in the
+GameState class.</p>
+<p>Set up this GameState to be the new game state next time through the main loop.
+The new state will have attributes set by keyword args passed to this function.
+If the current game state is an instance of "GameStateFinal", the current game
+state will not be changed.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.game.GameState" href="../game.html#legame.game.GameState">GameState</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.templates.network-board-game.EmptyGameState.enter_state"><code class="name flex">
+<span>def <span class="ident">enter_state</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function called when the Game transitions TO this state.
+Any information needed to be passed to this GameState should be passed as keyword args to the constructor.</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.EmptyGameState.exit_state"><code class="name flex">
+<span>def <span class="ident">exit_state</span></span>(<span>self, next_state)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function called when the Game transitions OUT OF this state.
+The "next_state" parameter is the GameState object which will replace this one.</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.EmptyGameState.handle_message"><code class="name flex">
+<span>def <span class="ident">handle_message</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function called when a message comes over the wire through Game.current.messenger.</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.EmptyGameState.quit"><code class="name flex">
+<span>def <span class="ident">quit</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler called when the user clicks the window's close button.
+event will be empty</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.EmptyGameState.videoexpose"><code class="name flex">
+<span>def <span class="ident">videoexpose</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler called when the window is exposed(?)
+event will be empty</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.EmptyGameState.videoresize"><code class="name flex">
+<span>def <span class="ident">videoresize</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler called when the window / display is resized.
+event will contain: size, w, h</p></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.game.GameState" href="../game.html#legame.game.GameState">GameState</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.game.GameState.activeevent" href="../game.html#legame.game.GameState.activeevent">activeevent</a></code></li>
+<li><code><a title="legame.game.GameState.joyaxismotion" href="../game.html#legame.game.GameState.joyaxismotion">joyaxismotion</a></code></li>
+<li><code><a title="legame.game.GameState.joyballmotion" href="../game.html#legame.game.GameState.joyballmotion">joyballmotion</a></code></li>
+<li><code><a title="legame.game.GameState.joybuttondown" href="../game.html#legame.game.GameState.joybuttondown">joybuttondown</a></code></li>
+<li><code><a title="legame.game.GameState.joybuttonup" href="../game.html#legame.game.GameState.joybuttonup">joybuttonup</a></code></li>
+<li><code><a title="legame.game.GameState.joyhatmotion" href="../game.html#legame.game.GameState.joyhatmotion">joyhatmotion</a></code></li>
+<li><code><a title="legame.game.GameState.keydown" href="../game.html#legame.game.GameState.keydown">keydown</a></code></li>
+<li><code><a title="legame.game.GameState.keyup" href="../game.html#legame.game.GameState.keyup">keyup</a></code></li>
+<li><code><a title="legame.game.GameState.loop_end" href="../game.html#legame.game.GameState.loop_end">loop_end</a></code></li>
+<li><code><a title="legame.game.GameState.loop_start" href="../game.html#legame.game.GameState.loop_start">loop_start</a></code></li>
+<li><code><a title="legame.game.GameState.mousebuttondown" href="../game.html#legame.game.GameState.mousebuttondown">mousebuttondown</a></code></li>
+<li><code><a title="legame.game.GameState.mousebuttonup" href="../game.html#legame.game.GameState.mousebuttonup">mousebuttonup</a></code></li>
+<li><code><a title="legame.game.GameState.mousemotion" href="../game.html#legame.game.GameState.mousemotion">mousemotion</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legame.templates.network-board-game.GSQuit"><code class="flex name class">
+<span>class <span class="ident">GSQuit</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Final GameState; cannot be replaced even if a new GameState is instantiated
+after this one. See exit_states.py for an example.</p>
+<p>Set up this GameState to be the new game state next time through the main loop.
+The new state will have attributes set by keyword args passed to this function.
+If the current game state is an instance of "GameStateFinal", the current game
+state will not be changed.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.game.GameStateFinal" href="../game.html#legame.game.GameStateFinal">GameStateFinal</a></li>
+<li><a title="legame.game.GameState" href="../game.html#legame.game.GameState">GameState</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.game.GameStateFinal" href="../game.html#legame.game.GameStateFinal">GameStateFinal</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.game.GameStateFinal.activeevent" href="../game.html#legame.game.GameState.activeevent">activeevent</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.enter_state" href="../game.html#legame.game.GameState.enter_state">enter_state</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.exit_state" href="../game.html#legame.game.GameState.exit_state">exit_state</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.joyaxismotion" href="../game.html#legame.game.GameState.joyaxismotion">joyaxismotion</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.joyballmotion" href="../game.html#legame.game.GameState.joyballmotion">joyballmotion</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.joybuttondown" href="../game.html#legame.game.GameState.joybuttondown">joybuttondown</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.joybuttonup" href="../game.html#legame.game.GameState.joybuttonup">joybuttonup</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.joyhatmotion" href="../game.html#legame.game.GameState.joyhatmotion">joyhatmotion</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.keydown" href="../game.html#legame.game.GameState.keydown">keydown</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.keyup" href="../game.html#legame.game.GameState.keyup">keyup</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.loop_end" href="../game.html#legame.game.GameState.loop_end">loop_end</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.loop_start" href="../game.html#legame.game.GameState.loop_start">loop_start</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.mousebuttondown" href="../game.html#legame.game.GameState.mousebuttondown">mousebuttondown</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.mousebuttonup" href="../game.html#legame.game.GameState.mousebuttonup">mousebuttonup</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.mousemotion" href="../game.html#legame.game.GameState.mousemotion">mousemotion</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.quit" href="../game.html#legame.game.GameState.quit">quit</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.videoexpose" href="../game.html#legame.game.GameState.videoexpose">videoexpose</a></code></li>
+<li><code><a title="legame.game.GameStateFinal.videoresize" href="../game.html#legame.game.GameState.videoresize">videoresize</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legame.templates.network-board-game.MsgAdd"><code class="flex name class">
+<span>class <span class="ident">MsgAdd</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class which encodes JSON messages for network transport and other uses.
+.</p>
+<h2 id="creating-subclasses">Creating subclasses:</h2>
+<p>You must allow the <strong>init</strong> function of any subclass you create to be called
+with no arguments, as the "peel_from_buffer" function will create an instance
+without arguments before calling "decode" to convert the encoded data back into
+class attributes.</p>
+<p>If you subclass Message, and the subclass has custom attributes, you need to
+implement both "encode" and "decode" functions in that class. The "encode"
+function must return a bytearray from the attributes of the subclass, (in
+whatever format seems appropriate to you), while the "decode" function must
+take the encoded bytearray and restore the class attributes back from the given
+bytes.</p>
+<p>Used both when constructing a Message class with custom attributes, and
+basically ignored when instantiating a Message class while decoding.</p>
+<p>Do not change the function signature. Any subclass of Message must accept no
+arguments, as the "Message.peel_from_buffer" function creates an instance with
+no arguments before setting class attributes from encoded data using the
+"decode_attributes" function.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>cable_car.json_messages.Message</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.templates.network-board-game.MsgAdd.decode_attributes"><code class="name flex">
+<span>def <span class="ident">decode_attributes</span></span>(<span>self, attributes)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used when going from a json-encoded message back to a Message class with custom
+attributes. This is a default implementation which can work if all attributes
+are built-in types. If your message uses complex types which json cannot
+encode, then implement custom functions, both "encoded_attributes" and
+"decode_attributes".</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.MsgAdd.encoded_attributes"><code class="name flex">
+<span>def <span class="ident">encoded_attributes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used when encoding a Message class with custom attributes to a json-encoded
+message. The purpose of this function is to take more complex attributes and
+convert them into built-in types which won't confuse the json encoder.</p>
+<p>Returns a dict containing this Message's attributes simplified for encoding.</p>
+<p>If your message requires complex types which json cannot encode, implement this
+function as well as "decode_attributes".</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="legame.templates.network-board-game.MsgMove"><code class="flex name class">
+<span>class <span class="ident">MsgMove</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class which encodes JSON messages for network transport and other uses.
+.</p>
+<h2 id="creating-subclasses">Creating subclasses:</h2>
+<p>You must allow the <strong>init</strong> function of any subclass you create to be called
+with no arguments, as the "peel_from_buffer" function will create an instance
+without arguments before calling "decode" to convert the encoded data back into
+class attributes.</p>
+<p>If you subclass Message, and the subclass has custom attributes, you need to
+implement both "encode" and "decode" functions in that class. The "encode"
+function must return a bytearray from the attributes of the subclass, (in
+whatever format seems appropriate to you), while the "decode" function must
+take the encoded bytearray and restore the class attributes back from the given
+bytes.</p>
+<p>Used both when constructing a Message class with custom attributes, and
+basically ignored when instantiating a Message class while decoding.</p>
+<p>Do not change the function signature. Any subclass of Message must accept no
+arguments, as the "Message.peel_from_buffer" function creates an instance with
+no arguments before setting class attributes from encoded data using the
+"decode_attributes" function.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>cable_car.json_messages.Message</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.templates.network-board-game.MsgMove.decode_attributes"><code class="name flex">
+<span>def <span class="ident">decode_attributes</span></span>(<span>self, attributes)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used when going from a json-encoded message back to a Message class with custom
+attributes. This is a default implementation which can work if all attributes
+are built-in types. If your message uses complex types which json cannot
+encode, then implement custom functions, both "encoded_attributes" and
+"decode_attributes".</p></div>
+</dd>
+<dt id="legame.templates.network-board-game.MsgMove.encoded_attributes"><code class="name flex">
+<span>def <span class="ident">encoded_attributes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used when encoding a Message class with custom attributes to a json-encoded
+message. The purpose of this function is to take more complex attributes and
+convert them into built-in types which won't confuse the json encoder.</p>
+<p>Returns a dict containing this Message's attributes simplified for encoding.</p>
+<p>If your message requires complex types which json cannot encode, implement this
+function as well as "decode_attributes".</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="legame.templates.network-board-game.MyBoard"><code class="flex name class">
+<span>class <span class="ident">MyBoard</span></span>
+<span>(</span><span>columns=None, rows=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.board_game.GameBoard" href="../board_game.html#legame.board_game.GameBoard">GameBoard</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legame.templates.network-board-game.MyBoard.columns"><code class="name">var <span class="ident">columns</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.templates.network-board-game.MyBoard.rows"><code class="name">var <span class="ident">rows</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.board_game.GameBoard" href="../board_game.html#legame.board_game.GameBoard">GameBoard</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GameBoard.cell_at" href="../board_game.html#legame.board_game.GameBoard.cell_at">cell_at</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.clear_cell" href="../board_game.html#legame.board_game.GameBoard.clear_cell">clear_cell</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.column" href="../board_game.html#legame.board_game.GameBoard.column">column</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.is_empty" href="../board_game.html#legame.board_game.GameBoard.is_empty">is_empty</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.is_mine" href="../board_game.html#legame.board_game.GameBoard.is_mine">is_mine</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.is_opponents" href="../board_game.html#legame.board_game.GameBoard.is_opponents">is_opponents</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.piece_at" href="../board_game.html#legame.board_game.GameBoard.piece_at">piece_at</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.rotate" href="../board_game.html#legame.board_game.GameBoard.rotate">rotate</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.row" href="../board_game.html#legame.board_game.GameBoard.row">row</a></code></li>
+<li><code><a title="legame.board_game.GameBoard.set_cell" href="../board_game.html#legame.board_game.GameBoard.set_cell">set_cell</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legame.templates.network-board-game.MyGame"><code class="flex name class">
+<span>class <span class="ident">MyGame</span></span>
+<span>(</span><span>options)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Basic framework for a game to be played over a network. Requires: cable_car.
+.
+There are two basic methods to use to connect to other computers on the
+network. You can use "broadcast connections", which announce your availability
+using UDP broadcast, or by specifying either "client" or "server" mode in the
+given "options". If neither "client" or "server" is given, broadcast is used
+by default.</p>
+<p>Message transport selection is up to you. The current options are "json" and "byte".
+See the cable_car docs for more info on message transports.</p>
+<p>BoardGame constructor; calls Game.<strong>init</strong>() and instantiates the GameBoard and</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.board_game.BoardGame" href="../board_game.html#legame.board_game.BoardGame">BoardGame</a></li>
+<li><a title="legame.network_game.NetworkGame" href="../network_game.html#legame.network_game.NetworkGame">NetworkGame</a></li>
+<li><a title="legame.game.Game" href="../game.html#legame.game.Game">Game</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.templates.network-board-game.MyGame.get_board"><code class="name flex">
+<span>def <span class="ident">get_board</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.templates.network-board-game.MyGame.initial_state"><code class="name flex">
+<span>def <span class="ident">initial_state</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.board_game.BoardGame" href="../board_game.html#legame.board_game.BoardGame">BoardGame</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.BoardGame.change_state" href="../game.html#legame.game.Game.change_state">change_state</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.clear_timeout" href="../game.html#legame.game.Game.clear_timeout">clear_timeout</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.exit_loop" href="../game.html#legame.game.Game.exit_loop">exit_loop</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.play" href="../game.html#legame.game.Game.play">play</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.run" href="../game.html#legame.game.Game.run">run</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.set_interval" href="../game.html#legame.game.Game.set_interval">set_interval</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.set_resource_dir_from_file" href="../game.html#legame.game.Game.set_resource_dir_from_file">set_resource_dir_from_file</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.set_timeout" href="../game.html#legame.game.Game.set_timeout">set_timeout</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.show" href="../game.html#legame.game.Game.show">show</a></code></li>
+<li><code><a title="legame.board_game.BoardGame.shutdown" href="../game.html#legame.game.Game.shutdown">shutdown</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legame.templates.network-board-game.Piece"><code class="flex name class">
+<span>class <span class="ident">Piece</span></span>
+<span>(</span><span>cell, color)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class compatible with pygame.Sprite which tracks position, motion, rotation in 2d space.</p>
+<p>MovingSprite constructor.
+"x" and "y" must be float values which define the position of the object.
+"speed" must be a float value which sets the magnitude of the motion vector of the object.
+"direction" must be a float value which sets the motion direction of the object in degrees.</p>
+<p>If you would like to use a motion vector made up of x/y values, create a
+"motion" vector with the values you need, and skip this function completely,
+like so:</p>
+<pre><code>    class MySprite(MovingSprite):
+            def __init__(self):
+                    CenteredSprite.__init__(self, &lt;x&gt;, &lt;y&gt;)                 # Sets Sprite.rect
+                    self.motion = Vector(&lt;x&gt;, &lt;y&gt;)                                  # Cartesian
+                    self._motion_function = self.cartesian_motion   # (example)
+</code></pre></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></li>
+<li><a title="legame.sprite_enhancement.MovingSprite" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite">MovingSprite</a></li>
+<li><a title="legame.sprite_enhancement.CenteredSprite" href="../sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite">CenteredSprite</a></li>
+<li>pygame.sprite.Sprite</li>
+<li><a title="legame.board_game.AbstractGamePiece" href="../board_game.html#legame.board_game.AbstractGamePiece">AbstractGamePiece</a></li>
+<li><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GamePiece.direction_to_thing" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.direction_to_thing">direction_to_thing</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.direction_to_vector" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.direction_to_vector">direction_to_vector</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.is_directionless" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.is_directionless">is_directionless</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.radians_to_thing" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.radians_to_thing">radians_to_thing</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.radians_to_vector" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.radians_to_vector">radians_to_vector</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GamePiece.increment_turning_speed" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.increment_turning_speed">increment_turning_speed</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.ns_direction" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.ns_direction">ns_direction</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.set_motion_polar" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.set_motion_polar">set_motion_polar</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.shift_position" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.shift_position">shift_position</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.turn_towards" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.turn_towards">turn_towards</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.update" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.update">update</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.y" href="../sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.y">y</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GamePiece.is_offscreen" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.is_offscreen">is_offscreen</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.make_heading" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.make_heading">make_heading</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.no_motion" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.no_motion">no_motion</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GamePiece.angle_to_thing" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.angle_to_thing">angle_to_thing</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.angle_to_vector" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.angle_to_vector">angle_to_vector</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.distance_to_vector" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.distance_to_vector">distance_to_vector</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.seek_motion" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.seek_motion">seek_motion</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.board_game.GamePiece" href="../board_game.html#legame.board_game.GamePiece">GamePiece</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.board_game.GamePiece.cartesian_motion" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.cartesian_motion">cartesian_motion</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.direction" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.direction">direction</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.distance_to_thing" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.distance_to_thing">distance_to_thing</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.ew_direction" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.ew_direction">ew_direction</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.move_to" href="../board_game.html#legame.board_game.AbstractGamePiece.move_to">move_to</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.speed" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.speed">speed</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.travel_to" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.travel_to">travel_to</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.turn_away_from" href="../sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.turn_away_from">turn_away_from</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.update_rect" href="../sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></code></li>
+<li><code><a title="legame.board_game.GamePiece.x" href="../sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.x">x</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.flipper.Flipper.queue_flipper" href="../flipper.html#legame.flipper.Flipper.queue_flipper">queue_flipper</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.flipper.Flipper.flip" href="../flipper.html#legame.flipper.Flipper.flip">flip</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.flipper.Flipper.next_flipper" href="../flipper.html#legame.flipper.Flipper.next_flipper">next_flipper</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.flipper.Flipper.queue_flippers" href="../flipper.html#legame.flipper.Flipper.queue_flippers">queue_flippers</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legame.templates" href="index.html">legame.templates</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legame.templates.network-board-game.EmptyGameState" href="#legame.templates.network-board-game.EmptyGameState">EmptyGameState</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.enter_state" href="#legame.templates.network-board-game.EmptyGameState.enter_state">enter_state</a></code></li>
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.exit_state" href="#legame.templates.network-board-game.EmptyGameState.exit_state">exit_state</a></code></li>
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.handle_message" href="#legame.templates.network-board-game.EmptyGameState.handle_message">handle_message</a></code></li>
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.quit" href="#legame.templates.network-board-game.EmptyGameState.quit">quit</a></code></li>
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.videoexpose" href="#legame.templates.network-board-game.EmptyGameState.videoexpose">videoexpose</a></code></li>
+<li><code><a title="legame.templates.network-board-game.EmptyGameState.videoresize" href="#legame.templates.network-board-game.EmptyGameState.videoresize">videoresize</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.GSQuit" href="#legame.templates.network-board-game.GSQuit">GSQuit</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.MsgAdd" href="#legame.templates.network-board-game.MsgAdd">MsgAdd</a></code></h4>
+<ul class="">
+<li><code><a title="legame.templates.network-board-game.MsgAdd.decode_attributes" href="#legame.templates.network-board-game.MsgAdd.decode_attributes">decode_attributes</a></code></li>
+<li><code><a title="legame.templates.network-board-game.MsgAdd.encoded_attributes" href="#legame.templates.network-board-game.MsgAdd.encoded_attributes">encoded_attributes</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.MsgMove" href="#legame.templates.network-board-game.MsgMove">MsgMove</a></code></h4>
+<ul class="">
+<li><code><a title="legame.templates.network-board-game.MsgMove.decode_attributes" href="#legame.templates.network-board-game.MsgMove.decode_attributes">decode_attributes</a></code></li>
+<li><code><a title="legame.templates.network-board-game.MsgMove.encoded_attributes" href="#legame.templates.network-board-game.MsgMove.encoded_attributes">encoded_attributes</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.MyBoard" href="#legame.templates.network-board-game.MyBoard">MyBoard</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.MyGame" href="#legame.templates.network-board-game.MyGame">MyGame</a></code></h4>
+<ul class="">
+<li><code><a title="legame.templates.network-board-game.MyGame.get_board" href="#legame.templates.network-board-game.MyGame.get_board">get_board</a></code></li>
+<li><code><a title="legame.templates.network-board-game.MyGame.initial_state" href="#legame.templates.network-board-game.MyGame.initial_state">initial_state</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.templates.network-board-game.Piece" href="#legame.templates.network-board-game.Piece">Piece</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

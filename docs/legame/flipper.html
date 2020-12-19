@@ -33,13 +33,13 @@
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="legame.flipper.CycleBetween"><code class="flex name class">
-<span>class <span class="ident">CycleBetween</span></span>
+<dt id="legame.flipper.FlipBetween"><code class="flex name class">
+<span>class <span class="ident">FlipBetween</span></span>
 <span>(</span><span>variant=None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Cycles back and forth through an ImageSet; when at the end, backs up to the beginning</p>
-<p>When an ImageCycle is queued in a Flipper, it gets a reference to the root of the
+<p>When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
 parameter (string).</p>
 <p>If you would like to be notified when the sequence is complete, pass a function
@@ -47,20 +47,20 @@ reference with the "on_complete" parameter (function reference).</p>
 <p>Other common arguments include:</p>
 <pre><code>    loop_forever:           Restart from the beginning after finishing the cycle
     loops:                          Number of loops to cycle through, when not "loop_forever"
-    fps:                            Frames-per-second. The ImageCycle will use the game.fps
+    fps:                            Frames-per-second. The FlipEffect will use the game.fps
                                             to determine how many frames to skip between flips.
 </code></pre>
-<p>These vary according to the particular ImageCycle subclass you're using. The ones
+<p>These vary according to the particular FlipEffect subclass you're using. The ones
 defined in this module include:</p>
-<pre><code>    CycleThrough, CycleBetween, and CycleNone
+<pre><code>    FlipThrough, FlipBetween, and FlipNone
 </code></pre></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></li>
+<li><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="legame.flipper.CycleBetween.advance_frame"><code class="name flex">
+<dt id="legame.flipper.FlipBetween.advance_frame"><code class="name flex">
 <span>def <span class="ident">advance_frame</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -69,21 +69,84 @@ defined in this module include:</p>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></b></code>:
+<li><code><b><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legame.flipper.ImageCycle.first_image" href="#legame.flipper.ImageCycle.first_image">first_image</a></code></li>
-<li><code><a title="legame.flipper.ImageCycle.update" href="#legame.flipper.ImageCycle.update">update</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.first_image" href="#legame.flipper.FlipEffect.first_image">first_image</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.update" href="#legame.flipper.FlipEffect.update">update</a></code></li>
 </ul>
 </li>
 </ul>
 </dd>
-<dt id="legame.flipper.CycleNone"><code class="flex name class">
-<span>class <span class="ident">CycleNone</span></span>
+<dt id="legame.flipper.FlipEffect"><code class="flex name class">
+<span>class <span class="ident">FlipEffect</span></span>
+<span>(</span><span>variant=None, on_complete=None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the image on a Sprite to a member of an ImageSet in sequence</p>
+<p>When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
+Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
+parameter (string).</p>
+<p>If you would like to be notified when the sequence is complete, pass a function
+reference with the "on_complete" parameter (function reference).</p>
+<p>Other common arguments include:</p>
+<pre><code>    loop_forever:           Restart from the beginning after finishing the cycle
+    loops:                          Number of loops to cycle through, when not "loop_forever"
+    fps:                            Frames-per-second. The FlipEffect will use the game.fps
+                                            to determine how many frames to skip between flips.
+</code></pre>
+<p>These vary according to the particular FlipEffect subclass you're using. The ones
+defined in this module include:</p>
+<pre><code>    FlipThrough, FlipBetween, and FlipNone
+</code></pre></div>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legame.flipper.FlipBetween" href="#legame.flipper.FlipBetween">FlipBetween</a></li>
+<li><a title="legame.flipper.FlipNone" href="#legame.flipper.FlipNone">FlipNone</a></li>
+<li><a title="legame.flipper.FlipThrough" href="#legame.flipper.FlipThrough">FlipThrough</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legame.flipper.FlipEffect.fps"><code class="name">var <span class="ident">fps</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.flipper.FlipEffect.frame"><code class="name">var <span class="ident">frame</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.flipper.FlipEffect.loop_forever"><code class="name">var <span class="ident">loop_forever</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="legame.flipper.FlipEffect.loops"><code class="name">var <span class="ident">loops</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legame.flipper.FlipEffect.first_image"><code class="name flex">
+<span>def <span class="ident">first_image</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the first image in the set, or the only image in the case of FlipNone.</p></div>
+</dd>
+<dt id="legame.flipper.FlipEffect.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called from Flipper.update() - advance frame in accordance with fps.
+Returns Image object.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="legame.flipper.FlipNone"><code class="flex name class">
+<span>class <span class="ident">FlipNone</span></span>
 <span>(</span><span>variant=None, on_complete=None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Displays only the first image in the ImageSet</p>
-<p>When an ImageCycle is queued in a Flipper, it gets a reference to the root of the
+<p>When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
 parameter (string).</p>
 <p>If you would like to be notified when the sequence is complete, pass a function
@@ -91,20 +154,20 @@ reference with the "on_complete" parameter (function reference).</p>
 <p>Other common arguments include:</p>
 <pre><code>    loop_forever:           Restart from the beginning after finishing the cycle
     loops:                          Number of loops to cycle through, when not "loop_forever"
-    fps:                            Frames-per-second. The ImageCycle will use the game.fps
+    fps:                            Frames-per-second. The FlipEffect will use the game.fps
                                             to determine how many frames to skip between flips.
 </code></pre>
-<p>These vary according to the particular ImageCycle subclass you're using. The ones
+<p>These vary according to the particular FlipEffect subclass you're using. The ones
 defined in this module include:</p>
-<pre><code>    CycleThrough, CycleBetween, and CycleNone
+<pre><code>    FlipThrough, FlipBetween, and FlipNone
 </code></pre></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></li>
+<li><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="legame.flipper.CycleNone.advance_frame"><code class="name flex">
+<dt id="legame.flipper.FlipNone.advance_frame"><code class="name flex">
 <span>def <span class="ident">advance_frame</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -113,22 +176,22 @@ defined in this module include:</p>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></b></code>:
+<li><code><b><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legame.flipper.ImageCycle.first_image" href="#legame.flipper.ImageCycle.first_image">first_image</a></code></li>
-<li><code><a title="legame.flipper.ImageCycle.update" href="#legame.flipper.ImageCycle.update">update</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.first_image" href="#legame.flipper.FlipEffect.first_image">first_image</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.update" href="#legame.flipper.FlipEffect.update">update</a></code></li>
 </ul>
 </li>
 </ul>
 </dd>
-<dt id="legame.flipper.CycleThrough"><code class="flex name class">
-<span>class <span class="ident">CycleThrough</span></span>
+<dt id="legame.flipper.FlipThrough"><code class="flex name class">
+<span>class <span class="ident">FlipThrough</span></span>
 <span>(</span><span>variant=None, on_complete=None, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Cycles from the start to the end of an ImageSet. If looping, starts again from the beginning,
 otherwise leaves the frame pointer at the end of the image set.</p>
-<p>When an ImageCycle is queued in a Flipper, it gets a reference to the root of the
+<p>When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
 parameter (string).</p>
 <p>If you would like to be notified when the sequence is complete, pass a function
@@ -136,20 +199,20 @@ reference with the "on_complete" parameter (function reference).</p>
 <p>Other common arguments include:</p>
 <pre><code>    loop_forever:           Restart from the beginning after finishing the cycle
     loops:                          Number of loops to cycle through, when not "loop_forever"
-    fps:                            Frames-per-second. The ImageCycle will use the game.fps
+    fps:                            Frames-per-second. The FlipEffect will use the game.fps
                                             to determine how many frames to skip between flips.
 </code></pre>
-<p>These vary according to the particular ImageCycle subclass you're using. The ones
+<p>These vary according to the particular FlipEffect subclass you're using. The ones
 defined in this module include:</p>
-<pre><code>    CycleThrough, CycleBetween, and CycleNone
+<pre><code>    FlipThrough, FlipBetween, and FlipNone
 </code></pre></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></li>
+<li><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="legame.flipper.CycleThrough.advance_frame"><code class="name flex">
+<dt id="legame.flipper.FlipThrough.advance_frame"><code class="name flex">
 <span>def <span class="ident">advance_frame</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -158,32 +221,35 @@ defined in this module include:</p>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></b></code>:
+<li><code><b><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legame.flipper.ImageCycle.first_image" href="#legame.flipper.ImageCycle.first_image">first_image</a></code></li>
-<li><code><a title="legame.flipper.ImageCycle.update" href="#legame.flipper.ImageCycle.update">update</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.first_image" href="#legame.flipper.FlipEffect.first_image">first_image</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.update" href="#legame.flipper.FlipEffect.update">update</a></code></li>
 </ul>
 </li>
 </ul>
 </dd>
 <dt id="legame.flipper.Flipper"><code class="flex name class">
 <span>class <span class="ident">Flipper</span></span>
-<span>(</span><span>*cyclers, alpha_channel=True, color_key=None)</span>
+<span>(</span><span>*flippers, alpha_channel=True, color_key=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initialize the image set used by this Thing, set the current ImageCycle to the first
-ImageCycle object given, and queue up any other ImageCycle given.</p>
+<div class="desc"><p>Initialize the image set used by this Thing, set the current FlipEffect to the first
+FlipEffect object given, and queue up any other FlipEffect given.</p>
 <p>e.g.:</p>
-<pre><code>    Flipper.__init__(self, &lt;cycler&gt;, &lt;cycler&gt;, &lt;cycler&gt;)
+<pre><code>    Flipper.__init__(self, &lt;flipper&gt;, &lt;flipper&gt;, &lt;flipper&gt;)
 </code></pre>
-<p>See ImageCycle.<strong>init</strong> for common image cycle options.</p></div>
+<p>See FlipEffect.<strong>init</strong> for common image flipper options.</p></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="legame.examples.board-game.Block" href="examples/board-game.html#legame.examples.board-game.Block">Block</a></li>
 <li><a title="legame.examples.board-game.Glow" href="examples/board-game.html#legame.examples.board-game.Glow">Glow</a></li>
 <li><a title="legame.examples.network-game.Block" href="examples/network-game.html#legame.examples.network-game.Block">Block</a></li>
 <li><a title="legame.examples.network-game.Glow" href="examples/network-game.html#legame.examples.network-game.Glow">Glow</a></li>
-<li><a title="legame.game-templates.game.EmptySprite" href="game-templates/game.html#legame.game-templates.game.EmptySprite">EmptySprite</a></li>
+<li><a title="legame.templates.board-game.Piece" href="templates/board-game.html#legame.templates.board-game.Piece">Piece</a></li>
+<li><a title="legame.templates.game.EmptySprite" href="templates/game.html#legame.templates.game.EmptySprite">EmptySprite</a></li>
+<li><a title="legame.templates.network-board-game.Piece" href="templates/network-board-game.html#legame.templates.network-board-game.Piece">Piece</a></li>
+<li><a title="legame.templates.network-game.EmptySprite" href="templates/network-game.html#legame.templates.network-game.EmptySprite">EmptySprite</a></li>
 <li><a title="legame.tests.flipper_test.Block" href="tests/flipper_test.html#legame.tests.flipper_test.Block">Block</a></li>
 </ul>
 <h3>Class variables</h3>
@@ -204,33 +270,33 @@ ImageCycle object given, and queue up any other ImageCycle given.</p>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="legame.flipper.Flipper.cycle"><code class="name flex">
-<span>def <span class="ident">cycle</span></span>(<span>self, *cyclers)</span>
+<dt id="legame.flipper.Flipper.flip"><code class="name flex">
+<span>def <span class="ident">flip</span></span>(<span>self, *flippers)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Replaces the current ImageCycle with the first ImageCycle object given, and queues any other
-ImageCycle objects given.</p>
+<div class="desc"><p>Replaces the current FlipEffect with the first FlipEffect object given, and queues any other
+FlipEffect objects given.</p>
 <p>e.g.:</p>
-<pre><code>    thing.cycle(&lt;cycler&gt;, &lt;cycler&gt;, &lt;cycler&gt;)
+<pre><code>    thing.flip(&lt;flipper&gt;, &lt;flipper&gt;, &lt;flipper&gt;)
 </code></pre></div>
 </dd>
-<dt id="legame.flipper.Flipper.next_cycler"><code class="name flex">
-<span>def <span class="ident">next_cycler</span></span>(<span>self)</span>
+<dt id="legame.flipper.Flipper.next_flipper"><code class="name flex">
+<span>def <span class="ident">next_flipper</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Advances to the next ImageCycle in the queue.</p></div>
+<div class="desc"><p>Advances to the next FlipEffect in the queue.</p></div>
 </dd>
-<dt id="legame.flipper.Flipper.queue_cycler"><code class="name flex">
-<span>def <span class="ident">queue_cycler</span></span>(<span>self, cycler)</span>
+<dt id="legame.flipper.Flipper.queue_flipper"><code class="name flex">
+<span>def <span class="ident">queue_flipper</span></span>(<span>self, flipper)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Appends a single ImageCycle object to the queue.</p></div>
+<div class="desc"><p>Appends a single FlipEffect object to the queue.</p></div>
 </dd>
-<dt id="legame.flipper.Flipper.queue_cyclers"><code class="name flex">
-<span>def <span class="ident">queue_cyclers</span></span>(<span>self, cyclers)</span>
+<dt id="legame.flipper.Flipper.queue_flippers"><code class="name flex">
+<span>def <span class="ident">queue_flippers</span></span>(<span>self, flippers)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Appends a list of ImageCycle objects to the queue.</p></div>
+<div class="desc"><p>Appends a list of FlipEffect objects to the queue.</p></div>
 </dd>
 <dt id="legame.flipper.Flipper.update"><code class="name flex">
 <span>def <span class="ident">update</span></span>(<span>self)</span>
@@ -239,69 +305,6 @@ ImageCycle objects given.</p>
 <div class="desc"><p>Called from pygame.Sprite, this function updates the "image" property of the sprite.
 If your Sprite uses function as the primary "update" function without modifying it,
 make sure that this function is first in your Sprite's method resolution order (MRO).</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="legame.flipper.ImageCycle"><code class="flex name class">
-<span>class <span class="ident">ImageCycle</span></span>
-<span>(</span><span>variant=None, on_complete=None, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets the image on a Sprite to a member of an ImageSet in sequence</p>
-<p>When an ImageCycle is queued in a Flipper, it gets a reference to the root of the
-Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
-parameter (string).</p>
-<p>If you would like to be notified when the sequence is complete, pass a function
-reference with the "on_complete" parameter (function reference).</p>
-<p>Other common arguments include:</p>
-<pre><code>    loop_forever:           Restart from the beginning after finishing the cycle
-    loops:                          Number of loops to cycle through, when not "loop_forever"
-    fps:                            Frames-per-second. The ImageCycle will use the game.fps
-                                            to determine how many frames to skip between flips.
-</code></pre>
-<p>These vary according to the particular ImageCycle subclass you're using. The ones
-defined in this module include:</p>
-<pre><code>    CycleThrough, CycleBetween, and CycleNone
-</code></pre></div>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="legame.flipper.CycleBetween" href="#legame.flipper.CycleBetween">CycleBetween</a></li>
-<li><a title="legame.flipper.CycleNone" href="#legame.flipper.CycleNone">CycleNone</a></li>
-<li><a title="legame.flipper.CycleThrough" href="#legame.flipper.CycleThrough">CycleThrough</a></li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="legame.flipper.ImageCycle.fps"><code class="name">var <span class="ident">fps</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="legame.flipper.ImageCycle.frame"><code class="name">var <span class="ident">frame</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="legame.flipper.ImageCycle.loop_forever"><code class="name">var <span class="ident">loop_forever</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="legame.flipper.ImageCycle.loops"><code class="name">var <span class="ident">loops</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="legame.flipper.ImageCycle.first_image"><code class="name flex">
-<span>def <span class="ident">first_image</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns the first image in the set, or the only image in the case of CycleNone.</p></div>
-</dd>
-<dt id="legame.flipper.ImageCycle.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Called from Flipper.update() - advance frame in accordance with fps.
-Returns Image object.</p></div>
 </dd>
 </dl>
 </dd>
@@ -322,39 +325,39 @@ Returns Image object.</p></div>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="legame.flipper.CycleBetween" href="#legame.flipper.CycleBetween">CycleBetween</a></code></h4>
+<h4><code><a title="legame.flipper.FlipBetween" href="#legame.flipper.FlipBetween">FlipBetween</a></code></h4>
 <ul class="">
-<li><code><a title="legame.flipper.CycleBetween.advance_frame" href="#legame.flipper.CycleBetween.advance_frame">advance_frame</a></code></li>
+<li><code><a title="legame.flipper.FlipBetween.advance_frame" href="#legame.flipper.FlipBetween.advance_frame">advance_frame</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="legame.flipper.CycleNone" href="#legame.flipper.CycleNone">CycleNone</a></code></h4>
+<h4><code><a title="legame.flipper.FlipEffect" href="#legame.flipper.FlipEffect">FlipEffect</a></code></h4>
 <ul class="">
-<li><code><a title="legame.flipper.CycleNone.advance_frame" href="#legame.flipper.CycleNone.advance_frame">advance_frame</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.first_image" href="#legame.flipper.FlipEffect.first_image">first_image</a></code></li>
+<li><code><a title="legame.flipper.FlipEffect.update" href="#legame.flipper.FlipEffect.update">update</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="legame.flipper.CycleThrough" href="#legame.flipper.CycleThrough">CycleThrough</a></code></h4>
+<h4><code><a title="legame.flipper.FlipNone" href="#legame.flipper.FlipNone">FlipNone</a></code></h4>
 <ul class="">
-<li><code><a title="legame.flipper.CycleThrough.advance_frame" href="#legame.flipper.CycleThrough.advance_frame">advance_frame</a></code></li>
+<li><code><a title="legame.flipper.FlipNone.advance_frame" href="#legame.flipper.FlipNone.advance_frame">advance_frame</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legame.flipper.FlipThrough" href="#legame.flipper.FlipThrough">FlipThrough</a></code></h4>
+<ul class="">
+<li><code><a title="legame.flipper.FlipThrough.advance_frame" href="#legame.flipper.FlipThrough.advance_frame">advance_frame</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="legame.flipper.Flipper" href="#legame.flipper.Flipper">Flipper</a></code></h4>
 <ul class="two-column">
-<li><code><a title="legame.flipper.Flipper.cycle" href="#legame.flipper.Flipper.cycle">cycle</a></code></li>
-<li><code><a title="legame.flipper.Flipper.next_cycler" href="#legame.flipper.Flipper.next_cycler">next_cycler</a></code></li>
+<li><code><a title="legame.flipper.Flipper.flip" href="#legame.flipper.Flipper.flip">flip</a></code></li>
+<li><code><a title="legame.flipper.Flipper.next_flipper" href="#legame.flipper.Flipper.next_flipper">next_flipper</a></code></li>
 <li><code><a title="legame.flipper.Flipper.preload" href="#legame.flipper.Flipper.preload">preload</a></code></li>
-<li><code><a title="legame.flipper.Flipper.queue_cycler" href="#legame.flipper.Flipper.queue_cycler">queue_cycler</a></code></li>
-<li><code><a title="legame.flipper.Flipper.queue_cyclers" href="#legame.flipper.Flipper.queue_cyclers">queue_cyclers</a></code></li>
+<li><code><a title="legame.flipper.Flipper.queue_flipper" href="#legame.flipper.Flipper.queue_flipper">queue_flipper</a></code></li>
+<li><code><a title="legame.flipper.Flipper.queue_flippers" href="#legame.flipper.Flipper.queue_flippers">queue_flippers</a></code></li>
 <li><code><a title="legame.flipper.Flipper.update" href="#legame.flipper.Flipper.update">update</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="legame.flipper.ImageCycle" href="#legame.flipper.ImageCycle">ImageCycle</a></code></h4>
-<ul class="">
-<li><code><a title="legame.flipper.ImageCycle.first_image" href="#legame.flipper.ImageCycle.first_image">first_image</a></code></li>
-<li><code><a title="legame.flipper.ImageCycle.update" href="#legame.flipper.ImageCycle.update">update</a></code></li>
 </ul>
 </li>
 </ul>

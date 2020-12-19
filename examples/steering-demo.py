@@ -1,3 +1,7 @@
+"""
+Simple demo which points an arrow at the mouse cursor.
+"""
+
 import random, pygame
 from pygame import Rect, Surface
 from pygame.draw import polygon, circle, line

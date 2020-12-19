@@ -1,3 +1,7 @@
+"""
+Demonstrates "neighbor" detection using the Neighborhood class
+"""
+
 from random import seed, randrange, uniform
 from pygame.sprite import Sprite
 from pygame import Rect, Surface
@@ -10,9 +14,6 @@ from legame.locals import *
 
 
 class HerdDemo(Game, Neighborhood):
-	"""
-	Demonstrates "neighbor" detection using Neighborhood class
-	"""
 
 	cells_x			= 12
 	cells_y			= 8

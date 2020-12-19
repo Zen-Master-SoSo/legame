@@ -88,6 +88,8 @@ the code.</p>
 <ul class="hlist">
 <li><a title="legame.examples.board-game.TestGame" href="examples/board-game.html#legame.examples.board-game.TestGame">TestGame</a></li>
 <li><a title="legame.examples.network-game.TestGame" href="examples/network-game.html#legame.examples.network-game.TestGame">TestGame</a></li>
+<li><a title="legame.templates.board-game.MyGame" href="templates/board-game.html#legame.templates.board-game.MyGame">MyGame</a></li>
+<li><a title="legame.templates.network-board-game.MyGame" href="templates/network-board-game.html#legame.templates.network-board-game.MyGame">MyGame</a></li>
 <li><a title="legame.tests.board_game_test.FakeGame" href="tests/board_game_test.html#legame.tests.board_game_test.FakeGame">FakeGame</a></li>
 </ul>
 <h3>Class variables</h3>
@@ -242,6 +244,7 @@ pos, rel, buttons</p></div>
 <li><code><a title="legame.game.GameState.keydown" href="game.html#legame.game.GameState.keydown">keydown</a></code></li>
 <li><code><a title="legame.game.GameState.keyup" href="game.html#legame.game.GameState.keyup">keyup</a></code></li>
 <li><code><a title="legame.game.GameState.loop_start" href="game.html#legame.game.GameState.loop_start">loop_start</a></code></li>
+<li><code><a title="legame.game.GameState.quit" href="game.html#legame.game.GameState.quit">quit</a></code></li>
 <li><code><a title="legame.game.GameState.videoexpose" href="game.html#legame.game.GameState.videoexpose">videoexpose</a></code></li>
 <li><code><a title="legame.game.GameState.videoresize" href="game.html#legame.game.GameState.videoresize">videoresize</a></code></li>
 </ul>
@@ -335,6 +338,11 @@ Either of those arguments are optional. Providing neither will yield a copy.</p>
 </code></dt>
 <dd>
 <div class="desc"></div>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legame.templates.board-game.MyBoard" href="templates/board-game.html#legame.templates.board-game.MyBoard">MyBoard</a></li>
+<li><a title="legame.templates.network-board-game.MyBoard" href="templates/network-board-game.html#legame.templates.network-board-game.MyBoard">MyBoard</a></li>
+</ul>
 <h3>Class variables</h3>
 <dl>
 <dt id="legame.board_game.GameBoard.background"><code class="name">var <span class="ident">background</span></code></dt>
@@ -486,6 +494,8 @@ like so:</p>
 <ul class="hlist">
 <li><a title="legame.examples.board-game.Block" href="examples/board-game.html#legame.examples.board-game.Block">Block</a></li>
 <li><a title="legame.examples.network-game.Block" href="examples/network-game.html#legame.examples.network-game.Block">Block</a></li>
+<li><a title="legame.templates.board-game.Piece" href="templates/board-game.html#legame.templates.board-game.Piece">Piece</a></li>
+<li><a title="legame.templates.network-board-game.Piece" href="templates/network-board-game.html#legame.templates.network-board-game.Piece">Piece</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -527,13 +537,17 @@ like so:</p>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.set_motion_polar" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.set_motion_polar">set_motion_polar</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.shift_position" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.shift_position">shift_position</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.speed" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.speed">speed</a></code></li>
-<li><code><a title="legame.sprite_enhancement.MovingSprite.travel_to" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.travel_to">travel_to</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.turn_away_from" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.turn_away_from">turn_away_from</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.turn_towards" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.turn_towards">turn_towards</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.update" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.update">update</a></code></li>
-<li><code><a title="legame.sprite_enhancement.MovingSprite.update_rect" href="sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.x" href="sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.x">x</a></code></li>
 <li><code><a title="legame.sprite_enhancement.MovingSprite.y" href="sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.y">y</a></code></li>
+</ul>
+</li>
+<li><code><b><a title="legame.sprite_enhancement.MovingSprite" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite">MovingSprite</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legame.sprite_enhancement.MovingSprite.travel_to" href="sprite_enhancement.html#legame.sprite_enhancement.MovingSprite.travel_to">travel_to</a></code></li>
+<li><code><a title="legame.sprite_enhancement.MovingSprite.update_rect" href="sprite_enhancement.html#legame.sprite_enhancement.CenteredSprite.update_rect">update_rect</a></code></li>
 </ul>
 </li>
 <li><code><b><a title="legame.board_game.AbstractGamePiece" href="#legame.board_game.AbstractGamePiece">AbstractGamePiece</a></b></code>:

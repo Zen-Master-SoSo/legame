@@ -36,26 +36,26 @@
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="legame.tests.flipper_test.test_cycle_between_twice"><code class="name flex">
-<span>def <span class="ident">test_cycle_between_twice</span></span>(<span>thing)</span>
+<dt id="legame.tests.flipper_test.test_flip_between_twice"><code class="name flex">
+<span>def <span class="ident">test_flip_between_twice</span></span>(<span>thing)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="legame.tests.flipper_test.test_cycle_through_loop_forever"><code class="name flex">
-<span>def <span class="ident">test_cycle_through_loop_forever</span></span>(<span>thing)</span>
+<dt id="legame.tests.flipper_test.test_flip_through_loop_forever"><code class="name flex">
+<span>def <span class="ident">test_flip_through_loop_forever</span></span>(<span>thing)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="legame.tests.flipper_test.test_cycle_through_once"><code class="name flex">
-<span>def <span class="ident">test_cycle_through_once</span></span>(<span>thing)</span>
+<dt id="legame.tests.flipper_test.test_flip_through_once"><code class="name flex">
+<span>def <span class="ident">test_flip_through_once</span></span>(<span>thing)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="legame.tests.flipper_test.test_cycle_through_twice"><code class="name flex">
-<span>def <span class="ident">test_cycle_through_twice</span></span>(<span>thing)</span>
+<dt id="legame.tests.flipper_test.test_flip_through_twice"><code class="name flex">
+<span>def <span class="ident">test_flip_through_twice</span></span>(<span>thing)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -66,8 +66,8 @@
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="legame.tests.flipper_test.test_two_cycles_queued"><code class="name flex">
-<span>def <span class="ident">test_two_cycles_queued</span></span>(<span>thing)</span>
+<dt id="legame.tests.flipper_test.test_two_flippers_queued"><code class="name flex">
+<span>def <span class="ident">test_two_flippers_queued</span></span>(<span>thing)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,12 +87,12 @@
 <span>class <span class="ident">Block</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initialize the image set used by this Thing, set the current ImageCycle to the first
-ImageCycle object given, and queue up any other ImageCycle given.</p>
+<div class="desc"><p>Initialize the image set used by this Thing, set the current FlipEffect to the first
+FlipEffect object given, and queue up any other FlipEffect given.</p>
 <p>e.g.:</p>
-<pre><code>    Flipper.__init__(self, &lt;cycler&gt;, &lt;cycler&gt;, &lt;cycler&gt;)
+<pre><code>    Flipper.__init__(self, &lt;flipper&gt;, &lt;flipper&gt;, &lt;flipper&gt;)
 </code></pre>
-<p>See ImageCycle.<strong>init</strong> for common image cycle options.</p></div>
+<p>See FlipEffect.<strong>init</strong> for common image flipper options.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></li>
@@ -108,10 +108,10 @@ ImageCycle object given, and queue up any other ImageCycle given.</p>
 <ul class="hlist">
 <li><code><b><a title="legame.flipper.Flipper" href="../flipper.html#legame.flipper.Flipper">Flipper</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legame.flipper.Flipper.cycle" href="../flipper.html#legame.flipper.Flipper.cycle">cycle</a></code></li>
-<li><code><a title="legame.flipper.Flipper.next_cycler" href="../flipper.html#legame.flipper.Flipper.next_cycler">next_cycler</a></code></li>
-<li><code><a title="legame.flipper.Flipper.queue_cycler" href="../flipper.html#legame.flipper.Flipper.queue_cycler">queue_cycler</a></code></li>
-<li><code><a title="legame.flipper.Flipper.queue_cyclers" href="../flipper.html#legame.flipper.Flipper.queue_cyclers">queue_cyclers</a></code></li>
+<li><code><a title="legame.flipper.Flipper.flip" href="../flipper.html#legame.flipper.Flipper.flip">flip</a></code></li>
+<li><code><a title="legame.flipper.Flipper.next_flipper" href="../flipper.html#legame.flipper.Flipper.next_flipper">next_flipper</a></code></li>
+<li><code><a title="legame.flipper.Flipper.queue_flipper" href="../flipper.html#legame.flipper.Flipper.queue_flipper">queue_flipper</a></code></li>
+<li><code><a title="legame.flipper.Flipper.queue_flippers" href="../flipper.html#legame.flipper.Flipper.queue_flippers">queue_flippers</a></code></li>
 <li><code><a title="legame.flipper.Flipper.update" href="../flipper.html#legame.flipper.Flipper.update">update</a></code></li>
 </ul>
 </li>
@@ -147,12 +147,12 @@ ImageCycle object given, and queue up any other ImageCycle given.</p>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="legame.tests.flipper_test.test_between_through_once" href="#legame.tests.flipper_test.test_between_through_once">test_between_through_once</a></code></li>
-<li><code><a title="legame.tests.flipper_test.test_cycle_between_twice" href="#legame.tests.flipper_test.test_cycle_between_twice">test_cycle_between_twice</a></code></li>
-<li><code><a title="legame.tests.flipper_test.test_cycle_through_loop_forever" href="#legame.tests.flipper_test.test_cycle_through_loop_forever">test_cycle_through_loop_forever</a></code></li>
-<li><code><a title="legame.tests.flipper_test.test_cycle_through_once" href="#legame.tests.flipper_test.test_cycle_through_once">test_cycle_through_once</a></code></li>
-<li><code><a title="legame.tests.flipper_test.test_cycle_through_twice" href="#legame.tests.flipper_test.test_cycle_through_twice">test_cycle_through_twice</a></code></li>
+<li><code><a title="legame.tests.flipper_test.test_flip_between_twice" href="#legame.tests.flipper_test.test_flip_between_twice">test_flip_between_twice</a></code></li>
+<li><code><a title="legame.tests.flipper_test.test_flip_through_loop_forever" href="#legame.tests.flipper_test.test_flip_through_loop_forever">test_flip_through_loop_forever</a></code></li>
+<li><code><a title="legame.tests.flipper_test.test_flip_through_once" href="#legame.tests.flipper_test.test_flip_through_once">test_flip_through_once</a></code></li>
+<li><code><a title="legame.tests.flipper_test.test_flip_through_twice" href="#legame.tests.flipper_test.test_flip_through_twice">test_flip_through_twice</a></code></li>
 <li><code><a title="legame.tests.flipper_test.test_starting_frame" href="#legame.tests.flipper_test.test_starting_frame">test_starting_frame</a></code></li>
-<li><code><a title="legame.tests.flipper_test.test_two_cycles_queued" href="#legame.tests.flipper_test.test_two_cycles_queued">test_two_cycles_queued</a></code></li>
+<li><code><a title="legame.tests.flipper_test.test_two_flippers_queued" href="#legame.tests.flipper_test.test_two_flippers_queued">test_two_flippers_queued</a></code></li>
 <li><code><a title="legame.tests.flipper_test.thing" href="#legame.tests.flipper_test.thing">thing</a></code></li>
 </ul>
 </li>

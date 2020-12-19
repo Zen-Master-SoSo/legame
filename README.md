@@ -41,9 +41,7 @@ It's possible to have just one game state. I wrote a space rescue game with a si
 
 The "sprite_enhancement" module includes the "MovingSprite" class which aids in moving sprites around the screen. Each sprite has a "position" and "motion" property which are used to update the position each time through the event loop.
 
-The "flipper" module provides classes which flip the image of a sprite on a cyclical basis. Any sprite in your game can also inherit "MovingSprite", and can also inherit "Flipper".
-
-Inherit both "MovingSprite" and "Flipper" and you've got a pretty fancy little animated moving thing, with very little coding necessary.
+The "flipper" module provides classes which flip the image of a sprite on a cyclical basis. Any sprite in your game which inherits Sprite can also inherit both "MovingSprite" and "Flipper". Inherit both "MovingSprite" and "Flipper" and you've got a pretty fancy little animated moving thing, with very little coding necessary.
 
 #### Resources
 

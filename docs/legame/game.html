@@ -77,8 +77,8 @@ starting up modules. i.e.:</p>
 <li><a title="legame.examples.herd.HerdDemo" href="examples/herd.html#legame.examples.herd.HerdDemo">HerdDemo</a></li>
 <li><a title="legame.examples.seeking-demo.SeekingDemo" href="examples/seeking-demo.html#legame.examples.seeking-demo.SeekingDemo">SeekingDemo</a></li>
 <li><a title="legame.examples.steering-demo.SteeringDemo" href="examples/steering-demo.html#legame.examples.steering-demo.SteeringDemo">SteeringDemo</a></li>
-<li><a title="legame.game-templates.game.EmptyGame" href="game-templates/game.html#legame.game-templates.game.EmptyGame">EmptyGame</a></li>
 <li><a title="legame.network_game.NetworkGame" href="network_game.html#legame.network_game.NetworkGame">NetworkGame</a></li>
+<li><a title="legame.templates.game.MyGame" href="templates/game.html#legame.templates.game.MyGame">MyGame</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -297,8 +297,11 @@ state will not be changed.</p></div>
 <li><a title="legame.examples.network-game.GSBase" href="examples/network-game.html#legame.examples.network-game.GSBase">GSBase</a></li>
 <li><a title="legame.examples.seeking-demo.ChaseState" href="examples/seeking-demo.html#legame.examples.seeking-demo.ChaseState">ChaseState</a></li>
 <li><a title="legame.examples.steering-demo.ChaseState" href="examples/steering-demo.html#legame.examples.steering-demo.ChaseState">ChaseState</a></li>
-<li><a title="legame.game-templates.game.EmptyGameState" href="game-templates/game.html#legame.game-templates.game.EmptyGameState">EmptyGameState</a></li>
 <li><a title="legame.game.GameStateFinal" href="#legame.game.GameStateFinal">GameStateFinal</a></li>
+<li><a title="legame.templates.board-game.EmptyGameState" href="templates/board-game.html#legame.templates.board-game.EmptyGameState">EmptyGameState</a></li>
+<li><a title="legame.templates.game.EmptyGameState" href="templates/game.html#legame.templates.game.EmptyGameState">EmptyGameState</a></li>
+<li><a title="legame.templates.network-board-game.EmptyGameState" href="templates/network-board-game.html#legame.templates.network-board-game.EmptyGameState">EmptyGameState</a></li>
+<li><a title="legame.templates.network-game.EmptyGameState" href="templates/network-game.html#legame.templates.network-game.EmptyGameState">EmptyGameState</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -431,7 +434,8 @@ The event loop looks like this:
 <span>def <span class="ident">quit</span></span>(<span>self, event)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Event handler called when the user clicks the window's close button.
+"event" will be empty</p></div>
 </dd>
 <dt id="legame.game.GameState.videoexpose"><code class="name flex">
 <span>def <span class="ident">videoexpose</span></span>(<span>self, event)</span>
@@ -468,6 +472,8 @@ state will not be changed.</p></div>
 <ul class="hlist">
 <li><a title="legame.examples.network-game.GSQuit" href="examples/network-game.html#legame.examples.network-game.GSQuit">GSQuit</a></li>
 <li><a title="legame.exit_states.GSExitAnimation" href="exit_states.html#legame.exit_states.GSExitAnimation">GSExitAnimation</a></li>
+<li><a title="legame.templates.network-board-game.GSQuit" href="templates/network-board-game.html#legame.templates.network-board-game.GSQuit">GSQuit</a></li>
+<li><a title="legame.templates.network-game.GSQuit" href="templates/network-game.html#legame.templates.network-game.GSQuit">GSQuit</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -488,6 +494,7 @@ state will not be changed.</p></div>
 <li><code><a title="legame.game.GameState.mousebuttondown" href="#legame.game.GameState.mousebuttondown">mousebuttondown</a></code></li>
 <li><code><a title="legame.game.GameState.mousebuttonup" href="#legame.game.GameState.mousebuttonup">mousebuttonup</a></code></li>
 <li><code><a title="legame.game.GameState.mousemotion" href="#legame.game.GameState.mousemotion">mousemotion</a></code></li>
+<li><code><a title="legame.game.GameState.quit" href="#legame.game.GameState.quit">quit</a></code></li>
 <li><code><a title="legame.game.GameState.videoexpose" href="#legame.game.GameState.videoexpose">videoexpose</a></code></li>
 <li><code><a title="legame.game.GameState.videoresize" href="#legame.game.GameState.videoresize">videoresize</a></code></li>
 </ul>
