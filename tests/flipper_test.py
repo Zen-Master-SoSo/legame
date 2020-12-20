@@ -19,8 +19,7 @@ class FakeGame:
 		self.resource_dir = os.path.join(os.path.abspath(examples), "resources")
 		if not os.path.isdir(self.resource_dir):
 			raise NotADirectoryError(self.resource_dir)
-		self.resources = Resources(self.resource_dir)
-		self.resources.resource_dump = True
+		self.resources = Resources(self.resource_dir, True)
 
 
 class Block(Flipper):

@@ -4,6 +4,7 @@ access to these based on keywords and indexes.
 """
 
 import os, re, pygame
+from legame.svg import svg
 
 
 class Resources:
@@ -30,7 +31,7 @@ class Resources:
 		return self.sounds[name]
 
 
-	def image(self, name, alpha_channel=True, color_key=None):
+	def image(self, name, **kwargs):
 		"""
 		Returns a pygame Surface with the given image loaded and converted to the
 		screen format. You may provide a name which includes subpaths, i.e.:
@@ -39,17 +40,16 @@ class Resources:
 
 		The actual filesystem path will be relative to the Resources "image_folder".
 
-		All images get the pygame "convert" or "convert_alpha" function applied when
-		loaded. From the pygame documentation for Surface.convert():
+		"kwargs" may include: "convert", "convert_alpha", or "color_key". These trigger
+		calling the appropriate pygame.Surface function after the image is loaded.
+
+		From the pygame documentation for Surface.convert():
 
 			[T]he new Surface will have the same pixel format as the display Surface. This
 			is always the fastest format for blitting. It is a good idea to convert all
 			Surfaces before they are blitted many times.
 
-		If you want per-pixel alpha, use the defaults (alpha_channel=True,
-		color_key=None). If you set alpha_channel=False, or color_key to any value
-		besides None, images will not have per-pixel alpha. ("color_key" overrides
-		"alpha_channel".)
+		Note: the "color_key" option overrides both "convert" and "convert_alpha".
 
 		For a full description of alpha channels and color key alphas, see the pygame
 		documentation.
@@ -59,19 +59,31 @@ class Resources:
 			if self.resource_dump:
 				self.images[name] = path
 			else:
-				self.images[name] = pygame.image.load(path)
-				if alpha_channel and color_key is None:
-					self.images[name].convert_alpha()
+				title, ext = os.path.splitext(name)
+				if ext.lower() == ".svg":
+					self.images[name] = svg.load(path)
 				else:
-					self.images[name].convert()
-					if color_key is not None: self.images[name].set_colorkey(color_key)
+					self.images[name] = pygame.image.load(path)
+
+					convert = kwargs.get("convert", False)
+					convert_alpha = kwargs.get("convert_alpha", False)
+					color_key = kwargs.get("color_key", None)
+
+					if (convert or convert_alpha) and color_key is None:
+						if convert_alpha:
+							self.images[name].convert_alpha()
+						else:
+							self.images[name].convert()
+					elif color_key is not None:
+						self.images[name].set_colorkey(color_key)
+
 		return self.images[name]
 
 
-	def image_set(self, path, alpha_channel=True, color_key=None):
+	def image_set(self, path, **kwargs):
 		"""
 		Returns an ImageSet, which provides a list of images and variants.
-		For an explantation of the "alpha_channel" and "color_key" options, see
+		For an explantation of the "convert_alpha" and "color_key" options, see
 		Resource.image()
 		"""
 		if "/" in path:
@@ -82,8 +94,7 @@ class Resources:
 			name = path
 			variants = []
 		if name not in self.image_sets:
-			self.image_sets[name] = ImageSet(self.image_folder, name, \
-				alpha_channel=alpha_channel, color_key=color_key, resource_dump=self.resource_dump)
+			self.image_sets[name] = ImageSet(self.image_folder, name, resource_dump=self.resource_dump, **kwargs)
 		imgset = self.image_sets[name]
 		for variant in variants: imgset = imgset.variants[variant]
 		return imgset
@@ -225,7 +236,7 @@ class ImageSet:
 	image_extensions	= [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga"]
 
 
-	def __init__(self, images_dir, name, alpha_channel=True, color_key=None, resource_dump=False):
+	def __init__(self, images_dir, name, **kwargs):
 		"""
 		Creates an ImageSet by loading the images found in specified directory.
 		"images_dir" is the directory that Resources uses as the base directory
@@ -235,20 +246,28 @@ class ImageSet:
 		"name" will be the name that the ImagesSet is referred to as, and is also the
 		name of the directory below "images_dir" where the image files may be found.
 
-		For an explantation of the "alpha_channel" and "color_key" options, see Resource.image()
+		"kwargs" may include: "convert", "convert_alpha", "color_key" or "resource_dump".
+
+		When "resource_dump" is True, images and sounds will not be loaded. Instead,
+		path names will be loaded in their place for debugging.
+
+		For an explanation of "convert", "convert_alpha" and "color_key" options, see
+		the Resource.image() function.
 		"""
 
 		self.variants = {}
 		self.images = []
 		self.name = name
-		self.resource_dump = resource_dump
+		self.resource_dump = kwargs.get("resource_dump", False)
+		convert = kwargs.get("convert", False)
+		convert_alpha = kwargs.get("convert_alpha", True)
+		color_key = kwargs.get("color_key", None)
 		my_root = os.path.join(images_dir, name)
 		if not os.path.isdir(my_root): raise NotADirectoryError(my_root)
 		images = {}
 		for entry in os.scandir(my_root):
 			if entry.is_dir(follow_symlinks=True):
-				self.variants[entry.name] = ImageSet(my_root, entry.name, \
-					alpha_channel=alpha_channel, color_key=color_key, resource_dump=resource_dump)
+				self.variants[entry.name] = ImageSet(my_root, entry.name, **kwargs)
 			elif entry.is_file(follow_symlinks=True):
 				filetitle, ext = os.path.splitext(entry.name)
 				if ext in self.image_extensions:
@@ -257,11 +276,13 @@ class ImageSet:
 						images[entry.name] = entry.path
 					else:
 						images[entry.name] = pygame.image.load(entry.path)
-						if alpha_channel and color_key is None:
-							images[entry.name].convert_alpha()
-						else:
-							images[entry.name].convert()
-							if color_key is not None: images[entry.name].set_colorkey(color_key)
+						if (convert or convert_alpha) and color_key is None:
+							if convert_alpha:
+								images[entry.name].convert_alpha()
+							else:
+								images[entry.name].convert()
+						elif color_key is not None:
+							images[entry.name].set_colorkey(color_key)
 		self.count = len(images)
 		self.last_index = self.count - 1
 		if self.count:

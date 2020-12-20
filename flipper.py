@@ -13,12 +13,12 @@ class Flipper:
 
 
 	@classmethod
-	def preload(cls, alpha_channel=True, color_key=None):
+	def preload(cls, **kwargs):
 		for subclass in Flipper.__subclasses__():
-			Game.current.resources.image_set(subclass.__name__, alpha_channel=alpha_channel, color_key=None)
+			Game.current.resources.image_set(subclass.__name__, **kwargs)
 
 
-	def __init__(self, *flippers, alpha_channel=True, color_key=None):
+	def __init__(self, *flippers, **kwargs):
 		"""
 		Initialize the image set used by this Thing, set the current FlipEffect to the first
 		FlipEffect object given, and queue up any other FlipEffect given.
@@ -31,7 +31,7 @@ class Flipper:
 		"""
 		self._base_image_set = Game.current.resources.image_set(
 			self.__class__.__name__ if self.image_base is None else self.image_base,
-			alpha_channel=alpha_channel, color_key=color_key
+			**kwargs
 		)
 		self._flipper_queue = deque()
 		self.queue_flippers(flippers)
