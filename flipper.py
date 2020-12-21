@@ -100,37 +100,39 @@ class FlipEffect:
 	Sets the image on a Sprite to a member of an ImageSet in sequence
 	"""
 
-	loop_forever	= False
-	loops			= 1			# Number of times to loop through
-	fps				= None		# If set, increment image this many frames-per-second
-	frame			= None		# May be overriden in the constructor using "frame" kwarg
-
 	def __init__(self, variant=None, on_complete=None, **kwargs):
 		"""
 		When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 		Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
 		parameter (string).
 
-		If you would like to be notified when the sequence is complete, pass a function
-		reference with the "on_complete" parameter (function reference).
+		If you would an action to occur when the sequence is complete, pass a function
+		to the "on_complete" parameter.
 
-		Other common arguments include:
+		**kwargs may include:
 
-			loop_forever:		Restart from the beginning after finishing the cycle
-			loops:				Number of loops to cycle through, when not "loop_forever"
-			fps:				Frames-per-second. The FlipEffect will use the game.fps
-								to determine how many frames to skip between flips.
+			loop_forever:	Restart from the beginning after finishing the cycle
 
-		These vary according to the particular FlipEffect subclass you're using. The ones
-		defined in this module include:
+			loops:			Number of loops to cycle through, when not "loop_forever"
 
-			FlipThrough, FlipBetween, and FlipNone
+			fps:			Frames-per-second. The FlipEffect will use the game.fps
+							to determine how many frames to skip between flips.
+
+			frame:			The frame to start at
+
+		These vary according to the particular FlipEffect subclass you're using. The
+		ones defined in this module include:
+
+			FlipThrough, FlipBetween, FlipNone
 
 		"""
 		self.variant = variant
 		self.on_complete_function = on_complete
-		for varname, value in kwargs.items(): setattr(self, varname, value)
-		if self.frame is None: self.frame = 0
+		self.loop_forever = kwargs.pop("loop_forever", False)
+		self.loops = kwargs.pop("loops", 1)
+		self.fps = kwargs.pop("fps", None)
+		self.frame = kwargs.pop("frame", 0)
+		if len(kwargs): logging.warning("Unexpected keyword arguments: %s" % kwargs)
 		self.__updates_per_frame = 1 if self.fps is None \
 			else Game.current.fps // self.fps if Game.current is not None \
 			else 60 // self.fps

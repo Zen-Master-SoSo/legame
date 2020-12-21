@@ -4,7 +4,8 @@ access to these based on keywords and indexes.
 """
 
 import os, re, pygame
-from legame.svg import svg
+import legame.svg as svg
+
 
 
 class Resources:
