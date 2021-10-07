@@ -1,9 +1,9 @@
+# TODO: Branch this off as a separate project
 import pygame
 from math import floor
 from pygame.locals import SRCALPHA
 from cairosvg.parser import Tree
-from cairosvg.surface import PNGSurface
-from cairosvg.surface.helpers import node_format
+from cairosvg.surface import PNGSurface, node_format
 try:
 	import lxml.etree as ET
 except ImportError:

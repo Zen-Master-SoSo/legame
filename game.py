@@ -3,7 +3,23 @@ Provides the Game and GameState classes, a framework for writing games.
 """
 
 import sys, os, pygame, logging
-from pygame.locals import ACTIVEEVENT, DOUBLEBUF, FULLSCREEN, JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION, KEYDOWN, KEYUP, MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, NUMEVENTS, QUIT, USEREVENT, VIDEOEXPOSE, VIDEORESIZE
+from pygame.locals import DOUBLEBUF, FULLSCREEN, SCALED, USEREVENT, NUMEVENTS, \
+	 ACTIVEEVENT, \
+	 AUDIODEVICEADDED, AUDIODEVICEREMOVED, \
+	 CONTROLLERAXISMOTION, CONTROLLERBUTTONDOWN, CONTROLLERBUTTONUP, \
+	 CONTROLLERDEVICEADDED, CONTROLLERDEVICEREMAPPED, CONTROLLERDEVICEREMOVED, \
+	 DROPBEGIN, DROPCOMPLETE, DROPFILE, DROPTEXT, \
+	 FINGERDOWN, FINGERMOTION, FINGERUP, \
+	 JOYAXISMOTION, JOYBALLMOTION, JOYBUTTONDOWN, JOYBUTTONUP, JOYDEVICEADDED, JOYDEVICEREMOVED, JOYHATMOTION, \
+	 KEYDOWN, KEYUP, \
+	 MIDIIN, MIDIOUT, \
+	 MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEMOTION, MOUSEWHEEL, \
+	 MULTIGESTURE, QUIT, SYSWMEVENT, \
+	 TEXTEDITING, TEXTINPUT, \
+	 VIDEOEXPOSE, VIDEORESIZE, \
+	 WINDOWCLOSE, WINDOWENTER, WINDOWEXPOSED, WINDOWFOCUSGAINED, WINDOWFOCUSLOST, \
+	 WINDOWHIDDEN, WINDOWHITTEST, WINDOWLEAVE, WINDOWMAXIMIZED, WINDOWMINIMIZED, \
+	 WINDOWMOVED, WINDOWRESIZED, WINDOWRESTORED, WINDOWSHOWN, WINDOWSIZECHANGED, WINDOWTAKEFOCUS
 from legame.resources import Resources
 
 
@@ -104,28 +120,75 @@ class Game:
 				setattr(self, varname, value)
 		if self.resource_dir is None: self.resource_dir = "resources"
 		self.resources = Resources(self.resource_dir, self.resource_dump)
-		pygame.display.init()
-		pygame.font.init()
+		pygame.init()
 		if not self.quiet:
 			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
-			pygame.mixer.init()
 		self.sprites = pygame.sprite.LayeredUpdates()
+
+		# Event handler mapping.
+		# Every event from the pygame documentation is mapped.
+		# Each event handler in the Game class passes execution to
+		# the corresponding function in the GameState class.
+
 		self._event_handlers = {
-			ACTIVEEVENT:		self._activeevent,		# 1
-			KEYDOWN:			self._keydown,			# 2
-			KEYUP:				self._keyup,			# 3
-			MOUSEMOTION:		self._mousemotion,		# 4
-			MOUSEBUTTONDOWN:	self._mousebuttondown,	# 5
-			MOUSEBUTTONUP:		self._mousebuttonup,	# 6
-			JOYAXISMOTION:		self._joyaxismotion,	# 7
-			JOYBALLMOTION:		self._joyballmotion,	# 8
-			JOYHATMOTION:		self._joyhatmotion,		# 9
-			JOYBUTTONDOWN:		self._joybuttondown,	# 10
-			JOYBUTTONUP:		self._joybuttonup,		# 11
-			QUIT:				self._quit,				# 12
-			VIDEORESIZE:		self._videoresize,		# 16
-			VIDEOEXPOSE:		self._videoexpose,		# 17
+			ACTIVEEVENT:				self._activeevent,				# 32768
+			AUDIODEVICEADDED:			self._audiodeviceadded,			# 4352
+			AUDIODEVICEREMOVED:			self._audiodeviceremoved,		# 4353
+			CONTROLLERAXISMOTION:		self._controlleraxismotion,		# 1616
+			CONTROLLERBUTTONDOWN:		self._controllerbuttondown,		# 1617
+			CONTROLLERBUTTONUP:			self._controllerbuttonup,		# 1618
+			CONTROLLERDEVICEADDED:		self._controllerdeviceadded,	# 1619
+			CONTROLLERDEVICEREMAPPED:	self._controllerdeviceremapped,	# 1621
+			CONTROLLERDEVICEREMOVED:	self._controllerdeviceremoved,	# 1620
+			DROPBEGIN:					self._dropbegin,				# 4098
+			DROPCOMPLETE:				self._dropcomplete,				# 4099
+			DROPFILE:					self._dropfile,					# 4096
+			DROPTEXT:					self._droptext,					# 4097
+			FINGERDOWN:					self._fingerdown,				# 1792
+			FINGERMOTION:				self._fingermotion,				# 1794
+			FINGERUP:					self._fingerup,					# 1793
+			JOYAXISMOTION:				self._joyaxismotion,			# 1536
+			JOYBALLMOTION:				self._joyballmotion,			# 1537
+			JOYBUTTONDOWN:				self._joybuttondown,			# 1539
+			JOYBUTTONUP:				self._joybuttonup,				# 1540
+			JOYDEVICEADDED:				self._joydeviceadded,			# 1541
+			JOYDEVICEREMOVED:			self._joydeviceremoved,			# 1542
+			JOYHATMOTION:				self._joyhatmotion,				# 1538
+			KEYDOWN:					self._keydown,					# 768
+			KEYUP:						self._keyup,					# 769
+			MIDIIN:						self._midiin,					# 32771
+			MIDIOUT:					self._midiout,					# 32772
+			MOUSEBUTTONDOWN:			self._mousebuttondown,			# 1025
+			MOUSEBUTTONUP:				self._mousebuttonup,			# 1026
+			MOUSEMOTION:				self._mousemotion,				# 1024
+			MOUSEWHEEL:					self._mousewheel,				# 1027
+			MULTIGESTURE:				self._multigesture,				# 2050
+			QUIT:						self._quit,						# 256
+			SYSWMEVENT:					self._syswmevent,				# 513
+			TEXTEDITING:				self._textediting,				# 770
+			TEXTINPUT:					self._textinput,				# 771
+			VIDEOEXPOSE:				self._videoexpose,				# 32770
+			VIDEORESIZE:				self._videoresize,				# 32769
+			WINDOWCLOSE:				self._windowclose,				# 32787
+			WINDOWENTER:				self._windowenter,				# 32783
+			WINDOWEXPOSED:				self._windowexposed,			# 32776
+			WINDOWFOCUSGAINED:			self._windowfocusgained,		# 32785
+			WINDOWFOCUSLOST:			self._windowfocuslost,			# 32786
+			WINDOWHIDDEN:				self._windowhidden,				# 32775
+			WINDOWHITTEST:				self._windowhittest,			# 32789
+			WINDOWLEAVE:				self._windowleave,				# 32784
+			WINDOWMAXIMIZED:			self._windowmaximized,			# 32781
+			WINDOWMINIMIZED:			self._windowminimized,			# 32780
+			WINDOWMOVED:				self._windowmoved,				# 32777
+			WINDOWRESIZED:				self._windowresized,			# 32778
+			WINDOWRESTORED:				self._windowrestored,			# 32782
+			WINDOWSHOWN:				self._windowshown,				# 32774
+			WINDOWSIZECHANGED:			self._windowsizechanged,		# 32779
+			WINDOWTAKEFOCUS:			self._windowtakefocus			# 32788
 		}
+
+		pygame.event.set_allowed(list(self._event_handlers.keys()))
+
 		# Fill-in the remaining timer events:
 		for event_type in range(USEREVENT, NUMEVENTS + 1):
 			self._event_handlers[event_type] = self.__timer_event
@@ -178,7 +241,7 @@ class Game:
 			self.background = background
 		self.screen_rect = self.background.get_rect()
 		if self.fullscreen:
-			self.display_flags |= FULLSCREEN
+			self.display_flags |= (FULLSCREEN | SCALED)
 		else:
 			os.environ['SDL_VIDEO_CENTERED'] = '1'
 		if self.icon is not None:
@@ -227,7 +290,8 @@ class Game:
 		self.clock = pygame.time.Clock()
 		while self._stay_in_loop:
 			self._state.loop_start()
-			for event in pygame.event.get(): self._event_handlers[event.type](event)
+			for event in pygame.event.get():
+				self._event_handlers[event.type](event)
 			self._end_loop()
 			self.sprites.update()
 			self.sprites.clear(self.screen, self.background)
@@ -268,20 +332,50 @@ class Game:
 	def _activeevent(self, event):
 		self._state.activeevent(event)
 
-	def _keydown(self, event):
-		self._state.keydown(event)
+	def _audiodeviceadded(self, event):
+		self._state.audiodeviceadded(event)
 
-	def _keyup(self, event):
-		self._state.keyup(event)
+	def _audiodeviceremoved(self, event):
+		self._state.audiodeviceremoved(event)
 
-	def _mousemotion(self, event):
-		self._state.mousemotion(event)
+	def _controlleraxismotion(self, event):
+		self._state.controlleraxismotion(event)
 
-	def _mousebuttondown(self, event):
-		self._state.mousebuttondown(event)
+	def _controllerbuttondown(self, event):
+		self._state.controllerbuttondown(event)
 
-	def _mousebuttonup(self, event):
-		self._state.mousebuttonup(event)
+	def _controllerbuttonup(self, event):
+		self._state.controllerbuttonup(event)
+
+	def _controllerdeviceadded(self, event):
+		self._state.controllerdeviceadded(event)
+
+	def _controllerdeviceremapped(self, event):
+		self._state.controllerdeviceremapped(event)
+
+	def _controllerdeviceremoved(self, event):
+		self._state.controllerdeviceremoved(event)
+
+	def _dropbegin(self, event):
+		self._state.dropbegin(event)
+
+	def _dropcomplete(self, event):
+		self._state.dropcomplete(event)
+
+	def _dropfile(self, event):
+		self._state.dropfile(event)
+
+	def _droptext(self, event):
+		self._state.droptext(event)
+
+	def _fingerdown(self, event):
+		self._state.fingerdown(event)
+
+	def _fingermotion(self, event):
+		self._state.fingermotion(event)
+
+	def _fingerup(self, event):
+		self._state.fingerup(event)
 
 	def _joyaxismotion(self, event):
 		self._state.joyaxismotion(event)
@@ -289,23 +383,114 @@ class Game:
 	def _joyballmotion(self, event):
 		self._state.joyballmotion(event)
 
-	def _joyhatmotion(self, event):
-		self._state.joyhatmotion(event)
-
 	def _joybuttondown(self, event):
 		self._state.joybuttondown(event)
 
 	def _joybuttonup(self, event):
 		self._state.joybuttonup(event)
 
+	def _joydeviceadded(self, event):
+		self._state.joydeviceadded(event)
+
+	def _joydeviceremoved(self, event):
+		self._state.joydeviceremoved(event)
+
+	def _joyhatmotion(self, event):
+		self._state.joyhatmotion(event)
+
+	def _keydown(self, event):
+		self._state.keydown(event)
+
+	def _keyup(self, event):
+		self._state.keyup(event)
+
+	def _midiin(self, event):
+		self._state.midiin(event)
+
+	def _midiout(self, event):
+		self._state.midiout(event)
+
+	def _mousebuttondown(self, event):
+		self._state.mousebuttondown(event)
+
+	def _mousebuttonup(self, event):
+		self._state.mousebuttonup(event)
+
+	def _mousemotion(self, event):
+		self._state.mousemotion(event)
+
+	def _mousewheel(self, event):
+		self._state.mousewheel(event)
+
+	def _multigesture(self, event):
+		self._state.multigesture(event)
+
 	def _quit(self, event):
 		self._state.quit(event)
+
+	def _syswmevent(self, event):
+		self._state.syswmevent(event)
+
+	def _textediting(self, event):
+		self._state.textediting(event)
+
+	def _textinput(self, event):
+		self._state.textinput(event)
+
+	def _videoexpose(self, event):
+		self._state.videoexpose(event)
 
 	def _videoresize(self, event):
 		self._state.videoresize(event)
 
-	def _videoexpose(self, event):
-		self._state.videoexpose(event)
+	def _windowclose(self, event):
+		self._state.windowclose(event)
+
+	def _windowenter(self, event):
+		self._state.windowenter(event)
+
+	def _windowexposed(self, event):
+		self._state.windowexposed(event)
+
+	def _windowfocusgained(self, event):
+		self._state.windowfocusgained(event)
+
+	def _windowfocuslost(self, event):
+		self._state.windowfocuslost(event)
+
+	def _windowhidden(self, event):
+		self._state.windowhidden(event)
+
+	def _windowhittest(self, event):
+		self._state.windowhittest(event)
+
+	def _windowleave(self, event):
+		self._state.windowleave(event)
+
+	def _windowmaximized(self, event):
+		self._state.windowmaximized(event)
+
+	def _windowminimized(self, event):
+		self._state.windowminimized(event)
+
+	def _windowmoved(self, event):
+		self._state.windowmoved(event)
+
+	def _windowresized(self, event):
+		self._state.windowresized(event)
+
+	def _windowrestored(self, event):
+		self._state.windowrestored(event)
+
+	def _windowshown(self, event):
+		self._state.windowshown(event)
+
+	def _windowsizechanged(self, event):
+		self._state.windowsizechanged(event)
+
+	def _windowtakefocus(self, event):
+		self._state.windowtakefocus(event)
+
 
 
 	# Timers:
@@ -446,111 +631,379 @@ class GameState:
 
 	def activeevent(self, event):
 		"""
-		"event" will contain: gain, state
+		The "event" object has the following members:
+			gain, state
 		"""
 		pass
 
-
-	def keydown(self, event):
+	def audiodeviceadded(self, event):
 		"""
-		Key down event passed to this GameState.
-		"event" will contain: key, mod, unicode, scancode
-		"""
-		pass
-
-
-	def keyup(self, event):
-		"""
-		Key up event passed to this GameState.
-		"event" will contain: key, mod
+		The "event" object has the following members:
+			which, iscapture
 		"""
 		pass
 
-
-	def mousemotion(self, event):
+	def audiodeviceremoved(self, event):
 		"""
-		Mouse move event passed to this GameState.
-		"event" will contain: pos, rel, buttons
-		"""
-		pass
-
-
-	def mousebuttondown(self, event):
-		"""
-		Mouse down event passed to this GameState.
-		"event" will contain: pos, button
+		The "event" object has the following members:
+			which, iscapture
 		"""
 		pass
 
-
-	def mousebuttonup(self, event):
+	def controlleraxismotion(self, event):
 		"""
-		Mouse up event passed to this GameState.
-		"event" will contain: pos, button
+		The "event" object has the following members:
+			[unknown]
 		"""
 		pass
 
+	def controllerbuttondown(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def controllerbuttonup(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def controllerdeviceadded(self, event):
+		"""
+		The "event" object has the following members:
+			device_index
+		"""
+		pass
+
+	def controllerdeviceremapped(self, event):
+		"""
+		The "event" object has the following members:
+			instance_id
+		"""
+		pass
+
+	def controllerdeviceremoved(self, event):
+		"""
+		The "event" object has the following members:
+			instance_id
+		"""
+		pass
+
+	def dropbegin(self, event):
+		"""
+		The "event" object has the following members:
+			none
+		"""
+		pass
+
+	def dropcomplete(self, event):
+		"""
+		The "event" object has the following members:
+			none
+		"""
+		pass
+
+	def dropfile(self, event):
+		"""
+		The "event" object has the following members:
+			file
+		"""
+		pass
+
+	def droptext(self, event):
+		"""
+		The "event" object has the following members:
+			text
+		"""
+		pass
+
+	def fingerdown(self, event):
+		"""
+		The "event" object has the following members:
+			touch_id, finger_id, x, y, dx, dy
+		"""
+		pass
+
+	def fingermotion(self, event):
+		"""
+		The "event" object has the following members:
+			touch_id, finger_id, x, y, dx, dy
+		"""
+		pass
+
+	def fingerup(self, event):
+		"""
+		The "event" object has the following members:
+			touch_id, finger_id, x, y, dx, dy
+		"""
+		pass
 
 	def joyaxismotion(self, event):
 		"""
-		Joystick motion event passed to this GameState.
-		"event" will contain: instance_id, axis, value
+		The "event" object has the following members:
+			instance_id, axis, value
 		"""
 		pass
-
 
 	def joyballmotion(self, event):
 		"""
-		Joystick ball motion event passed to this GameState.
-		"event" will contain: instance_id, ball, rel
+		The "event" object has the following members:
+			instance_id, ball, rel
 		"""
 		pass
-
-
-	def joyhatmotion(self, event):
-		"""
-		Joystick hat motion event passed to this GameState.
-		"event" will contain: instance_id, hat, value
-		"""
-		pass
-
 
 	def joybuttondown(self, event):
 		"""
-		Joystick button down event passed to this GameState.
-		"event" will contain: instance_id, button
+		The "event" object has the following members:
+			instance_id, button
 		"""
 		pass
-
 
 	def joybuttonup(self, event):
 		"""
-		Joystick button up event passed to this GameState.
-		"event" will contain: instance_id, button
+		The "event" object has the following members:
+			instance_id, button
 		"""
 		pass
 
+	def joydeviceadded(self, event):
+		"""
+		The "event" object has the following members:
+			device_index
+		"""
+		pass
+
+	def joydeviceremoved(self, event):
+		"""
+		The "event" object has the following members:
+			instance_id
+		"""
+		pass
+
+	def joyhatmotion(self, event):
+		"""
+		The "event" object has the following members:
+			instance_id, hat, value
+		"""
+		pass
+
+	def keydown(self, event):
+		"""
+		The "event" object has the following members:
+			key, mod, unicode, scancode
+		"""
+		pass
+
+	def keyup(self, event):
+		"""
+		The "event" object has the following members:
+			key, mod
+		"""
+		pass
+
+	def midiin(self, event):
+		"""
+		The "event" object has the following members:
+			none
+		"""
+		pass
+
+	def midiout(self, event):
+		"""
+		The "event" object has the following members:
+			none
+		"""
+		pass
+
+	def mousebuttondown(self, event):
+		"""
+		The "event" object has the following members:
+			pos, button
+		"""
+		pass
+
+	def mousebuttonup(self, event):
+		"""
+		The "event" object has the following members:
+			pos, button
+		"""
+		pass
+
+	def mousemotion(self, event):
+		"""
+		The "event" object has the following members:
+			pos, rel, buttons
+		"""
+		pass
+
+	def mousewheel(self, event):
+		"""
+		The "event" object has the following members:
+			which, flipped, x, y
+		"""
+		pass
+
+	def multigesture(self, event):
+		"""
+		The "event" object has the following members:
+			touch_id, x, y, pinched, rotated, num_fingers
+		"""
+		pass
 
 	def quit(self, event):
 		"""
-		Event handler called when the user clicks the window's close button.
-		"event" will be empty
-		"""
-		Game.current.shutdown()
-
-
-	def videoresize(self, event):
-		"""
-		Event handler called when the window / display is resized.
-		"event" will contain: size, w, h
+		The "event" object has the following members:
+			none
 		"""
 		pass
 
+	def syswmevent(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def textediting(self, event):
+		"""
+		The "event" object has the following members:
+			text, start, length
+		"""
+		pass
+
+	def textinput(self, event):
+		"""
+		The "event" object has the following members:
+			text
+		"""
+		pass
 
 	def videoexpose(self, event):
 		"""
-		Event handler called when the window is exposed(?)
-		"event" will be empty
+		The "event" object has the following members:
+			none
+		"""
+		pass
+
+	def videoresize(self, event):
+		"""
+		The "event" object has the following members:
+			size, w, h
+		"""
+		pass
+
+	def windowclose(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowenter(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowexposed(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowfocusgained(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowfocuslost(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowhidden(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowhittest(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowleave(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowmaximized(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowminimized(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowmoved(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowresized(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowrestored(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowshown(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowsizechanged(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
+		"""
+		pass
+
+	def windowtakefocus(self, event):
+		"""
+		The "event" object has the following members:
+			[unknown]
 		"""
 		pass
 
