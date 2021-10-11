@@ -121,7 +121,7 @@ class GSSelectMoveTarget(BoardGameState):
 class Block(GamePiece, Flipper):
 
 	def __init__(self, cell, color):
-		self.image_base = "Block/" + color
+		self.image_folder = "Block/" + color
 		GamePiece.__init__(self, cell, color)
 		Flipper.__init__(self, FlipThrough("enter", fps=25), FlipNone())
 		Game.current.play("enter.wav")

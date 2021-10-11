@@ -9,7 +9,7 @@ from legame.game import Game
 
 class Flipper:
 
-	image_base = None	# base name of this thing's image set. If none, use the class name
+	image_folder = None	# base name of this thing's image set. If none, use the class name
 
 
 	@classmethod
@@ -30,7 +30,7 @@ class Flipper:
 		See FlipEffect.__init__ for common image flipper options.
 		"""
 		self._base_image_set = Game.current.resources.image_set(
-			self.__class__.__name__ if self.image_base is None else self.image_base,
+			self.__class__.__name__ if self.image_folder is None else self.image_folder,
 			**kwargs
 		)
 		self._flipper_queue = deque()

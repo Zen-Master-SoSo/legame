@@ -238,7 +238,7 @@ class Piece(GamePiece, Flipper):
 	def __init__(self, cell, color):
 		self.color = color
 		GamePiece.__init__(self, cell, color)
-		self.image_base = "Piece/" + color
+		self.image_folder = "Piece/" + color
 		Flipper.__init__(self, CycleThrough("enter"), CycleNone())
 
 

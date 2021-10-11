@@ -23,7 +23,7 @@ class FakeGame:
 
 
 class Block(Flipper):
-	image_base	= "Block/r"
+	image_folder	= "Block/r"
 	def __init__(self):
 		Flipper.__init__(self, FlipThrough("enter"))
 
