@@ -1,5 +1,5 @@
 import pytest, os
-import legame, legame.svg as svg
+import legame
 from legame.game import Game
 from legame.resources import *
 from pygame import Surface
@@ -52,11 +52,6 @@ def test_sound_load(res):
 	assert isinstance(res.sound("bust.wav"), pygame.mixer.Sound)
 
 
-def test_svg_load(res):
-	img = res.image("test.svg", convert = False)
-	assert isinstance(img, Surface)
-
-
 def test_image_set(resdump):
 	imgset = resdump.image_set("Block")
 	assert(isinstance(imgset, ImageSet))
@@ -103,16 +98,4 @@ def test_imgset_from_subpath(resdump):
 	assert(os.path.isfile(imgset.images[0]))
 	assert(os.path.isfile(imgset.images[2]))
 
-
-def test_svg_rotator(res):
-	images = svg.rotated_svg(os.path.join(res.image_folder, "test.svg"), images=36)
-	assert isinstance(images, list)
-	assert len(images) == 36
-	for image in images:
-		assert isinstance(image, Surface)
-	images = svg.rotated_svg(os.path.join(res.image_folder, "test.svg"), degrees=36)
-	assert isinstance(images, list)
-	assert len(images) == 10
-	for image in images:
-		assert isinstance(image, Surface)
 

@@ -4,8 +4,6 @@ access to these based on keywords and indexes.
 """
 
 import os, re, pygame
-import legame.svg as svg
-
 
 
 class Resources:
@@ -61,22 +59,19 @@ class Resources:
 				self.images[name] = path
 			else:
 				title, ext = os.path.splitext(name)
-				if ext.lower() == ".svg":
-					self.images[name] = svg.load(path)
-				else:
-					self.images[name] = pygame.image.load(path)
+				self.images[name] = pygame.image.load(path)
 
-					convert = kwargs.get("convert", False)
-					convert_alpha = kwargs.get("convert_alpha", False)
-					color_key = kwargs.get("color_key", None)
+				convert = kwargs.get("convert", False)
+				convert_alpha = kwargs.get("convert_alpha", False)
+				color_key = kwargs.get("color_key", None)
 
-					if (convert or convert_alpha) and color_key is None:
-						if convert_alpha:
-							self.images[name].convert_alpha()
-						else:
-							self.images[name].convert()
-					elif color_key is not None:
-						self.images[name].set_colorkey(color_key)
+				if (convert or convert_alpha) and color_key is None:
+					if convert_alpha:
+						self.images[name].convert_alpha()
+					else:
+						self.images[name].convert()
+				elif color_key is not None:
+					self.images[name].set_colorkey(color_key)
 
 		return self.images[name]
 
