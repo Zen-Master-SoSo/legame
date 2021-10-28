@@ -67,7 +67,7 @@ class GSSelect(BoardGameState):
 			self.cell = cell	# Used to jiggle the last piece moved
 			self.reminder_timer = Game.current.set_timeout(self.timeout, 4000)
 
-	def timeout(self, args):
+	def timeout(self):
 		self.cell.piece().jiggle()
 
 	def keydown(self, event):

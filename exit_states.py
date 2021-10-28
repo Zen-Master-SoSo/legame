@@ -39,7 +39,7 @@ class ExitAnimation(Sprite):
 
 	anim_duration		= 0.33
 	game_over_delay		= 777
-
+	exit_timer			= None
 
 	def __init__(self, image):
 		Sprite.__init__(self, Game.current.sprites)
@@ -53,11 +53,12 @@ class ExitAnimation(Sprite):
 
 
 	def update(self):
-		if self.rect.centery < Game.current.background.get_rect().centery:
-			self.rect.centery = min(self.rect.centery + self.__frame_step, Game.current.background.get_rect().centery)
-		else:
-			wait(self.game_over_delay)
-			Game.current.shutdown()
+		if self.exit_timer is None:
+			centery = Game.current.background.get_rect().centery
+			if self.rect.centery < centery:
+				self.rect.centery = min(self.rect.centery + self.__frame_step, centery)
+			else:
+				self.exit_timer = Game.current.set_timeout(Game.current.shutdown, self.game_over_delay)
 
 
 

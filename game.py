@@ -553,7 +553,10 @@ class Game:
 		if self.__timer_callbacks[timer_index] is None:
 			logging.warning("Timer event raised when corresponding callback not set")
 		else:
-			self.__timer_callbacks[timer_index](self.__timer_arguments[timer_index])
+			if len(self.__timer_arguments[timer_index]):
+				self.__timer_callbacks[timer_index](self.__timer_arguments[timer_index])
+			else:
+				self.__timer_callbacks[timer_index]()
 			if not self.__timer_recur_flag[timer_index]:
 				self.clear_timeout(timer_index)
 
