@@ -3,7 +3,7 @@ Visual variant of "herd.py" (which demonstrates "neighbor" detection using the
 Neighborhood class.)
 """
 
-from .herd import *
+from legame.examples.herd import *
 
 class AlienHerdDemo(HerdDemo):
 

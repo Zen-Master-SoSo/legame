@@ -8,7 +8,7 @@ from pygame import Rect, Surface
 from pygame.draw import polygon, circle, line
 from pygame.sprite import Sprite
 from pygame.math import Vector2 as Vector
-from pygame.locals import SRCALPHA, KEYDOWN, QUIT, K_ESCAPE, K_SPACE, K_RETURN, K_q
+from pygame.locals import SRCALPHA, K_ESCAPE, K_q
 from legame.game import Game, GameState
 from legame.flipper import Flipper, FlipNone, FlipThrough, FlipBetween
 from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
