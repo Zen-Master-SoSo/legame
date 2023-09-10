@@ -44,14 +44,14 @@ class ChaseState(GameState):
 		mx, my = pygame.mouse.get_pos()
 		Chaser(cx, cy, Mouse(mx, my))
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key or "Q" key pressed
 		"""
 		if event.key == K_ESCAPE or event.key == K_q:
 			Game.current.shutdown()
 
-	def quit(self, event):
+	def _evt_quit(self, event):
 		Game.current.shutdown()
 
 

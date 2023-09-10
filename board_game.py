@@ -393,7 +393,7 @@ class BoardGameState(GameState):
 			mouse.set_cursor(*broken_x)
 
 
-	def mousemotion(self, event):
+	def _evt_mousemotion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		event will contain:	pos, rel, buttons
@@ -406,7 +406,7 @@ class BoardGameState(GameState):
 		self.mouse_pos = cell
 
 
-	def mousebuttondown(self, event):
+	def _evt_mousebuttondown(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		event will contain:	pos, button
@@ -414,7 +414,7 @@ class BoardGameState(GameState):
 		self.mouse_down_pos = self.mouse_pos
 
 
-	def mousebuttonup(self, event):
+	def _evt_mousebuttonup(self, event):
 		"""
 		Mouse up event passed to this GameState.
 		event will contain: pos, button

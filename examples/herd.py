@@ -67,7 +67,7 @@ class HerdDemo(Game, Neighborhood):
 class GSWatch(GameState):
 
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key pressed
 		"""
@@ -75,7 +75,7 @@ class GSWatch(GameState):
 			game.shutdown()
 
 
-	def quit(self, event):
+	def _evt_quit(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty

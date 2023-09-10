@@ -62,7 +62,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Key down event passed to this GameState.
 		"event" will contain: key, mod, unicode, scancode
@@ -71,7 +71,7 @@ class EmptyGameState(GameState):
 			Game.current.shutdown()
 
 
-	def quit(self, event):
+	def _evt_quit(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
@@ -79,7 +79,7 @@ class EmptyGameState(GameState):
 		Game.current.shutdown()
 
 
-	def keyup(self, event):
+	def _evt_keyup(self, event):
 		"""
 		Key up event passed to this GameState.
 		"event" will contain: key, mod
@@ -87,7 +87,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def mousemotion(self, event):
+	def _evt_mousemotion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		"event" will contain: pos, rel, buttons
@@ -95,7 +95,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def mousebuttondown(self, event):
+	def _evt_mousebuttondown(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		"event" will contain: pos, button
@@ -103,7 +103,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def mousebuttonup(self, event):
+	def _evt_mousebuttonup(self, event):
 		"""
 		Mouse up event passed to this GameState.
 		"event" will contain: pos, button
@@ -111,14 +111,14 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def activeevent(self, event):
+	def _evt_activeevent(self, event):
 		"""
 		"event" will contain: gain, state
 		"""
 		pass
 
 
-	def joyaxismotion(self, event):
+	def _evt_joyaxismotion(self, event):
 		"""
 		Joystick motion event passed to this GameState.
 		"event" will contain: instance_id, axis, value
@@ -126,7 +126,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def joyballmotion(self, event):
+	def _evt_joyballmotion(self, event):
 		"""
 		Joystick ball motion event passed to this GameState.
 		"event" will contain: instance_id, ball, rel
@@ -134,7 +134,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def joyhatmotion(self, event):
+	def _evt_joyhatmotion(self, event):
 		"""
 		Joystick hat motion event passed to this GameState.
 		"event" will contain: instance_id, hat, value
@@ -142,7 +142,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def joybuttondown(self, event):
+	def _evt_joybuttondown(self, event):
 		"""
 		Joystick button down event passed to this GameState.
 		"event" will contain: instance_id, button
@@ -150,7 +150,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def joybuttonup(self, event):
+	def _evt_joybuttonup(self, event):
 		"""
 		Joystick button up event passed to this GameState.
 		"event" will contain: instance_id, button
@@ -158,7 +158,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def videoresize(self, event):
+	def _evt_videoresize(self, event):
 		"""
 		Event handler called when the window / display is resized.
 		"event" will contain: size, w, h
@@ -166,7 +166,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def videoexpose(self, event):
+	def _evt_videoexpose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
 		"event" will be empty
@@ -174,7 +174,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def videoresize(self, event):
+	def _evt_videoresize(self, event):
 		"""
 		Event handler called when the window / display is resized.
 		event will contain: size, w, h
@@ -182,7 +182,7 @@ class EmptyGameState(GameState):
 		pass
 
 
-	def videoexpose(self, event):
+	def _evt_videoexpose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
 		event will be empty

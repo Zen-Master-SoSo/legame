@@ -42,7 +42,7 @@ class GSBase(GameState):
 	Used as the base class of all game states defined in this module.
 	"""
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE or "q" key pressed
 		"""

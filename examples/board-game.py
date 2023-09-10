@@ -33,7 +33,7 @@ class GSBase(BoardGameState):
 	ESCAPE or Q button quits game.
 	"""
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key pressed
 		"""
@@ -70,7 +70,7 @@ class GSSelect(BoardGameState):
 	def timeout(self):
 		self.cell.piece().jiggle()
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE or "q" keys pressed
 		"""
@@ -107,7 +107,7 @@ class GSSelectMoveTarget(BoardGameState):
 			Game.current.play("jump.wav")
 			self.selected_piece.move_to(cell, lambda: GSSelect(cell=cell))
 
-	def keydown(self, event):
+	def _evt_keydown(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key pressed
 		"""
