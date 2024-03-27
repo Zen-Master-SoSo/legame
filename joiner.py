@@ -7,7 +7,7 @@ network.
 import importlib, re, threading
 from time import time
 from socket import socket, AF_INET, SOCK_DGRAM
-from pdiag import Dialog, Button, Label, Textbox, Radio, HorizontalLayout, ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
+from pgdialog import Dialog, Button, Label, Textbox, Radio, HorizontalLayout, ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
 from cable_car.broadcast_connector import BroadcastConnector
 from cable_car.direct_connect import DirectClient, DirectServer
 from cable_car.messenger import Messenger
