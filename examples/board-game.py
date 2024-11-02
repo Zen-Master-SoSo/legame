@@ -169,12 +169,12 @@ class Glow(Flipper, Sprite):
 
 
 if __name__ == '__main__':
-	import argparse, sys
+	import argparse
 	p = argparse.ArgumentParser()
 	p.epilog = "Demonstrates board game moves, jumps, state changes, and animations"
 	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
 	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	sys.exit(TestGame(p.parse_args()).run())
+	p.exit(TestGame(p.parse_args()).run())
 
 
 

@@ -2,7 +2,7 @@
 Provides the Game and GameState classes, a framework for writing games.
 """
 
-import sys, os, pygame, logging
+import os, pygame, logging
 from pygame.locals import *
 from pygame.event import event_name
 from legame.resources import Resources
@@ -88,7 +88,7 @@ class Game:
 		command-line options, and wish to pass those options to the Game class before
 		starting up modules. i.e.:
 
-			import argparse, sys
+			import argparse
 			p = argparse.ArgumentParser()
 			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
 			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
@@ -96,7 +96,7 @@ class Game:
 			# Setup logging, etc...
 			.
 			.
-			sys.exit(MyGameClass(options).run())
+			p.exit(MyGameClass(options).run())
 
 		"""
 		Game.current = self
