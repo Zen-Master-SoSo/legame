@@ -398,7 +398,7 @@ if __name__ == '__main__':
 	logging.basicConfig(
 		stream=sys.stdout,
 		level=logging.DEBUG if options.verbose else logging.ERROR,
-		format="%(relativeCreated)6d [%(filename)24s:%(lineno)3d] %(message)s"
+		format="%(relativeCreated)6d [%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
 	if options.direct:

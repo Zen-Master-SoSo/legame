@@ -263,7 +263,7 @@ if __name__ == '__main__':
 	logging.basicConfig(
 		stream=sys.stdout,
 		level=logging.DEBUG if options.verbose else logging.ERROR,
-		format="[%(filename)24s:%(lineno)3d] %(message)s"
+		format="[%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
 	game = MyGame(options)
