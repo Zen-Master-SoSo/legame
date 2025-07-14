@@ -225,9 +225,8 @@ if __name__ == '__main__':
 	p.add_argument("--direct", "-d", action="store_true", help="Connect by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 	logging.basicConfig(
-		stream=sys.stdout,
-		level=logging.DEBUG if options.verbose else logging.ERROR,
-		format="[%(filename)24s:%(lineno)-4d] %(message)s"
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
 	game = MyGame(options)

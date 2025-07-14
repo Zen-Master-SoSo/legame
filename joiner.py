@@ -396,9 +396,8 @@ if __name__ == '__main__':
 	options = p.parse_args()
 
 	logging.basicConfig(
-		stream=sys.stdout,
-		level=logging.DEBUG if options.verbose else logging.ERROR,
-		format="%(relativeCreated)6d [%(filename)24s:%(lineno)-4d] %(message)s"
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "%(relativeCreated)6d [%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
 	if options.direct:

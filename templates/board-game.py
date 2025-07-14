@@ -218,9 +218,8 @@ if __name__ == '__main__':
 	p.add_argument("--resource-dump", "-r", action="store_true", help="Show sound and image resources for debugging")
 	options = p.parse_args()
 	logging.basicConfig(
-		stream=sys.stdout,
-		level=logging.DEBUG if options.verbose else logging.ERROR,
-		format="[%(filename)24s:%(lineno)-4d] %(message)s"
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
 	game = MyGame(options)
