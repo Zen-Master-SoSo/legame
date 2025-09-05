@@ -1,15 +1,34 @@
-"""Provides the BoardGame class, a framework for board games"""
-
+#  legame/board_game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
+"""
+Provides the BoardGame class, a framework for board games.
+"""
 from math import floor
 from pygame.font import SysFont
 from pygame.cursors import arrow, broken_x
 from pygame import Rect, Surface, mouse
 from pygame.draw import line
 from pygame.sprite import Sprite
-from legame.locals import *
+from legame import *
 from legame.game import *
 from legame.sprite_enhancement import MovingSprite
-
 
 
 class BoardGame(Game):
@@ -20,7 +39,6 @@ class BoardGame(Game):
 	my_color				= None
 	opponent_color			= None
 
-
 	def __init__(self, options=None):
 		"""
 		BoardGame constructor; calls Game.__init__() and instantiates the GameBoard and
@@ -28,7 +46,6 @@ class BoardGame(Game):
 		Game.__init__(self, options)
 		self.board = self.get_board()
 		self.statusbar = Statusbar()
-
 
 	def initial_background(self, display_size):
 		self.statusbar.rect.top = self.board.rect.height
@@ -40,11 +57,8 @@ class BoardGame(Game):
 		my_background.blit(board_bg, (0, 0))
 		return my_background
 
-
 	def get_board(self):
 		return GameBoard()
-
-
 
 
 class GameBoard:
@@ -61,7 +75,6 @@ class GameBoard:
 
 	background			= None
 
-
 	def __init__(self, columns=None, rows=None):
 		if columns: self.columns = columns
 		if rows: self.rows = rows
@@ -74,7 +87,6 @@ class GameBoard:
 		self.cell_half_width = self.cell_width // 2
 		self.cell_half_height = self.cell_height // 2
 
-
 	def initial_background(self, display_size):
 		bg = Surface(self.rect.size)
 		bg.fill(self.background_color)
@@ -85,7 +97,6 @@ class GameBoard:
 			y = row * self.cell_height
 			line(bg, self.grid_lines_color, (0, y), (self.rect.width, y), 1)
 		return bg
-
 
 	# Set / get / inspect board positions:
 
@@ -114,7 +125,6 @@ class GameBoard:
 			floor((y - Game.current.board.top) / Game.current.board.cell_height)
 		) if Game.current.board.rect.collidepoint(x, y) else None
 
-
 	def piece_at(self, cell):
 		"""
 		Returns a reference to the GamePiece occupying the given cell.
@@ -122,7 +132,6 @@ class GameBoard:
 		"""
 		assert isinstance(cell, Cell)
 		return self.__cells[cell.column][cell.row]
-
 
 	def set_cell(self, cell, piece):
 		"""
@@ -133,7 +142,6 @@ class GameBoard:
 		self.__cells[cell.column][cell.row] = piece
 		return self
 
-
 	def clear_cell(self, cell):
 		"""
 		Kills the GamePiece at the given cell, if one exists there.
@@ -141,7 +149,6 @@ class GameBoard:
 		assert isinstance(cell, Cell)
 		self.__cells[cell.column][cell.row] = None
 		return self
-
 
 	def is_mine(self, cell):
 		"""
@@ -152,7 +159,6 @@ class GameBoard:
 		piece = self.piece_at(cell)
 		return False if piece is None else piece.color == Game.current.my_color
 
-
 	def is_opponents(self, cell):
 		"""
 		Returns True if there is a GamePiece at the given cell, and it doesn't have
@@ -162,7 +168,6 @@ class GameBoard:
 		piece = self.piece_at(cell)
 		return False if piece is None else piece.color != Game.current.my_color
 
-
 	def is_empty(self, cell):
 		"""
 		Returns True if the given cell is empty.
@@ -170,20 +175,17 @@ class GameBoard:
 		assert isinstance(cell, Cell)
 		return self.piece_at(cell) is None
 
-
 	def column(self, column):
 		"""
 		Returns a list of the occupants of the given column.
 		"""
 		return self.__cells[column]
 
-
 	def row(self, row):
 		"""
 		Returns a list of the occupants of the given row.
 		"""
 		return [ self.__cells[column][row] for column in range(self.columns) ]
-
 
 	def rotate(self, cell):
 		"""
@@ -192,7 +194,6 @@ class GameBoard:
 		"""
 		assert isinstance(cell, Cell)
 		return Cell(self.last_column - cell.column, self.last_row - cell.row)
-
 
 	def dump(self):
 		print("  " + "".join([("%2d" % column) for column in range(self.columns)]))
@@ -203,21 +204,16 @@ class GameBoard:
 		print("  " + "-" * (self.columns * 2 + 1))
 
 
-
 class Cell:
-
 
 	def __init__(self, column, row):
 		self.column, self.row = column, row
 
-
 	def __iter__(self):
 		return iter((self.column, self.row))
 
-
 	def __eq__(self, cell):
 		return self.column == cell.column and self.row == cell.row
-
 
 	def set(self, piece):
 		"""
@@ -226,7 +222,6 @@ class Cell:
 		Game.current.board.set_cell(self, piece)
 		return self
 
-
 	def clear(self):
 		"""
 		Kills the GamePiece at this cell, if one exists there.
@@ -234,20 +229,17 @@ class Cell:
 		Game.current.board.clear_cell(self)
 		return self
 
-
 	def piece(self):
 		"""
 		Returns the content of the GameBoard at this cell
 		"""
 		return Game.current.board.piece_at(self)
 
-
 	def is_mine(self):
 		"""
 		Returns True if there is a GamePiece at this cell which has this player's "color".
 		"""
 		return Game.current.board.is_mine(self)
-
 
 	def is_opponents(self):
 		"""
@@ -256,13 +248,11 @@ class Cell:
 		"""
 		return Game.current.board.is_opponents(self)
 
-
 	def is_empty(self):
 		"""
 		Returns True if this cell is empty.
 		"""
 		return Game.current.board.is_empty(self)
-
 
 	def center(self):
 		"""
@@ -272,7 +262,6 @@ class Cell:
 			Game.current.board.left + Game.current.board.cell_width * self.column + Game.current.board.cell_half_width,
 			Game.current.board.top + Game.current.board.cell_height * self.row + Game.current.board.cell_half_height
 		)
-
 
 	def rect(self):
 		"""
@@ -286,13 +275,11 @@ class Cell:
 			Game.current.board.cell_height
 		)
 
-
 	def copy(self):
 		"""
 		Returns a copy.
 		"""
 		return Cell(self.column, self.row)
-
 
 	def shifted(self, columns=None, rows=None):
 		"""
@@ -303,7 +290,6 @@ class Cell:
 			self.column if columns is None else self.column + columns,
 			self.row if rows is None else self.row + rows
 		)
-
 
 	def moved(self, column=None, row=None):
 		"""
@@ -316,10 +302,8 @@ class Cell:
 			self.row if row is None else row
 		)
 
-
 	def __str__(self):
 		return "Cell at column {}, row {}".format(self.column, self.row)
-
 
 
 class Statusbar(Sprite):
@@ -329,7 +313,6 @@ class Statusbar(Sprite):
 	font_size			= 22
 	foreground_color	= (250,250,160)
 	background_color	= (0,0,12)
-
 
 	def __init__(self):
 		Sprite.__init__(self, Game.current.sprites)
@@ -342,21 +325,17 @@ class Statusbar(Sprite):
 		self.text = ""
 		self.rect = self.image.get_rect()
 
-
 	def clear(self):
 		self.image.fill(self.background_color)
-
 
 	def write(self, text, color=None):
 		self.text = text
 		if color is not None: self.foreground_color = color
 		self._update()
 
-
 	def append(self, text):
 		self.text = self.text + text
 		self._update()
-
 
 	def _update(self):
 		self.clear()
@@ -366,12 +345,10 @@ class Statusbar(Sprite):
 		)
 
 
-
 class BoardGameState(GameState):
 
 	mouse_down_pos	= None
 	may_click		= False
-
 
 	def __init__(self, **kwargs):
 		"""
@@ -380,7 +357,6 @@ class BoardGameState(GameState):
 		"""
 		self.mouse_pos = Game.current.board.cell_at(mouse.get_pos())
 		GameState.__init__(self, **kwargs)
-
 
 	def loop_end(self):
 		"""
@@ -391,7 +367,6 @@ class BoardGameState(GameState):
 			mouse.set_cursor(*arrow)
 		else:
 			mouse.set_cursor(*broken_x)
-
 
 	def _evt_mousemotion(self, event):
 		"""
@@ -405,14 +380,12 @@ class BoardGameState(GameState):
 			self.mouse_enter(cell)
 		self.mouse_pos = cell
 
-
 	def _evt_mousebuttondown(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		event will contain:	pos, button
 		"""
 		self.mouse_down_pos = self.mouse_pos
-
 
 	def _evt_mousebuttonup(self, event):
 		"""
@@ -422,7 +395,6 @@ class BoardGameState(GameState):
 		if self.may_click and self.mouse_down_pos == self.mouse_pos:
 			self.click(self.mouse_pos, event)
 
-
 	def mouse_enter(self, cell):
 		"""
 		"Pseudo" event which occurs after the mouse moved to a new position on the board.
@@ -430,14 +402,12 @@ class BoardGameState(GameState):
 		"""
 		pass
 
-
 	def mouse_exit(self, cell):
 		"""
 		"Pseudo" event which occurs after the mouse moves out of a position on the board.
 		This event is immediately followed by "mouse_enter" with the new position given.
 		"""
 		pass
-
 
 	def click(self, cell, event):
 		"""
@@ -448,7 +418,6 @@ class BoardGameState(GameState):
 		will contain "pos" and "button" attributes.
 		"""
 		pass
-
 
 
 class AbstractGamePiece:
@@ -462,7 +431,6 @@ class AbstractGamePiece:
 		self.rect = self.cell.rect()
 		self.position = Vector(self.cell.center())
 		Game.current.board.set_cell(cell, self)
-
 
 	def move_to(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
 		"""
@@ -502,10 +470,8 @@ class AbstractGamePiece:
 			Game.current.board.clear_cell(self.cell)
 			return self.travel_to(self.target_cell.center(), arrival_function)
 
-
 	def travel_to(self, coords, on_arrival):
 		pass
-
 
 
 class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
@@ -513,7 +479,6 @@ class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
 	max_speed	= 17.0
 	min_speed	= 0.5
 	decel_rate	= 1.4
-
 
 	def __init__(self, cell, color):
 		AbstractGamePiece.__init__(self, cell, color)
@@ -524,3 +489,4 @@ class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
 
 
+#  end legame/board_game.py

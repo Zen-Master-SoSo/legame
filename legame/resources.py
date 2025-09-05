@@ -1,8 +1,26 @@
+#  legame/resources.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides the Resources class which loads images and sounds on demand, allowing
 access to these based on keywords and indexes.
 """
-
 import os, re, pygame
 
 
@@ -16,7 +34,6 @@ class Resources:
 		self.images = {}
 		self.image_sets = {}
 
-
 	def sound(self, name):
 		"""
 		Return a "Sound" object from the file found at the given name.
@@ -28,7 +45,6 @@ class Resources:
 			else:
 				self.sounds[name] = pygame.mixer.Sound(path)
 		return self.sounds[name]
-
 
 	def image(self, name, **kwargs):
 		"""
@@ -75,7 +91,6 @@ class Resources:
 
 		return self.images[name]
 
-
 	def image_set(self, path, **kwargs):
 		"""
 		Returns an ImageSet, which provides a list of images and variants.
@@ -95,14 +110,12 @@ class Resources:
 		for variant in variants: imgset = imgset.variants[variant]
 		return imgset
 
-
 	def preload_sounds(self):
 		"""
 		Loads all sound files found in Resources "sounds_folder".
 		"""
 		for filename in os.listdir(self.sounds_folder):
 			self.sounds[filename] = pygame.mixer.Sound(os.path.join(self.sounds_folder, filename))
-
 
 	def dump(self):
 		"""
@@ -130,8 +143,6 @@ If you use Flipper.preload(), only classes which subclass Flipper will have
 image sets loaded. It may be possible to use an image set which is not cycled
 using the Flipper class, in which case those images will have not been loaded.
 			""")
-
-
 
 
 class ImageSet:
@@ -231,7 +242,6 @@ class ImageSet:
 
 	image_extensions	= [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tga"]
 
-
 	def __init__(self, images_dir, name, **kwargs):
 		"""
 		Creates an ImageSet by loading the images found in specified directory.
@@ -287,7 +297,6 @@ class ImageSet:
 			alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
 			self.images = [images[key] for key in sorted(images, key = alphanum_key)]
 
-
 	def variant(self, path):
 		"""
 		Returns an ImageSet which is a variant of this ImageSet.
@@ -296,17 +305,15 @@ class ImageSet:
 		for arg in path.split("/"): imgset = imgset.variants[arg]
 		return imgset
 
-
 	def dump(self):
 		"""
 		Print the path names of the images loaded for debugging.
 		"""
 		self.__dump(self.name, 0)
 
-
 	def __dump(self, keyname, indent):
 		print(("   " * indent + "%s: %d images") % (keyname, self.count))
 		for key, imgset in self.variants.items(): imgset.__dump(key, indent + 1)
 
 
-
+#  end legame/resources.py

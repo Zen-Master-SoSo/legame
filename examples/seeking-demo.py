@@ -1,8 +1,26 @@
+#  legame/examples/seeking-demo.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Demonstrates seeking behavior of the MovingSprite class found in the
 "sprite_enhancement" module.
 """
-
 import random, pygame
 from pygame import Rect, Surface
 from pygame.draw import polygon, circle, line
@@ -12,7 +30,7 @@ from pygame.locals import SRCALPHA, K_ESCAPE, K_q
 from legame.game import Game, GameState
 from legame.flipper import Flipper, FlipNone, FlipThrough, FlipBetween
 from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
-from legame.locals import *
+from legame import *
 
 
 class SeekingDemo(Game):
@@ -35,7 +53,6 @@ class SeekingDemo(Game):
 		return ChaseState()
 
 
-
 class ChaseState(GameState):
 
 	def __init__ (self):
@@ -53,7 +70,6 @@ class ChaseState(GameState):
 
 	def _evt_quit(self, event):
 		Game.current.shutdown()
-
 
 
 class Mouse(MovingSprite, Sprite):
@@ -76,13 +92,11 @@ class Mouse(MovingSprite, Sprite):
 		self.update_rect()
 
 
-
 class Chaser(MovingSprite, Sprite):
 
 	height				= 24
 	width				= 24
 	max_turning_speed	= 10
-
 
 	def __init__(self, x, y, mouse):
 		MovingSprite.__init__(self, x, y)
@@ -98,7 +112,6 @@ class Chaser(MovingSprite, Sprite):
 		]
 		self.center_point = Vector(12, 12)
 
-
 	def update(self):
 		self.turn_towards(self.target.position)
 		self.image = Surface(self.rect.size)
@@ -108,11 +121,9 @@ class Chaser(MovingSprite, Sprite):
 		self.seek_motion()
 
 
-
-
 if __name__ == '__main__':
 	import sys
 	sys.exit(SeekingDemo().run())
 
 
-
+#  end legame/examples/seeking-demo.py

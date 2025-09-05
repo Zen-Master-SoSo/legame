@@ -1,7 +1,25 @@
+#  legame/templates/board-game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Demonstrates board game moves, jumps, state changes, and animations
 """
-
 import random
 from pygame.locals import K_ESCAPE, K_q
 from pygame import Rect
@@ -11,32 +29,26 @@ from legame.flipper import *
 from legame.exit_states import *
 
 
-
 class MyGame(BoardGame):
 
 	fps 				= 30
 	caption				= "MyGame"
 
-
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
 		BoardGame.__init__(self, options)
 
-
 	def get_board(self):
 		return MyBoard()
 
-
 	def initial_state(self):
 		return EmptyGameState(cell=None)
-
 
 
 class MyBoard(GameBoard):
 
 	columns				= 8
 	rows				= 8
-
 
 
 class EmptyGameState(GameState):
@@ -53,14 +65,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def exit_state(self, next_state):
 		"""
 		Function called when the Game transitions OUT OF this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
 		pass
-
 
 	def _evt_keydown(self, event):
 		"""
@@ -70,14 +80,12 @@ class EmptyGameState(GameState):
 		if event.key == K_ESCAPE or event.key == K_q:
 			Game.current.shutdown()
 
-
 	def _evt_quit(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
 		"""
 		Game.current.shutdown()
-
 
 	def _evt_keyup(self, event):
 		"""
@@ -86,14 +94,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_mousemotion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		"event" will contain: pos, rel, buttons
 		"""
 		pass
-
 
 	def _evt_mousebuttondown(self, event):
 		"""
@@ -102,7 +108,6 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_mousebuttonup(self, event):
 		"""
 		Mouse up event passed to this GameState.
@@ -110,13 +115,11 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_activeevent(self, event):
 		"""
 		"event" will contain: gain, state
 		"""
 		pass
-
 
 	def _evt_joyaxismotion(self, event):
 		"""
@@ -125,14 +128,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_joyballmotion(self, event):
 		"""
 		Joystick ball motion event passed to this GameState.
 		"event" will contain: instance_id, ball, rel
 		"""
 		pass
-
 
 	def _evt_joyhatmotion(self, event):
 		"""
@@ -141,14 +142,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_joybuttondown(self, event):
 		"""
 		Joystick button down event passed to this GameState.
 		"event" will contain: instance_id, button
 		"""
 		pass
-
 
 	def _evt_joybuttonup(self, event):
 		"""
@@ -157,14 +156,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_videoresize(self, event):
 		"""
 		Event handler called when the window / display is resized.
 		"event" will contain: size, w, h
 		"""
 		pass
-
 
 	def _evt_videoexpose(self, event):
 		"""
@@ -173,7 +170,6 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_videoresize(self, event):
 		"""
 		Event handler called when the window / display is resized.
@@ -181,14 +177,12 @@ class EmptyGameState(GameState):
 		"""
 		pass
 
-
 	def _evt_videoexpose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
 		event will be empty
 		"""
 		pass
-
 
 
 class Piece(GamePiece, Flipper):
@@ -199,11 +193,9 @@ class Piece(GamePiece, Flipper):
 		self.image_folder = "Piece/" + color
 		Flipper.__init__(self, CycleThrough("enter"), CycleNone())
 
-
 	def update(self):
 		GamePiece.update(self)
 		Flipper.update(self)
-
 
 
 if __name__ == '__main__':
@@ -231,3 +223,4 @@ if __name__ == '__main__':
 		sys.exit(game.run())
 
 
+#  end legame/templates/board-game.py

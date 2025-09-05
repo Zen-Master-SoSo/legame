@@ -1,8 +1,27 @@
+#  legame/tests/sprite_enhancement_test.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 import pytest, pygame, math
 from pygame import Rect
 from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from pygame.math import Vector2 as Vector
-from legame.locals import *
+from legame import *
 
 
 class Boxed(BoxedInSprite, MovingSprite):
@@ -29,13 +48,11 @@ def test_constructor():
 	assert thing.direction == 45
 	assert thing.speed == 1000
 
-
 def test_motion():
 	thing = MovingSprite(0, 0)
 	thing.set_motion_polar(100, 90)
 	assert thing.direction == 90
 	assert thing.speed == 100
-
 
 def test_basic_move():
 	thing1 = MovingSprite(x=100, y=100)
@@ -47,7 +64,6 @@ def test_basic_move():
 	thing1.x = 100
 	assert thing1.x == 100
 	assert thing1.direction == 0.0
-
 
 def test_vector_copy():
 	thing1 = MovingSprite(100, 100)
@@ -61,7 +77,6 @@ def test_vector_copy():
 	thing2.position = thing1.position
 	assert thing2.x == thing1.x
 	assert thing2.y == thing1.y
-
 
 def do_not_test_side_facing():
 	thing1 = MovingSprite(x=100, y=100)
@@ -90,7 +105,6 @@ def do_not_test_side_facing():
 	thing2.degrees = 270
 	thing2.cartesian_motion()
 	assert thing1.side_facing(thing2) == FACE_LEFT
-
 
 def test_boundary():
 
@@ -121,7 +135,6 @@ def test_boundary():
 	assert near[0] == -5
 	assert near[1] == COMPASS_SOUTH
 
-
 def test_direction_to():
 	tolerance = 0.0001
 	thing = MovingSprite(0.0, 0.0)
@@ -133,7 +146,6 @@ def test_direction_to():
 		assert dirc - ndeg < tolerance \
 			or dirc - 360 - ndeg < tolerance \
 			or dirc + 360 - ndeg < tolerance
-
 
 def test_turn_towards():
 
@@ -157,7 +169,6 @@ def test_turn_towards():
 		assert abs(subject.turning_speed - subject.max_turning_speed) < tolerance
 		assert abs(subject.direction - stop) < tolerance
 
-
 	# Reset the subject
 	subject.direction = DEGREES_EAST
 	subject.turning_speed = 0.0
@@ -172,7 +183,6 @@ def test_turn_towards():
 		subject.turn_towards(target.position)
 		assert abs(subject.turning_speed + subject.max_turning_speed) < tolerance
 		assert abs(subject.direction - stop) < tolerance
-
 
 	# Reset the subject
 	subject.direction = DEGREES_EAST
@@ -204,7 +214,6 @@ def test_turn_towards():
 		assert abs(subject.turning_speed + subject.max_turning_speed) < tolerance
 		assert abs(subject.direction - stop) < tolerance
 
-
 	# Reset the subject
 	subject.direction = DEGREES_EAST
 	subject.turning_speed = 0.0
@@ -221,4 +230,4 @@ def test_turn_towards():
 	assert abs(subject.direction) == abs(subject.direction)
 
 
-
+#  end legame/tests/sprite_enhancement_test.py

@@ -1,4 +1,23 @@
 #!/usr/bin/python3
+#  legame/templates/network-board-game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 from pygame import Rect
 from pygame.sprite import Sprite
 from legame.game import *
@@ -7,7 +26,6 @@ from legame.network_game import NetworkGame
 from legame.flipper import *
 from legame.exit_states import *
 from cable_car.json_messages import *
-
 
 
 class MyGame(BoardGame, NetworkGame):
@@ -31,12 +49,10 @@ class MyGame(BoardGame, NetworkGame):
 		return EmptyGameState()
 
 
-
 class MyBoard(GameBoard):
 
 	columns				= 8
 	rows				= 8
-
 
 
 class EmptyGameState(GameState):
@@ -198,13 +214,11 @@ class EmptyGameState(GameState):
 		pass
 
 
-
 class GSQuit(GameStateFinal):
 
 	def enter_state(self):
 		if self.who == "me":
 			Game.current.messenger.send(MsgQuit())
-
 
 
 class MsgAdd(Message):
@@ -215,7 +229,6 @@ class MsgAdd(Message):
 
 	def decode_attributes(self, attributes):
 		self.cell = Game.current.board.rotate(Cell(attributes["cell"][0], attributes["cell"][1]))
-
 
 
 class MsgMove(Message):
@@ -232,7 +245,6 @@ class MsgMove(Message):
 		self.target_cell = Game.current.board.rotate(Cell(attributes["target_cell"][0], attributes["target_cell"][1]))
 
 
-
 class Piece(GamePiece, Flipper):
 
 	def __init__(self, cell, color):
@@ -245,7 +257,6 @@ class Piece(GamePiece, Flipper):
 	def update(self):
 		GamePiece.update(self)
 		Flipper.update(self)
-
 
 
 if __name__ == '__main__':

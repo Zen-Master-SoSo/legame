@@ -1,9 +1,27 @@
+#  legame/joiner.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides the BroadcastJoiner class, a subclass of Dialog and BroadcastConnector
 which returns a Messenger object already connected to another player over the
 network.
 """
-
 import importlib, re, threading
 from time import time
 from socket import socket, AF_INET, SOCK_DGRAM
@@ -11,7 +29,6 @@ from pgdialog import Dialog, Button, Label, Textbox, Radio, HorizontalLayout, AL
 from cable_car.broadcast_connector import BroadcastConnector
 from cable_car.direct_connect import DirectClient, DirectServer
 from cable_car.messenger import Messenger
-
 
 def get_my_ip():
 	sock = socket(AF_INET, SOCK_DGRAM)
@@ -31,7 +48,6 @@ class JoinerDialog(Dialog):
 	foreground_color			= (180,180,255)
 	foreground_color_hover		= (220,220,255)
 	shutdown_delay				= 0.5
-
 
 	def __init__(self, options=None):
 		"""
@@ -62,7 +78,6 @@ class JoinerDialog(Dialog):
 			background_color = self.background_color
 		)
 
-
 	def close(self):
 		"""
 		Override Dialog.close()
@@ -73,7 +88,6 @@ class JoinerDialog(Dialog):
 		self._quitting_time = time() + self.shutdown_delay
 		self.loop_end = self._closing
 
-
 	def _closing(self):
 		"""
 		Function which replaces "loop_end" when closing JoinerDialog.
@@ -81,7 +95,6 @@ class JoinerDialog(Dialog):
 		"""
 		if time() >= self._quitting_time:
 			self._run_loop = False
-
 
 
 class BroadcastJoiner(JoinerDialog, BroadcastConnector):
@@ -132,14 +145,12 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 		self.append(self.statusbar)
 		self.on_connect_function = self.on_connect
 
-
 	def show(self):
 		self.initialize_display()
 		self._start_connector_threads()
 		self._main_loop()
 		self._connect_enable = False
 		self.join_threads()
-
 
 	def on_connect(self, sock):
 		"""
@@ -157,7 +168,6 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 		msgr.invited_me = False
 		msgr.accepted_invitation = False
 		self.messengers.append(msgr)
-
 
 	def loop_end(self):
 		"""
@@ -212,7 +222,6 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 				self.statusbar.text = ", ".join(errors)
 			self.close()
 
-
 	def _button_click(self, button):
 		"""
 		Click event fired when one of the address listings is clicked.
@@ -227,7 +236,6 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 			button.text = "Waiting for %s on %s to accept" % (msgr.remote_user, msgr.remote_hostname)
 			button.disabled = True
 
-
 	def _select(self, messenger):
 		"""
 		Called when accepting an invitation or the other player accepts an invitation.
@@ -240,9 +248,7 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 		self.close()
 
 
-
 class DirectJoiner(JoinerDialog):
-
 
 	tcp_port			= 8223		# Port to connect to / listen on
 	transport			= "json"	# cable_car transport to use.
@@ -252,7 +258,6 @@ class DirectJoiner(JoinerDialog):
 	__connect_thread	= None		# Connector thread
 	__connect_exc		= None		# Exception raised in self.__connector thread
 	__connect_failed	= False
-
 
 	def __init__(self, options=None):
 		JoinerDialog.__init__(self, options)
@@ -291,13 +296,11 @@ class DirectJoiner(JoinerDialog):
 		self.statusbar.text = "Select the mode (client or server)"
 		self.append(self.statusbar)
 
-
 	def show(self):
 		self.initialize_display()
 		self._main_loop()
 		self._connect_enable = False
 		if self.__connect_thread: self.__connect_thread.join()
-
 
 	def mode_select(self, radio):
 		if radio.text == "Client":
@@ -307,7 +310,6 @@ class DirectJoiner(JoinerDialog):
 			self.ip_entry.enabled = False
 			self.start_button.enabled = True
 			self.ip_entry.text = get_my_ip()
-
 
 	def start(self, pos):
 		if Radio.selected_value("mode") == "Client":
@@ -325,18 +327,14 @@ class DirectJoiner(JoinerDialog):
 			self.statusbar.text = "Listening for client connection ..."
 		self.__connect_thread.start()
 
-
 	def disable_widgets(self):
 		for widget in self.widgets(): widget.disabled = True
-
 
 	def client_connect(self):
 		self.__connect(DirectClient(self.tcp_port, self.ip_entry.text))
 
-
 	def server_connect(self):
 		self.__connect(DirectServer(self.tcp_port, self.ip_entry.text))
-
 
 	def __connect(self, connector):
 		self.__connector = connector
@@ -348,7 +346,6 @@ class DirectJoiner(JoinerDialog):
 			self.messenger = Messenger(self.__connector.socket, self.transport)
 			self.messenger.id_sent = False
 			self.messenger.id_received = False
-
 
 	def loop_end(self):
 		"""
@@ -380,8 +377,6 @@ class DirectJoiner(JoinerDialog):
 		elif self.__connect_failed:
 			# Only happens when connector thread faults out.
 			self.close()
-
-
 
 
 if __name__ == '__main__':
@@ -423,3 +418,4 @@ if __name__ == '__main__':
 	print(joiner.messenger.remote_ip if joiner.messenger else None)
 
 
+#  end legame/joiner.py

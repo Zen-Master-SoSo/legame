@@ -1,4 +1,23 @@
 #!/usr/bin/python3
+#  legame/templates/network-game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 from pygame import Rect
 from pygame.sprite import Sprite
 from legame.game import *
@@ -9,13 +28,11 @@ from legame.exit_states import *
 from cable_car.json_messages import *
 
 
-
 class MyGame(NetworkGame):
 
 
 	def initial_state(self):
 		return EmptyGameState()
-
 
 
 class EmptyGameState(GameState):
@@ -177,13 +194,11 @@ class EmptyGameState(GameState):
 		pass
 
 
-
 class GSQuit(GameStateFinal):
 
 	def enter_state(self):
 		if self.who == "me":
 			Game.current.messenger.send(MsgQuit())
-
 
 
 class MsgPositionUpdate(Message):
@@ -201,7 +216,6 @@ class MsgPositionUpdate(Message):
 	pass
 
 
-
 class EmptySprite(MovingSprite, Flipper, Sprite):
 
 	def __init__(self, x, y):
@@ -209,7 +223,6 @@ class EmptySprite(MovingSprite, Flipper, Sprite):
 		Flipper.__init__(self, FlipThrough("appear"), FlipBetween("walking"))
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
-
 
 
 if __name__ == '__main__':
@@ -237,3 +250,5 @@ if __name__ == '__main__':
 	else:
 		sys.exit(game.run())
 
+
+#  end legame/templates/network-game.py

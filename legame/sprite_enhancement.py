@@ -1,12 +1,29 @@
+#  legame/sprite_enhancement.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides classes for easier positioning and moving of sprites.
 """
-
 import math
 from pygame import Rect
 from pygame.math import Vector2 as Vector
-from legame.locals import *
-
+from legame import *
 
 
 def vector(target):
@@ -20,12 +37,10 @@ def vector(target):
 	raise ValueError("Invalid target: %s" % target)
 
 
-
 class CenteredSprite:
 
 	height				= 10
 	width				= 10
-
 
 	def __init__(self, x=0.0, y=0.0):
 		"""
@@ -41,7 +56,6 @@ class CenteredSprite:
 			self.width,
 			self.height
 		)
-
 
 	@property
 	def x(self):
@@ -59,7 +73,6 @@ class CenteredSprite:
 		"""
 		self.position.x = value
 
-
 	@property
 	def y(self):
 		"""
@@ -76,7 +89,6 @@ class CenteredSprite:
 		"""
 		self.position.y = value
 
-
 	def update_rect(self):
 		"""
 		Updates the "rect" used by the Sprite class with this CenteredSprite's "position" vector.
@@ -84,7 +96,6 @@ class CenteredSprite:
 		self.rect.centerx = int(self.position.x)
 		self.rect.centery = int(self.position.y)
 		return self
-
 
 
 class MovingSprite(CenteredSprite):
@@ -101,7 +112,6 @@ class MovingSprite(CenteredSprite):
 	destination			= None  # Necessary for seek_motion
 	_motion_function	= None	# Function called to move this on Sprite.update()
 	_arrival_function	= None	# Function called when destination reached by seeking motion
-
 
 	def __init__(self, x=0.0, y=0.0, speed=None, direction=None):
 		"""
@@ -127,7 +137,6 @@ class MovingSprite(CenteredSprite):
 		if speed is None or direction is None: return
 		self.motion.from_polar((speed, direction))
 
-
 	@property
 	def speed(self):
 		"""
@@ -144,7 +153,6 @@ class MovingSprite(CenteredSprite):
 			self.motion.scale_to_length(value)
 		except ValueError as e:
 			self.motion.from_polar((value, 0.0))
-
 
 	@property
 	def direction(self):
@@ -165,14 +173,12 @@ class MovingSprite(CenteredSprite):
 		else:
 			self.motion.from_polar((mag, degrees))
 
-
 	def update(self):
 		"""
 		Regular cyclic update task, as called from pygame.Sprite.
 		Calls the current move function, which by default is "cartesian_motion".
 		"""
 		self._motion_function()
-
 
 	def shift_position(self, x, y):
 		"""
@@ -184,13 +190,11 @@ class MovingSprite(CenteredSprite):
 		self.rect.centery = int(self.position.y)
 		return self
 
-
 	def set_motion_polar(self, magnitude, degrees):
 		"""
 		Set the current motion vector from the given magnitude, degrees.
 		"""
 		self.motion.from_polar((magnitude, degrees))
-
 
 	def travel_to(self, target, on_arrival=None):
 		"""
@@ -202,7 +206,6 @@ class MovingSprite(CenteredSprite):
 		self._motion_function = self.seek_motion
 		self._arrival_function = on_arrival
 		return self.make_heading()
-
 
 	def make_heading(self):
 		"""
@@ -225,7 +228,6 @@ class MovingSprite(CenteredSprite):
 		self.motion.scale_to_length(speed)
 		return self
 
-
 	####################################################################################
 	# Move routines which may be called in the "update()" function of the parent Sprite:
 	# Various movement methods, called from the "update" method, depending upon the
@@ -233,13 +235,11 @@ class MovingSprite(CenteredSprite):
 	# which is a reference to one of these methods, or a method in a derived class.
 	####################################################################################
 
-
 	def no_motion(self):
 		"""
 		A "_motion_function" which does nothing.
 		"""
 		pass
-
 
 	def cartesian_motion(self):
 		"""
@@ -250,7 +250,6 @@ class MovingSprite(CenteredSprite):
 		self.position.x += self.motion.x
 		self.position.y += self.motion.y
 		return self.update_rect()
-
 
 	def seek_motion(self):
 		"""
@@ -280,11 +279,9 @@ class MovingSprite(CenteredSprite):
 			self.speed = min(self.max_speed, self.speed + self.accel_rate)
 		return self.cartesian_motion()
 
-
 	####################################################################################
 	# High-level movement functions
 	####################################################################################
-
 
 	def turn_towards(self, vector):
 		"""
@@ -294,7 +291,6 @@ class MovingSprite(CenteredSprite):
 		self.increment_turning_speed(self.direction_to_vector(vector))
 		self.direction += self.turning_speed
 
-
 	def turn_away_from(self, vector):
 		"""
 		Turn incrementally away from the given position vector, taking into account
@@ -302,7 +298,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		self.increment_turning_speed(self.direction_to_vector(vector) + 180)
 		self.direction += self.turning_speed
-
 
 	def increment_turning_speed(self, direction):
 		"""
@@ -320,7 +315,6 @@ class MovingSprite(CenteredSprite):
 		elif abs(self.turning_speed) < self.max_turning_speed:
 			self.turning_speed -= math.copysign(self.max_turning_speed, desired_turn)
 
-
 	####################################################################################
 	# Relative position methods:
 	####################################################################################
@@ -332,14 +326,12 @@ class MovingSprite(CenteredSprite):
 		"""
 		return self.position.distance_to(vector)
 
-
 	def distance_to_thing(self, thing):
 		"""
 		Returns a float - the distance in pixels from this MovingSprite to the given
 		"thing-like" object.
 		"""
 		return self.position.distance_to(thing.position)
-
 
 	def direction_to_vector(self, vector):
 		"""
@@ -350,7 +342,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		return (vector - self.position).as_polar()[1]
 
-
 	def direction_to_thing(self, thing):
 		"""
 		Returns the world angle in degrees from this MovingSprite's position to the
@@ -359,7 +350,6 @@ class MovingSprite(CenteredSprite):
 		If you need a Vector instead of an angle in radians, use Vector subtraction.
 		"""
 		return (thing.position - self.position).as_polar()[1]
-
 
 	def angle_to_vector(self, vector):
 		"""
@@ -372,7 +362,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		return (vector - self.position).as_polar()[1]
 
-
 	def angle_to_thing(self, thing):
 		"""
 		Returns the world angle in degrees from this MovingSprite's position to the
@@ -384,7 +373,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		return (thing.position - self.position).as_polar()[1]
 
-
 	def radians_to_vector(self, vector):
 		"""
 		Returns the world angle in radians from this MovingSprite's position to the
@@ -394,7 +382,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		return math.radians((vector - self.position).as_polar()[1])
 
-
 	def radians_to_thing(self, vector):
 		"""
 		Returns the world angle in radians from this MovingSprite's position to the
@@ -403,7 +390,6 @@ class MovingSprite(CenteredSprite):
 		If you need a Vector, simply subtract this MovingSprite's position from the vector's.
 		"""
 		return math.radians((thing.position - self.position).as_polar()[1])
-
 
 	####################################################################################
 	# Status methods:
@@ -427,7 +413,6 @@ class MovingSprite(CenteredSprite):
 			return bits
 		return 0
 
-
 	def is_directionless(self):
 		"""
 		Returns boolean "True" if radians and magnitude of this MovingSprite's motion Vector
@@ -435,20 +420,17 @@ class MovingSprite(CenteredSprite):
 		"""
 		return self.motion.x == 0 and self.motion.y == 0
 
-
 	def ns_direction(self):
 		"""
 		Returns COMPASS_NORTH or COMPASS_SOUTH, depending on if the y-axis of movement is positive or negative
 		"""
 		return COMPASS_NORTH if self.motion.y < 0 else COMPASS_SOUTH
 
-
 	def ew_direction(self):
 		"""
 		Returns COMPASS_EAST or COMPASS_WEST, depending on if the y-axis of movement is positive or negative
 		"""
 		return COMPASS_WEST if self.motion.x < 0 else COMPASS_EAST
-
 
 	def __str__(self):
 		if self.is_directionless():
@@ -457,12 +439,10 @@ class MovingSprite(CenteredSprite):
 			(type(self).__name__, self.position.x, self.position.y, self.motion.degrees, self.motion.magnitude())
 
 
-
 class BoxedInSprite:
 	"""
 	A class which can add boundary checking to a MovingSprite.
 	"""
-
 
 	def __init__ (self, boundary):
 		"""
@@ -477,7 +457,6 @@ class BoxedInSprite:
 
 		"""
 		self.boundary = boundary
-
 
 	def nearest_boundary(self):
 		"""
@@ -501,7 +480,6 @@ class BoxedInSprite:
 			return (self.boundary.bottom - self.y, SIDE_BOTTOM)
 		return None
 
-
 	def update(self):
 		tup = self.nearest_boundary()
 		if tup is not None:
@@ -512,4 +490,4 @@ class BoxedInSprite:
 		self.cartesian_motion()
 
 
-
+#  end legame/sprite_enhancement.py

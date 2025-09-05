@@ -1,7 +1,25 @@
+#  legame/examples/network-game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Demonstrates sending moves over a network.
 """
-
 import random
 from pygame.locals import K_ESCAPE, K_q
 from legame.game import *
@@ -10,21 +28,17 @@ from legame.flipper import *
 from legame.network_game import NetworkGame
 from legame.exit_states import ExitAnimation
 
-
 class TestGame(BoardGame, NetworkGame):
 
 	xfer_interval	= 0.1		# Number of seconds between calls to service the messenger
-
 
 	def __init__(self, options=None):
 		self.set_resource_dir_from_file(__file__)
 		BoardGame.__init__(self, options)
 		NetworkGame.__init__(self, options)
 
-
 	def get_board(self):
 		return GameBoard(5, 5)
-
 
 	def initial_state(self):
 		global board, statusbar, send, me, my_opponent
@@ -32,7 +46,6 @@ class TestGame(BoardGame, NetworkGame):
 		statusbar = Game.current.statusbar
 		send = Game.current.messenger.send
 		return GSWhoGoesFirst()
-
 
 
 # Game states:
@@ -50,16 +63,13 @@ class GSBase(GameState):
 			GSQuit(who = "me")
 
 
-
 class GSWhoGoesFirst(GSBase):
 
 	may_click	= False
 
-
 	def enter_state(self):
 		logging.debug("Enter state GSWhoGoesFirst")
 		self.pick_a_color()
-
 
 	def pick_a_color(self):
 		logging.debug("pick_a_color()")
@@ -68,7 +78,6 @@ class GSWhoGoesFirst(GSBase):
 		self.my_roll.number = random.randrange(1, 255)
 		send(self.my_roll)
 		statusbar.write("Rolling for %s (my number is %d)" % (self.my_roll.color, self.my_roll.number))
-
 
 	def handle_message(self, message):
 		if isinstance(message, MsgPickAColor):
@@ -116,9 +125,7 @@ class GSWhoGoesFirst(GSBase):
 			GSQuit(who = "me")
 
 
-
 class GSMyMove(GSBase):
-
 
 	def enter_state(self):
 		statusbar.write("GSMyMove")
@@ -133,13 +140,10 @@ class GSMyMove(GSBase):
 		GSQuit(who = "me")
 
 
-
 class GSWaitYourTurn(GSBase):
-
 
 	def enter_state(self):
 		statusbar.write("GSWaitYourTurn")
-
 
 	def handle_message(self, message):
 		if isinstance(message, MsgAdd):
@@ -153,13 +157,11 @@ class GSWaitYourTurn(GSBase):
 		GSMyMove()
 
 
-
 class GSQuit(GameStateFinal):
 
 	def enter_state(self):
 		if self.who == "me": send(MsgQuit())
 		ExitAnimation("bye-bye.png")
-
 
 
 # Game pieces and other sprites:
@@ -191,7 +193,6 @@ class Block(GamePiece, Flipper):
 		return self
 
 
-
 class Glow(Flipper, pygame.sprite.Sprite):
 
 	def __init__(self, cell, frame=0):
@@ -200,9 +201,6 @@ class Glow(Flipper, pygame.sprite.Sprite):
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
 		Flipper.__init__(self, FlipBetween(loop_forever=True, frame=frame, fps=30))
 		self.rect = self.cell.get_rect()
-
-
-
 
 
 if __name__ == '__main__':
@@ -221,7 +219,6 @@ if __name__ == '__main__':
 		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
 	)
 
-
 	if options.transport == "json":
 		from cable_car.json_messages import Message, MsgQuit
 
@@ -230,23 +227,18 @@ if __name__ == '__main__':
 			def encoded_attributes(self):
 				return { "cell" : (self.cell.column, self.cell.row) }
 
-
 			def decode_attributes(self, attributes):
 				self.cell = Cell(*attributes["cell"])
-
 
 			def rotate(self):
 				self.cell = board.rotate(self.cell)
 				return self
 
-
 		class MsgPickAColor(Message):
 			pass
 
-
 	else:
 		from cable_car.byte_messages import Message, MsgQuit
-
 
 		class MsgAdd(Message):
 			code = 0x8
@@ -257,18 +249,15 @@ if __name__ == '__main__':
 				"""
 				return bytearray([self.cell.column, self.cell.row])
 
-
 			def decode(self, msg_data):
 				"""
 				Read column, row from message data.
 				"""
 				self.cell = Cell(msg_data[0], msg_data[1])
 
-
 			def rotate(self):
 				self.cell = board.rotate(self.cell)
 				return self
-
 
 		class MsgPickAColor(Message):
 			code = 0x9
@@ -279,7 +268,6 @@ if __name__ == '__main__':
 				"""
 				return bytearray([self.number]) + self.color.encode("ASCII")
 
-
 			def decode(self, msg_data):
 				"""
 				Read color and number from message data.
@@ -288,10 +276,7 @@ if __name__ == '__main__':
 
 
 
-
 	sys.exit(TestGame(options).run())
 
 
-
-
-
+#  end legame/examples/network-game.py

@@ -1,7 +1,25 @@
+#  legame/network_game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides the NetworkGame class, a framework for games played over a network.
 """
-
 import importlib, cable_car
 from time import time, sleep
 from legame.game import Game, GameState
@@ -30,7 +48,6 @@ class NetworkGame(Game):
 	transport		= "json"	# cable_car transport to use.
 	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
 	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
-
 
 	def __init__(self, options=None):
 		"""
@@ -66,7 +83,6 @@ class NetworkGame(Game):
 		else:
 			self.__joiner = BroadcastJoiner(options)
 
-
 	def run(self):
 		self.__joiner.show()
 		if not self.__joiner.messenger: return 5
@@ -79,7 +95,6 @@ class NetworkGame(Game):
 			self.messenger.send(MsgQuit())
 			self.messenger.shutdown()
 			return 1
-
 
 	def _end_loop(self):
 		"""
@@ -95,12 +110,13 @@ class NetworkGame(Game):
 				message = self.messenger.get()
 
 
-
 # Dynamically append "handle_message" method used by NetworkGame to the GameState class:
 
 def _handle_message(self, message):
 	pass
 
+
 GameState.handle_message = _handle_message
 
 
+#  end legame/network_game.py

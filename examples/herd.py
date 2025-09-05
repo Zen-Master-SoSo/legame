@@ -1,7 +1,25 @@
+#  legame/examples/herd.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Demonstrates "neighbor" detection using the Neighborhood class
 """
-
 from random import seed, randrange, uniform
 from pygame.sprite import Sprite
 from pygame import Rect, Surface
@@ -10,7 +28,7 @@ from pygame.locals import SRCALPHA, K_ESCAPE, K_q
 from legame.game import Game, GameState
 from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from legame.neighbors import Neighborhood, Neighbor
-from legame.locals import *
+from legame import *
 
 
 class HerdDemo(Game, Neighborhood):
@@ -23,7 +41,6 @@ class HerdDemo(Game, Neighborhood):
 	num_foragers	= 60
 	num_predators	= 7
 
-
 	def __init__ (self):
 		global game, neighborhood
 		self.set_resource_dir_from_file(__file__)
@@ -33,12 +50,10 @@ class HerdDemo(Game, Neighborhood):
 		neighborhood = Neighborhood(self.rect.inflate(-30, -30), self.cells_x, self.cells_y)
 		game = self
 
-
 	def initial_background(self, display_size):
 		bg = Surface(self.rect.size)
 		bg.fill(self.bg_color)
 		return bg
-
 
 	def initial_state(self):
 		r = neighborhood.rect
@@ -57,15 +72,12 @@ class HerdDemo(Game, Neighborhood):
 			)
 		return GSWatch()
 
-
 	def _end_loop(self):
 		neighborhood.notify_sprites()
 		self._state.loop_end()
 
 
-
 class GSWatch(GameState):
-
 
 	def _evt_keydown(self, event):
 		"""
@@ -74,14 +86,12 @@ class GSWatch(GameState):
 		if event.key == K_ESCAPE or event.key == K_q:
 			game.shutdown()
 
-
 	def _evt_quit(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
 		"""
 		game.shutdown()
-
 
 
 class Animal(Neighbor, BoxedInSprite, MovingSprite, Sprite):
@@ -104,12 +114,10 @@ class Animal(Neighbor, BoxedInSprite, MovingSprite, Sprite):
 		self._nearest_animal = None
 		self._nearest_animal_distance = None
 
-
 	def make_image(self, color):
 		surf = Surface((8,8), SRCALPHA)
 		circle(surf, color, (4, 4), 4)
 		return surf
-
 
 	def boundary_check(self):
 		"""
@@ -128,12 +136,9 @@ class Animal(Neighbor, BoxedInSprite, MovingSprite, Sprite):
 			self.turning_speed = 0
 		self.cartesian_motion()
 
-
 	def kill(self):
 		neighborhood.ignore(self)
 		Sprite.kill(self)
-
-
 
 
 class Forager(Animal):
@@ -145,14 +150,12 @@ class Forager(Animal):
 	turn_sluggish		= 24
 	accel_sluggish		= 44
 
-
 	def notice(self, neighbor):
 		if isinstance(neighbor, Predator):
 			d = self.distance_to_thing(neighbor)
 			if self._nearest_animal is None or d < self._nearest_animal_distance:
 				self._nearest_animal = neighbor
 				self._nearest_animal_distance = d
-
 
 	def update(self):
 		"""
@@ -171,8 +174,6 @@ class Forager(Animal):
 		self._nearest_animal = None
 
 
-
-
 class Predator(Animal):
 
 	color				= (140,42,16)
@@ -188,14 +189,12 @@ class Predator(Animal):
 	rested_limit		= 400
 	eat_frames			= 240
 
-
 	def __init__(self, x, y, direction):
 		Animal.__init__(self, x, y, direction)
 		self._eat_image = self.make_image(self.eat_color)
 		self._vigor = 400
 		self._tired = False
 		self.update = self.hunting
-
 
 	def notice(self, neighbor):
 		if isinstance(neighbor, Forager):
@@ -204,11 +203,9 @@ class Predator(Animal):
 				self._nearest_animal = neighbor
 				self._nearest_animal_distance = d
 
-
 	def cartesian_motion(self):
 		self._nearest_animal = None
 		super().cartesian_motion()
-
 
 	def hunting(self):
 		if self._nearest_animal and self._nearest_animal.alive():
@@ -230,7 +227,6 @@ class Predator(Animal):
 			self.boundary_check()
 		self.cartesian_motion()
 
-
 	def chasing(self):
 		self.image = self._bright_image
 		if self._nearest_animal and self._nearest_animal.alive():
@@ -250,13 +246,11 @@ class Predator(Animal):
 			self.update = self.hunting
 		self.cartesian_motion()
 
-
 	def kill_prey(self):
 		self._nearest_animal.kill()
 		self.turning_speed = 0.0
 		self.speed = max(0.0, self.speed - self._decel)
 		self.update = self.catching
-
 
 	def catching(self):
 		self.image = self._eat_image
@@ -267,14 +261,12 @@ class Predator(Animal):
 			self.eat_frames_countdown = self.eat_frames
 		self.cartesian_motion()
 
-
 	def eating(self):
 		self._vigor = max(self.max_vigor, self._vigor + 2)
 		self.eat_frames_countdown -= 1
 		if self.eat_frames_countdown <= 0:
 			#print("eating -> hunting  vigor: %d" % self._vigor)
 			self.update = self.hunting
-
 
 	def going_to_rest(self):
 		self.speed -= self._decel
@@ -284,16 +276,11 @@ class Predator(Animal):
 			#print("going_to_rest -> resting  vigor: %d" % self._vigor)
 			self.update = self.resting
 
-
 	def resting(self):
 		self._vigor += 1
 		if self._vigor > self.rested_limit:
 			#print("resting -> hunting  vigor: %d" % self._vigor)
 			self.update = self.hunting
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -302,4 +289,4 @@ if __name__ == '__main__':
 	sys.exit(HerdDemo().run())
 
 
-
+#  legame/examples/herd.py

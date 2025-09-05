@@ -1,22 +1,37 @@
+#  legame/flipper.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides classes which are used to do image cycling on a Sprite.
 """
-
 from collections import deque
 from legame.resources import Resources
 from legame.game import Game
-
 
 class Flipper:
 
 	image_folder = None	# base name of this thing's image set. If none, use the class name
 
-
 	@classmethod
 	def preload(cls, **kwargs):
 		for subclass in Flipper.__subclasses__():
 			Game.current.resources.image_set(subclass.__name__, **kwargs)
-
 
 	def __init__(self, *flippers, **kwargs):
 		"""
@@ -37,7 +52,6 @@ class Flipper:
 		self.queue_flippers(flippers)
 		self.next_flipper()
 
-
 	def flip(self, *flippers):
 		"""
 		Replaces the current FlipEffect with the first FlipEffect object given, and queues any other
@@ -52,14 +66,12 @@ class Flipper:
 		self.queue_flippers(flippers)
 		self.next_flipper()
 
-
 	def queue_flipper(self, flipper):
 		"""
 		Appends a single FlipEffect object to the queue.
 		"""
 		flipper.image_set = self._base_image_set if flipper.variant is None else self._base_image_set.variant(flipper.variant)
 		self._flipper_queue.append(flipper)
-
 
 	def queue_flippers(self, flippers):
 		"""
@@ -68,7 +80,6 @@ class Flipper:
 		for flipper in flippers:
 			flipper.image_set = self._base_image_set if flipper.variant is None else self._base_image_set.variant(flipper.variant)
 		self._flipper_queue.extend(flippers)
-
 
 	def update(self):
 		"""
@@ -82,7 +93,6 @@ class Flipper:
 		if self.flipper.done:
 			self.next_flipper()
 
-
 	def next_flipper(self):
 		"""
 		Advances to the next FlipEffect in the queue.
@@ -92,7 +102,6 @@ class Flipper:
 			self.image = self.flipper.first_image()
 		else:
 			self.flipper = None
-
 
 
 class FlipEffect:
@@ -140,13 +149,11 @@ class FlipEffect:
 		self._loops_remaining = self.loops
 		self.done = False
 
-
 	def first_image(self):
 		"""
 		Returns the first image in the set, or the only image in the case of FlipNone.
 		"""
 		return self.image_set.images[self.frame]
-
 
 	def update(self):
 		"""
@@ -163,7 +170,6 @@ class FlipEffect:
 		return self.image_set.images[self.frame]
 
 
-
 class FlipNone(FlipEffect):
 	"""
 	Displays only the first image in the ImageSet
@@ -173,10 +179,8 @@ class FlipNone(FlipEffect):
 		self.done = True
 		return FlipEffect.first_image(self)
 
-
 	def advance_frame(self):
 		pass
-
 
 
 class FlipThrough(FlipEffect):
@@ -199,7 +203,6 @@ class FlipThrough(FlipEffect):
 			self.frame += 1
 
 
-
 class FlipBetween(FlipEffect):
 	"""
 	Cycles back and forth through an ImageSet; when at the end, backs up to the beginning
@@ -208,7 +211,6 @@ class FlipBetween(FlipEffect):
 	def __init__(self, variant=None, **kwargs):
 		FlipEffect.__init__(self, variant, **kwargs)
 		self.__direction = 1
-
 
 	def advance_frame(self):
 		if self.frame == self.image_set.last_index:
@@ -223,4 +225,4 @@ class FlipBetween(FlipEffect):
 		self.frame += self.__direction
 
 
-
+#  end legame/flipper.py

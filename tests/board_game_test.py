@@ -1,3 +1,22 @@
+#  legame/tests/board_game_test.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 import pytest
 from pygame import Rect
 from legame.board_game import *
@@ -6,6 +25,7 @@ from legame.game import Game
 @pytest.fixture(autouse=True)
 def game():
 	return FakeGame()
+
 
 class FakeGame(BoardGame):
 	pass
@@ -22,13 +42,11 @@ def test_game_init():
 	assert Game.current.board.cell_half_width == 25
 	assert Game.current.board.cell_half_height == 25
 
-
 def test_cell_str():
 	game = FakeGame()
 	board = game.board
 	cell = Cell(5, 6)
 	assert str(cell) == "Cell at column 5, row 6"
-
 
 def test_cell_at():
 	game = FakeGame()
@@ -116,8 +134,6 @@ def test_cell_at():
 	cell = board.cell_at(0, board.rect.height + 1)
 	assert cell is None
 
-
-
 def test_cell_get_rect():
 	game = FakeGame()
 	board = game.board
@@ -144,7 +160,6 @@ def test_cell_get_rect():
 	assert rect.width == game.board.cell_width
 	assert rect.height == game.board.cell_height
 
-
 def test_cell_rotate():
 	game = FakeGame()
 	board = game.board
@@ -164,7 +179,6 @@ def test_cell_rotate():
 	rot_cell = board.rotate(cell)
 	assert rot_cell.column + cell.column == board.last_column
 	assert rot_cell.row + cell.row == board.last_row
-
 
 def test_cell_access():
 	game = FakeGame()
@@ -216,7 +230,6 @@ def test_cell_access():
 	assert piece is None
 	assert not cell.is_mine()
 
-
 def test_column_row_access():
 	game = FakeGame()
 	board = game.board
@@ -253,7 +266,6 @@ def test_column_row_access():
 	assert isinstance(cells[-1], AbstractGamePiece)
 	for cell in cells[:-1]: assert cell is None
 
-
 def test_cell_copy():
 	game = FakeGame()
 	board = game.board
@@ -286,7 +298,6 @@ def test_cell_copy():
 	assert cell2.column == 5
 	assert cell2.row == cell1.row
 
-
 def test_cell_eq():
 	game = FakeGame()
 	board = game.board
@@ -295,7 +306,6 @@ def test_cell_eq():
 	cell2 = cell1.copy()
 	assert cell1 == cell2
 
-
 def test_cell_unpacking():
 	game = FakeGame()
 	board = game.board
@@ -303,7 +313,6 @@ def test_cell_unpacking():
 	column, row = cell
 	assert column == 5
 	assert row == 6
-
 
 def test_game_piece_travel():
 	game = FakeGame()
@@ -325,9 +334,7 @@ def test_game_piece_travel():
 	assert piece.target_cell.column == 5
 	assert piece.target_cell.row == 4
 
-
-
 if __name__ == "__main__":
 	test_game_piece_travel()
 
-
+#  end legame/tests/board_game_test.py

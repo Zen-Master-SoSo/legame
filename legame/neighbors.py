@@ -1,10 +1,28 @@
+#  legame/neighbors.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides a means for dividing up the screen into sub-sections within which MovingSprites are
 cross-checked for nearness to each other. This allows MovingSprite instances to modify their
 behavior on the basis of their proximity to other MovingSprites, without having to cross-check
 every instance on the screen against every other instance.
 """
-
 from math import floor, ceil
 
 
@@ -155,14 +173,12 @@ class Neighborhood:
 		# self._observed_sprites_list are a list of all sprites to keep track of in the area:
 		self._observed_sprites_list = []
 
-
 	@property
 	def cells(self):
 		"""
 		Returns a cell-to-quadrants list - really only should be used for testing.
 		"""
 		return self.__cell2quad_maps
-
 
 	@property
 	def all_quadrants(self):
@@ -171,20 +187,17 @@ class Neighborhood:
 		"""
 		return self._quadrants
 
-
 	def sprites_in(self, x, y):
 		"""
 		Returns a list of sprites which occupy the quadrant specified by the given x/y coordinates.
 		"""
 		return self.__quadrant_maps[x][y].sprites
 
-
 	def quadrant(self, x, y):
 		"""
 		Returns the single quadrant whose "top-left cell" occupies the "cell" x/y position given.
 		"""
 		return self.__quadrant_maps[x][y]
-
 
 	def observe(self, sprite):
 		"""
@@ -194,14 +207,12 @@ class Neighborhood:
 		"""
 		self._observed_sprites_list.append(sprite)
 
-
 	def ignore(self, sprite):
 		"""
 		Remove a sprite from the list of sprites to observe.
 		Hopefully, you haven't added it twice, because if so, it'll still be here.
 		"""
 		self._observed_sprites_list.remove(sprite)
-
 
 	def notify_sprites(self):
 		"""
@@ -225,7 +236,6 @@ class Neighborhood:
 						quadrant.sprites[b].notice(quadrant.sprites[a])
 
 
-
 class Quadrant:
 	"""
 	Division of an Neighborhood which covers at most 9 "cells".
@@ -235,7 +245,6 @@ class Quadrant:
 		self.x = x			# These values (and this whole class, really) are only
 		self.y = y			# Used for debugging. The meat of this class is "sprites".
 		self.sprites = []	# A list of sprites which are determined to be in this Quadrant.
-
 
 
 class Neighbor:
@@ -252,5 +261,4 @@ class Neighbor:
 		pass
 
 
-
-
+#  end legame/neighbors.py

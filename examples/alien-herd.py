@@ -1,8 +1,26 @@
+#  legame/examples/alien-herd.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Visual variant of "herd.py" (which demonstrates "neighbor" detection using the
 Neighborhood class.)
 """
-
 from legame.examples.herd import *
 
 class AlienHerdDemo(HerdDemo):
@@ -21,7 +39,6 @@ class AlienHerdDemo(HerdDemo):
 		return GSWatch()
 
 
-
 class AienForager(Forager):
 	color				= (60,120,25)
 	running_color		= (90,200,45)
@@ -29,6 +46,7 @@ class AienForager(Forager):
 	high_speed			= 1.125
 	turn_sluggish		= 30
 	accel_sluggish		= 44
+
 
 class AlienPredator(Predator):
 	color				= (160,22,16)
@@ -39,8 +57,10 @@ class AlienPredator(Predator):
 	turn_sluggish		= 10
 	accel_sluggish		= 20
 
+
 if __name__ == '__main__':
 	import sys
 	sys.exit(AlienHerdDemo().run())
 
 
+#  end legame/examples/alien-herd.py

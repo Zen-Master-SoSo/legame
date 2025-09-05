@@ -1,7 +1,25 @@
+#  legame/examples/board-game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Demonstrates board game moves, jumps, state changes, and animations
 """
-
 import random
 from pygame.locals import K_ESCAPE, K_q
 from pygame import Rect
@@ -10,7 +28,6 @@ from legame.game import *
 from legame.board_game import *
 from legame.flipper import *
 from legame.exit_states import *
-
 
 
 class TestGame(BoardGame):
@@ -22,7 +39,6 @@ class TestGame(BoardGame):
 
 	def initial_state(self):
 		return GSSelect(cell=None)
-
 
 
 # Game states:
@@ -39,7 +55,6 @@ class GSBase(BoardGameState):
 		"""
 		if event.key == K_ESCAPE or event.key == K_q:
 			GSQuit()
-
 
 class GSSelect(BoardGameState):
 	"""
@@ -77,11 +92,9 @@ class GSSelect(BoardGameState):
 		if event.key == K_ESCAPE or event.key == K_q:
 			GSQuit()
 
-
 	def exit_state(self, next_state):
 		if self.reminder_timer is not None:
 			Game.current.clear_timeout(self.reminder_timer)
-
 
 class GSSelectMoveTarget(BoardGameState):
 	"""
@@ -115,7 +128,6 @@ class GSSelectMoveTarget(BoardGameState):
 			GSQuit()
 
 
-
 # Sprites:
 
 class Block(GamePiece, Flipper):
@@ -127,21 +139,17 @@ class Block(GamePiece, Flipper):
 		Game.current.play("enter.wav")
 		self.__glow = None
 
-
 	def update(self):
 		GamePiece.update(self)
 		Flipper.update(self)
-
 
 	def jiggle(self):
 		self.flip(FlipBetween("jiggle", loops=11, fps=30), FlipNone())
 		return self
 
-
 	def glow(self):
 		self.__glow = Glow(self.cell)
 		return self
-
 
 	def unglow(self):
 		if self.__glow:
@@ -149,11 +157,9 @@ class Block(GamePiece, Flipper):
 			self.__glow = None
 		return self
 
-
 	def kill(self):
 		Game.current.play("bust.wav")
 		Sprite.kill(self)
-
 
 
 class Glow(Flipper, Sprite):
@@ -166,8 +172,6 @@ class Glow(Flipper, Sprite):
 		Flipper.__init__(self, FlipBetween(loop_forever=True, frame=frame, fps=30))
 
 
-
-
 if __name__ == '__main__':
 	import argparse
 	p = argparse.ArgumentParser()
@@ -177,4 +181,4 @@ if __name__ == '__main__':
 	p.exit(TestGame(p.parse_args()).run())
 
 
-
+#  end legame/examples/board-game.py

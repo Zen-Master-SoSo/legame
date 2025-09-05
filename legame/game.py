@@ -1,12 +1,30 @@
+#  legame/game.py
+#
+#  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#
 """
 Provides the Game and GameState classes, a framework for writing games.
 """
-
 import os, pygame, logging
+from time import time
 from pygame.locals import *
 from pygame.event import event_name
 from legame.resources import Resources
-
 
 
 class Game:
@@ -36,7 +54,7 @@ class Game:
 	icon				= None
 
 	# sound settings:
-	mixer_frequency		= 22050
+	mixer_frequency		= 44100
 	mixer_bitsize		= -16
 	mixer_channels		= 8
 	mixer_buffer		= 512
@@ -53,7 +71,6 @@ class Game:
 	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
 	__next_state		= None		# Next game state waiting for change at end of main loop
 
-
 	LAYER_BG			= 1			#
 	LAYER_ABOVE_BG		= 2			#
 	LAYER_BELOW_PLAYER	= 4			# Sprite layers
@@ -61,8 +78,7 @@ class Game:
 	LAYER_ABOVE_PLAYER	= 8			#
 	LAYER_OVERLAY		= 10		#
 
-
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		"""
 
 		Set options, start the necessary pygame modules, instantiate Resources, create
@@ -105,9 +121,9 @@ class Game:
 				setattr(self, varname, value)
 		if self.resource_dir is None: self.resource_dir = "resources"
 		self.resources = Resources(self.resource_dir, self.resource_dump)
-		pygame.init()
 		if not self.quiet:
 			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
+		pygame.init()
 		self.sprites = pygame.sprite.LayeredUpdates()
 
 		# Event handler mapping.
@@ -126,7 +142,6 @@ class Game:
 		self.__timer_arguments = [None for x in range(8)]
 		self.__timer_recur_flag = [None for x in range(8)]
 
-
 	def set_resource_dir_from_file(self, filename):
 		"""
 		Set the resource directory to a subfolder of the given file's parent folder.
@@ -143,7 +158,6 @@ class Game:
 		"""
 		self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
 
-
 	def run(self):
 		"""
 		Run the game. The "initial_state" function is called from here, and must return
@@ -155,7 +169,6 @@ class Game:
 		self.__next_state = None	# Clear this, as it was set in "change_state()"
 		self._main_loop()
 		return 0
-
 
 	def show(self, background=None):
 		"""
@@ -185,14 +198,12 @@ class Game:
 		self.screen.blit(self.background, (0,0))
 		pygame.display.flip()
 
-
 	def shutdown(self):
 		"""
 		Triggers the _main_loop to exit. The _main_loop will finish its current
 		iteration before doing so.
 		"""
 		self._stay_in_loop = False
-
 
 	def change_state(self, game_state):
 		"""
@@ -212,7 +223,6 @@ class Game:
 			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
 		else:
 			self.__next_state = game_state
-
 
 	##################################################################################################################
 
@@ -240,9 +250,7 @@ class Game:
 			if "exit_loop" in cls.__dict__:
 				cls.exit_loop(self)
 
-
 	##################################################################################################################
-
 
 	def _end_loop(self):
 		"""
@@ -252,14 +260,12 @@ class Game:
 		"""
 		self._state.loop_end()
 
-
 	def exit_loop(self):
 		"""
 		Called when _main_loop() exits, after the final round of moving sprites and
 		updating the display.
 		"""
 		pass
-
 
 	# Event handlers:
 
@@ -426,7 +432,6 @@ class Game:
 		self._state._evt_windowtakefocus(event)
 
 
-
 	# Timers:
 
 	def set_timeout(self, callback, milliseconds, **kwargs):
@@ -443,7 +448,6 @@ class Game:
 		"""
 		return self.__set_timeout(callback, milliseconds, kwargs, False)
 
-
 	def set_interval(self, callback, milliseconds, **kwargs):
 		"""
 		Starts a timer using pygame.time.set_timer() which executes a given callback
@@ -458,14 +462,12 @@ class Game:
 		"""
 		return self.__set_timeout(callback, milliseconds, kwargs, True)
 
-
 	def clear_timeout(self, timer_index):
 		"""
 		Clears a timer previously set using "set_timeout()"
 		"""
 		pygame.time.set_timer(USEREVENT + timer_index, 0)
 		self.__timer_callbacks[timer_index] = None
-
 
 	def __set_timeout(self, callback, milliseconds, arguments, recur):
 		for timer_index in range(8):
@@ -476,7 +478,6 @@ class Game:
 				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
 				return timer_index
 		raise Exception("Too many timers!")
-
 
 	def __timer_event(self, event):
 		"""
@@ -494,7 +495,6 @@ class Game:
 			if not self.__timer_recur_flag[timer_index]:
 				self.clear_timeout(timer_index)
 
-
 	def play(self, sound_name):
 		"""
 		Play a sound identified by "sound_name". If Game.quiet is True, does nothing.
@@ -502,9 +502,7 @@ class Game:
 		if not self.quiet: self.resources.sound(sound_name).play()
 
 
-
 class GameState:
-
 
 	def __init__(self, **kwargs):
 		"""
@@ -516,7 +514,6 @@ class GameState:
 		for varname, value in kwargs.items(): setattr(self, varname, value)
 		Game.current.change_state(self)
 
-
 	def enter_state(self):
 		"""
 		Function called when the Game transitions to this state.
@@ -525,14 +522,12 @@ class GameState:
 		"""
 		pass
 
-
 	def exit_state(self, next_state):
 		"""
 		Function called when the Game transitions out of this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
 		pass
-
 
 	# Early / late Game._main_loop() events:
 
@@ -549,7 +544,6 @@ class GameState:
 		"""
 		pass
 
-
 	def loop_end(self):
 		"""
 		Called at the end of _main_loop() each time through.
@@ -562,7 +556,6 @@ class GameState:
 		6. change to new game state (if needed)
 		"""
 		pass
-
 
 	# Event handlers called from Game._main_loop():
 
@@ -945,7 +938,6 @@ class GameState:
 		pass
 
 
-
 class GameStateFinal(GameState):
 	"""
 	Final GameState; cannot be replaced even if a new GameState is instantiated
@@ -954,4 +946,4 @@ class GameStateFinal(GameState):
 	pass
 
 
-
+#  end legame/game.py
