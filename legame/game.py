@@ -128,9 +128,9 @@ class Game:
 
 		# Event handler mapping.
 		self._event_handlers = {
-			c:f for (c, f) in [
-				( getattr(pygame.locals, c), getattr(self, "_evt_" + c.lower()) )
-				for c in dir(pygame.locals) if hasattr(self, "_evt_" + c.lower())
+			const:func for (const, func) in [
+				( getattr(pygame.locals, const), getattr(self, "_evt_" + const.lower()) )
+				for const in dir(pygame.locals) if hasattr(self, "_evt_" + const.lower())
 			]
 		}
 		pygame.event.set_allowed(list(self._event_handlers.keys()))
