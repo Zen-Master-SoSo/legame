@@ -133,7 +133,7 @@ class Game:
 				for const in dir(pygame.locals) if hasattr(self, "_evt_" + const.lower())
 			]
 		}
-		pygame.event.set_allowed(list(self._event_handlers.keys()))
+		#pygame.event.set_allowed(list(self._event_handlers.keys()))
 
 		# Fill-in the remaining timer events:
 		for event_type in range(USEREVENT, NUMEVENTS + 1):
