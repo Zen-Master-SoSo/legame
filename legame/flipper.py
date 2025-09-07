@@ -21,8 +21,8 @@
 Provides classes which are used to do image cycling on a Sprite.
 """
 from collections import deque
-from legame.resources import Resources
 from legame.game import Game
+
 
 class Flipper:
 
@@ -109,7 +109,7 @@ class FlipEffect:
 	Sets the image on a Sprite to a member of an ImageSet in sequence
 	"""
 
-	def __init__(self, variant=None, on_complete=None, **kwargs):
+	def __init__(self, variant = None, on_complete = None, **kwargs):
 		"""
 		When an FlipEffect is queued in a Flipper, it gets a reference to the root of the
 		Flipper's ImageSet. Set the variant of the ImageSet to flip using the "variant"
@@ -208,7 +208,7 @@ class FlipBetween(FlipEffect):
 	Cycles back and forth through an ImageSet; when at the end, backs up to the beginning
 	"""
 
-	def __init__(self, variant=None, **kwargs):
+	def __init__(self, variant = None, **kwargs):
 		FlipEffect.__init__(self, variant, **kwargs)
 		self.__direction = 1
 

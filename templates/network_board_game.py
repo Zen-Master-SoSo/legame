@@ -1,4 +1,5 @@
-#  legame/templates/board-game.py
+#!/usr/bin/python3
+#  legame/templates/network-board-game.py
 #
 #  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
 #
@@ -17,32 +18,32 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-"""
-Demonstrates board game moves, jumps, state changes, and animations
-"""
-import random
-from pygame.locals import K_ESCAPE, K_q
-from pygame import Rect
-from legame.game import *
-from legame.board_game import *
-from legame.flipper import *
-from legame.exit_states import *
+try:
+	from pygame.locals import K_q, K_ESCAPE
+except ImportError:
+	from pygame import K_q, K_ESCAPE
+from cable_car.json_messages import Message, MsgQuit
+from legame.game import Game, GameState, GameStateFinal
+from legame.board_game import Cell, GamePiece, GameBoard, BoardGame
+from legame.network_game import NetworkGame
+from legame.flipper import Flipper, FlipThrough, FlipNone
 
 
-class MyGame(BoardGame):
+class MyGame(BoardGame, NetworkGame):
 
-	fps 				= 30
-	caption				= "MyGame"
-
-	def __init__(self, options=None):
+	def __init__ (self, options):
 		self.set_resource_dir_from_file(__file__)
 		BoardGame.__init__(self, options)
+		NetworkGame.__init__(self, options)
+
+	def run(self):
+		return NetworkGame.run(self)
 
 	def get_board(self):
 		return MyBoard()
 
 	def initial_state(self):
-		return EmptyGameState(cell=None)
+		return EmptyGameState()
 
 
 class MyBoard(GameBoard):
@@ -61,128 +62,138 @@ class EmptyGameState(GameState):
 	def enter_state(self):
 		"""
 		Function called when the Game transitions TO this state.
-		Any information needed to be passed to this GameState should be passed as keyword args to the constructor.
+		Any information needed to be passed to this GameState should be passed
+		as keyword args to the constructor.
 		"""
-		pass
 
 	def exit_state(self, next_state):
 		"""
 		Function called when the Game transitions OUT OF this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
-		pass
 
-	def _evt_keydown(self, event):
+	def handle_message(self, message):
+		"""
+		Function called when a message comes over the wire through Game.current.messenger.
+		"""
+		if isinstance(message, MsgQuit):
+			GSQuit(who = "them")
+
+	def key_down(self, event):
 		"""
 		Key down event passed to this GameState.
 		"event" will contain: key, mod, unicode, scancode
 		"""
-		if event.key == K_ESCAPE or event.key == K_q:
-			Game.current.shutdown()
+		if event.key in (K_ESCAPE, K_q):
+			GSQuit(who = "me")
 
-	def _evt_quit(self, event):
+	def quit_event(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
 		"""
-		Game.current.shutdown()
+		GSQuit(who = "me")
 
-	def _evt_keyup(self, event):
+	def key_up(self, event):
 		"""
 		Key up event passed to this GameState.
 		"event" will contain: key, mod
 		"""
-		pass
 
-	def _evt_mousemotion(self, event):
+	def mouse_motion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		"event" will contain: pos, rel, buttons
 		"""
-		pass
 
-	def _evt_mousebuttondown(self, event):
+	def mouse_button_down(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		"event" will contain: pos, button
 		"""
-		pass
 
-	def _evt_mousebuttonup(self, event):
+	def mouse_button_up(self, event):
 		"""
 		Mouse up event passed to this GameState.
 		"event" will contain: pos, button
 		"""
-		pass
 
-	def _evt_activeevent(self, event):
+	def active_event(self, event):
 		"""
 		"event" will contain: gain, state
 		"""
-		pass
 
-	def _evt_joyaxismotion(self, event):
+	def joy_axis_motion(self, event):
 		"""
 		Joystick motion event passed to this GameState.
 		"event" will contain: instance_id, axis, value
 		"""
-		pass
 
-	def _evt_joyballmotion(self, event):
+	def joy_ball_motion(self, event):
 		"""
 		Joystick ball motion event passed to this GameState.
 		"event" will contain: instance_id, ball, rel
 		"""
-		pass
 
-	def _evt_joyhatmotion(self, event):
+	def joy_hat_motion(self, event):
 		"""
 		Joystick hat motion event passed to this GameState.
 		"event" will contain: instance_id, hat, value
 		"""
-		pass
 
-	def _evt_joybuttondown(self, event):
+	def joy_button_down(self, event):
 		"""
 		Joystick button down event passed to this GameState.
 		"event" will contain: instance_id, button
 		"""
-		pass
 
-	def _evt_joybuttonup(self, event):
+	def joy_button_up(self, event):
 		"""
 		Joystick button up event passed to this GameState.
 		"event" will contain: instance_id, button
 		"""
-		pass
 
-	def _evt_videoresize(self, event):
-		"""
-		Event handler called when the window / display is resized.
-		"event" will contain: size, w, h
-		"""
-		pass
-
-	def _evt_videoexpose(self, event):
-		"""
-		Event handler called when the window is exposed(?)
-		"event" will be empty
-		"""
-		pass
-
-	def _evt_videoresize(self, event):
+	def video_resize(self, event):
 		"""
 		Event handler called when the window / display is resized.
 		event will contain: size, w, h
 		"""
-		pass
 
-	def _evt_videoexpose(self, event):
+	def video_expose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
 		event will be empty
 		"""
-		pass
+
+
+class GSQuit(GameStateFinal):
+
+	def enter_state(self):
+		if self.who == "me":
+			Game.current.messenger.send(MsgQuit())
+
+
+class MsgAdd(Message):
+
+	def encoded_attributes(self):
+		return { "cell" : (self.cell.column, self.cell.row) }
+
+	def decode_attributes(self, attributes):
+		self.cell = Game.current.board.rotate(Cell(attributes["cell"][0], attributes["cell"][1]))
+
+
+class MsgMove(Message):
+
+	def encoded_attributes(self):
+		return {
+			"cell"			: (self.cell.column, self.cell.row),
+			"target_cell"	: (self.target_cell.column, self.target_cell.row)
+		}
+
+	def decode_attributes(self, attributes):
+		self.cell = Game.current.board.rotate(Cell(attributes["cell"][0], attributes["cell"][1]))
+		self.target_cell = Game.current.board.rotate(
+			Cell(attributes["target_cell"][0], attributes["target_cell"][1]))
 
 
 class Piece(GamePiece, Flipper):
@@ -191,7 +202,7 @@ class Piece(GamePiece, Flipper):
 		self.color = color
 		GamePiece.__init__(self, cell, color)
 		self.image_folder = "Piece/" + color
-		Flipper.__init__(self, CycleThrough("enter"), CycleNone())
+		Flipper.__init__(self, FlipThrough("enter"), FlipNone())
 
 	def update(self):
 		GamePiece.update(self)
@@ -205,9 +216,14 @@ if __name__ == '__main__':
 	p.epilog = """
 	Describe your game here.
 	"""
-	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
-	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	p.add_argument("--resource-dump", "-r", action="store_true", help="Show sound and image resources for debugging")
+	p.add_argument("--quiet", "-q", action = "store_true",
+		help = "Don't make sound")
+	p.add_argument("--verbose", "-v", action = "store_true",
+		help = "Show more detailed debug information")
+	p.add_argument("--resource-dump", "-r", action = "store_true",
+		help = "Show sound and image resources for debugging")
+	p.add_argument("--direct", "-d", action = "store_true",
+		help = "Connect by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 	logging.basicConfig(
 		level = logging.DEBUG if options.verbose else logging.ERROR,
@@ -223,4 +239,4 @@ if __name__ == '__main__':
 		sys.exit(game.run())
 
 
-#  end legame/templates/board-game.py
+#  end legame/templates/network-board-game.py

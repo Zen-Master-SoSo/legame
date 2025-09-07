@@ -17,7 +17,7 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-import pytest, pygame
+from pygame import Rect
 from legame.sprite_enhancement import MovingSprite
 from legame.neighbors import Neighborhood, Neighbor, Quadrant
 
@@ -32,7 +32,7 @@ class Thing(MovingSprite, Neighbor):
 
 
 def test_constructor():
-	rect = pygame.Rect(0, 0, 400, 300)
+	rect = Rect(0, 0, 400, 300)
 
 	# Calc height/width from cell count correctly
 	nh = Neighborhood(rect, 4, 3)
@@ -50,7 +50,7 @@ def test_constructor():
 	assert len(nh.cells) == nh.cells_x
 	assert len(nh.cells[0]) == nh.cells_y
 
-	# top-left cell (x=0, y=0):
+	# top-left cell (x = 0, y = 0):
 	cell = nh.cells[0][0]
 	assert isinstance(cell, list)
 	assert len(cell) == 1
@@ -58,7 +58,7 @@ def test_constructor():
 	assert cell[0].x == 0
 	assert cell[0].y == 0
 
-	# top, second from the left (x=1, y=0):
+	# top, second from the left (x = 1, y = 0):
 	cell = nh.cells[1][0]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -69,7 +69,7 @@ def test_constructor():
 	assert cell[1].x == 1
 	assert cell[1].y == 0
 
-	# top, third from the left (x=2, y=0):
+	# top, third from the left (x = 2, y = 0):
 	cell = nh.cells[2][0]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -80,7 +80,7 @@ def test_constructor():
 	assert cell[1].x == 2
 	assert cell[1].y == 0
 
-	# top-right cell (x=3, y=0):
+	# top-right cell (x = 3, y = 0):
 	cell = nh.cells[3][0]
 	assert isinstance(cell, list)
 	assert len(cell) == 1
@@ -88,7 +88,7 @@ def test_constructor():
 	assert cell[0].x == 2
 	assert cell[0].y == 0
 
-	# middle-left cell (x=0, y=1):
+	# middle-left cell (x = 0, y = 1):
 	cell = nh.cells[0][1]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -99,7 +99,7 @@ def test_constructor():
 	assert cell[1].x == 0
 	assert cell[1].y == 1
 
-	# middle row, second from the left (x=1, y=1):
+	# middle row, second from the left (x = 1, y = 1):
 	cell = nh.cells[1][1]
 	assert isinstance(cell, list)
 	assert len(cell) == 4
@@ -116,7 +116,7 @@ def test_constructor():
 	assert cell[3].x == 1
 	assert cell[3].y == 1
 
-	# middle row, third from the left (x=2, y=1):
+	# middle row, third from the left (x = 2, y = 1):
 	cell = nh.cells[2][1]
 	assert isinstance(cell, list)
 	assert len(cell) == 4
@@ -133,7 +133,7 @@ def test_constructor():
 	assert cell[3].x == 2
 	assert cell[3].y == 1
 
-	# middle row, right (x=3, y=1):
+	# middle row, right (x = 3, y = 1):
 	cell = nh.cells[3][1]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -144,7 +144,7 @@ def test_constructor():
 	assert cell[1].x == 2
 	assert cell[1].y == 1
 
-	# bottom-left cell (x=0, y=2):
+	# bottom-left cell (x = 0, y = 2):
 	cell = nh.cells[0][2]
 	assert isinstance(cell, list)
 	assert len(cell) == 1
@@ -152,7 +152,7 @@ def test_constructor():
 	assert cell[0].x == 0
 	assert cell[0].y == 1
 
-	# bottom row, second from the left (x=1, y=2):
+	# bottom row, second from the left (x = 1, y = 2):
 	cell = nh.cells[1][2]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -163,7 +163,7 @@ def test_constructor():
 	assert cell[1].x == 1
 	assert cell[1].y == 1
 
-	# bottom row, third from the left (x=2, y=2):
+	# bottom row, third from the left (x = 2, y = 2):
 	cell = nh.cells[2][2]
 	assert isinstance(cell, list)
 	assert len(cell) == 2
@@ -174,7 +174,7 @@ def test_constructor():
 	assert cell[1].x == 2
 	assert cell[1].y == 1
 
-	# bottom-right (x=3, y=2):
+	# bottom-right (x = 3, y = 2):
 	cell = nh.cells[3][2]
 	assert isinstance(cell, list)
 	assert len(cell) == 1
@@ -183,7 +183,7 @@ def test_constructor():
 	assert cell[0].y == 1
 
 def test_sprite_population():
-	rect = pygame.Rect(0, 0, 40, 30)
+	rect = Rect(0, 0, 40, 30)
 	nh = Neighborhood(rect, 4, 3)
 
 	t1 = Thing(nh, 5, 5)
@@ -221,5 +221,6 @@ def test_sprite_population():
 	assert len(nh.sprites_in(1,1)) == 2
 	assert len(nh.quadrant(2,1).sprites) == 2
 	assert len(nh.sprites_in(2,1)) == 2
+
 
 #  end legame/tests/neighbors_test.py

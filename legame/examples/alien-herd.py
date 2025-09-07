@@ -21,7 +21,10 @@
 Visual variant of "herd.py" (which demonstrates "neighbor" detection using the
 Neighborhood class.)
 """
-from legame.examples.herd import *
+import argparse, logging
+from random import seed, randrange
+from legame.examples.herd import HerdDemo, Forager, Predator, GSWatch
+
 
 class AlienHerdDemo(HerdDemo):
 
@@ -59,8 +62,18 @@ class AlienPredator(Predator):
 
 
 if __name__ == '__main__':
-	import sys
-	sys.exit(AlienHerdDemo().run())
+	p = argparse.ArgumentParser()
+	p.add_argument("--verbose", "-v", action = "store_true",
+		help = "Show more detailed debug information")
+	p.epilog = __doc__
+	options = p.parse_args()
+	logging.basicConfig(
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
+	)
+
+	seed()
+	p.exit(AlienHerdDemo().run())
 
 
 #  end legame/examples/alien-herd.py

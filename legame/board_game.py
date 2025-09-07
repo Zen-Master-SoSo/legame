@@ -20,14 +20,15 @@
 """
 Provides the BoardGame class, a framework for board games.
 """
+import logging
 from math import floor
 from pygame.font import SysFont
 from pygame.cursors import arrow, broken_x
 from pygame import Rect, Surface, mouse
 from pygame.draw import line
 from pygame.sprite import Sprite
-from legame import *
-from legame.game import *
+from pygame.math import Vector2 as Vector
+from legame.game import Game, GameState
 from legame.sprite_enhancement import MovingSprite
 
 
@@ -39,7 +40,7 @@ class BoardGame(Game):
 	my_color				= None
 	opponent_color			= None
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		"""
 		BoardGame constructor; calls Game.__init__() and instantiates the GameBoard and
 		"""
@@ -75,10 +76,15 @@ class GameBoard:
 
 	background			= None
 
-	def __init__(self, columns=None, rows=None):
-		if columns: self.columns = columns
-		if rows: self.rows = rows
-		self.rect = Rect((self.left, self.top, self.columns * self.cell_width, self.rows * self.cell_height + 1))
+	def __init__(self, columns = None, rows = None):
+		if columns:
+			self.columns = columns
+		if rows:
+			self.rows = rows
+		self.rect = Rect((
+			self.left, self.top,
+			self.columns * self.cell_width,
+			self.rows * self.cell_height + 1))
 		self.__cells = [[None for y in range(self.rows)] for x in range(self.columns)]
 		self.last_column = self.columns - 1
 		self.last_row = self.rows - 1
@@ -106,24 +112,16 @@ class GameBoard:
 		Args may be a pair of numbers (float or int), or a tuple of numbers (float or int).
 		Returns None if the coordinates are outside of the board.
 		"""
-		def throw_up():
-			raise ValueError("Board.cell_at() takes two numbers or a tuple of two numbers as arguments")
 		if len(args) == 1:
-			if not isinstance(args[0], tuple): throw_up()
-			if len(args[0]) != 2: throw_up()
-			if not isinstance(args[0][0], int) and not isinstance(args[0][0], float): throw_up()
-			if not isinstance(args[0][1], int) and not isinstance(args[0][1], float): throw_up()
 			x, y = args[0]
 		elif len(args) == 2:
-			if not isinstance(args[0], int) and not isinstance(args[0], float): throw_up()
-			if not isinstance(args[1], int) and not isinstance(args[1], float): throw_up()
 			x, y = args
 		else:
-			throw_up()
+			raise ValueError("Board.cell_at() takes two numbers or a tuple of two numbers")
 		return Cell(
 			floor((x - Game.current.board.left) / Game.current.board.cell_width),
 			floor((y - Game.current.board.top) / Game.current.board.cell_height)
-		) if Game.current.board.rect.collidepoint(x, y) else None
+		) if Game.current.board.rect.collidepoint(int(x), int(y)) else None
 
 	def piece_at(self, cell):
 		"""
@@ -196,9 +194,10 @@ class GameBoard:
 		return Cell(self.last_column - cell.column, self.last_row - cell.row)
 
 	def dump(self):
-		print("  " + "".join([("%2d" % column) for column in range(self.columns)]))
+		print("  " + "".join([f"{column:2d}" for column in range(self.columns)]))
 		print("\n".join(
-			[("%2d|" % row) + "|".join(self.__cells[column][row].color if self.__cells[column][row] is not None else " " \
+			[f"{row:2d}|" + "|".join(self.__cells[column][row].color \
+				if self.__cells[column][row] is not None else " " \
 			for column in range(self.columns)) + "|" for row in range(self.rows)]
 		))
 		print("  " + "-" * (self.columns * 2 + 1))
@@ -259,8 +258,10 @@ class Cell:
 		Returns the center point of this position.
 		"""
 		return (
-			Game.current.board.left + Game.current.board.cell_width * self.column + Game.current.board.cell_half_width,
-			Game.current.board.top + Game.current.board.cell_height * self.row + Game.current.board.cell_half_height
+			Game.current.board.left + Game.current.board.cell_width * self.column \
+				+ Game.current.board.cell_half_width,
+			Game.current.board.top + Game.current.board.cell_height * self.row \
+				+ Game.current.board.cell_half_height
 		)
 
 	def rect(self):
@@ -281,7 +282,7 @@ class Cell:
 		"""
 		return Cell(self.column, self.row)
 
-	def shifted(self, columns=None, rows=None):
+	def shifted(self, columns = None, rows = None):
 		"""
 		Returns a copy of this Cell shifted by the given "columns" and "rows".
 		Either of those arguments are optional. Providing neither will yield a copy.
@@ -291,7 +292,7 @@ class Cell:
 			self.row if rows is None else self.row + rows
 		)
 
-	def moved(self, column=None, row=None):
+	def moved(self, column = None, row = None):
 		"""
 		Returns a copy of this Cell with either "columns" or "rows" set to the given
 		values(s), and the other values unchanged.
@@ -303,7 +304,7 @@ class Cell:
 		)
 
 	def __str__(self):
-		return "Cell at column {}, row {}".format(self.column, self.row)
+		return f"Cell at column {self.column}, row {self.row}"
 
 
 class Statusbar(Sprite):
@@ -328,9 +329,10 @@ class Statusbar(Sprite):
 	def clear(self):
 		self.image.fill(self.background_color)
 
-	def write(self, text, color=None):
+	def write(self, text, color = None):
 		self.text = text
-		if color is not None: self.foreground_color = color
+		if color is not None:
+			self.foreground_color = color
 		self._update()
 
 	def append(self, text):
@@ -368,26 +370,28 @@ class BoardGameState(GameState):
 		else:
 			mouse.set_cursor(*broken_x)
 
-	def _evt_mousemotion(self, event):
+	def mouse_motion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		event will contain:	pos, rel, buttons
 		"""
 		cell = Game.current.board.cell_at(event.pos)
-		if cell is None: return
-		if self.mouse_pos is not None and (cell.column != self.mouse_pos.column or cell.row != self.mouse_pos.row):
+		if cell is None:
+			return
+		if self.mouse_pos is not None \
+			and (cell.column != self.mouse_pos.column or cell.row != self.mouse_pos.row):
 			self.mouse_exit(self.mouse_pos)
 			self.mouse_enter(cell)
 		self.mouse_pos = cell
 
-	def _evt_mousebuttondown(self, event):
+	def mouse_button_down(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		event will contain:	pos, button
 		"""
 		self.mouse_down_pos = self.mouse_pos
 
-	def _evt_mousebuttonup(self, event):
+	def mouse_button_up(self, event):
 		"""
 		Mouse up event passed to this GameState.
 		event will contain: pos, button
@@ -400,14 +404,12 @@ class BoardGameState(GameState):
 		"Pseudo" event which occurs after the mouse moved to a new position on the board.
 		This event immediately follows "mouse_exit".
 		"""
-		pass
 
 	def mouse_exit(self, cell):
 		"""
 		"Pseudo" event which occurs after the mouse moves out of a position on the board.
 		This event is immediately followed by "mouse_enter" with the new position given.
 		"""
-		pass
 
 	def click(self, cell, event):
 		"""
@@ -417,7 +419,6 @@ class BoardGameState(GameState):
 		"event" is the pygame event passed to the "mousebuttonup" function, which
 		will contain "pos" and "button" attributes.
 		"""
-		pass
 
 
 class AbstractGamePiece:
@@ -430,23 +431,28 @@ class AbstractGamePiece:
 		self.color = color
 		self.rect = self.cell.rect()
 		self.position = Vector(self.cell.center())
+		self.target_cell = None
+		self._motion_function = None
 		Game.current.board.set_cell(cell, self)
 
-	def move_to(self, target_cell=None, on_arrival=None, column=None, row=None, columns=None, rows=None):
+	def move_to(self, *,
+		target_cell = None,
+		column = None, row = None,
+		columns = None, rows = None,
+		on_arrival = None):
 		"""
 		High-level command which sets this GamePiece on a path towards a given cell.
 		Each subsequent cyclic update will move this one frame closer to "target_cell".
 		When travel is complete, the optional "on_arrival" function will be called.
 
-		Specifying the target destination:
+		You can specify a target using one of the following three options:
 
-		1. Pass another Cell as "target_cell"
-		2. Specify the target "column" and/or "row".
-		3. Specify relative "columns" and/or "rows" to move by.
+		1. Pass a Cell as "target_cell"
+		2. Specify the absolute target "column" and/or "row".
+		3. Specify the relative "columns" and/or "rows" to move by.
 
-		In cases 2 and 3 above, if "column" or "columns" is not given, this GamePiece's
-		current column will be used. If "row" or "rows" is not given, this GamePiece's
-		current row will be used.
+		In the cases 2 and 3 above, if any of "column", "columns", "row" or "rows" is not given,
+		this GamePiece's current column or row will be used.
 
 		"""
 		def arrival_function():
@@ -456,22 +462,30 @@ class AbstractGamePiece:
 				current_resident.kill()
 			Game.current.board.set_cell(self.cell, self)
 			self._motion_function = self.no_motion
-			if on_arrival is not None:
+			if callable(on_arrival):
 				on_arrival()
 		if target_cell is None:
 			self.target_cell = self.cell.copy()
-			self.target_cell.column = column if column is not None else self.cell.column + columns if columns is not None else self.cell.column
-			self.target_cell.row = row if row is not None else self.cell.row + rows if rows is not None else self.cell.row
+			self.target_cell.column = column if column is not None \
+				else self.cell.column + columns if columns is not None \
+				else self.cell.column
+			self.target_cell.row = row if row is not None \
+				else self.cell.row + rows if rows is not None \
+				else self.cell.row
 		else:
 			self.target_cell = target_cell
 		if self.target_cell == self.cell:
-			logging.warn("GamePiece.move_to target_cell is the current GamePiece location cell")
+			logging.warn("GamePiece.move_to target cell is the current cell")
 		else:
 			Game.current.board.clear_cell(self.cell)
 			return self.travel_to(self.target_cell.center(), arrival_function)
 
 	def travel_to(self, coords, on_arrival):
-		pass
+		"""
+		High-level command which sets a MovingSprite on a path towards a given target.
+		Each subsequent call to "move()" will move it one frame closer to the target.
+		When travel is complete, the optional "on_arrival" function will be called.
+		"""
 
 
 class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
@@ -484,7 +498,7 @@ class GamePiece(MovingSprite, Sprite, AbstractGamePiece):
 		AbstractGamePiece.__init__(self, cell, color)
 		self._motion_function = self.cartesian_motion
 		self.motion = Vector()
-		self.image_set = Game.current.resources.image_set("%s/%s" % (self.__class__.__name__, self.color))
+		self.image_set = Game.current.resources.image_set(f"{self.__class__.__name__}/{self.color}")
 		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
 

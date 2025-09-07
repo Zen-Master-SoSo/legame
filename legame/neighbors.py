@@ -23,7 +23,7 @@ cross-checked for nearness to each other. This allows MovingSprite instances to 
 behavior on the basis of their proximity to other MovingSprites, without having to cross-check
 every instance on the screen against every other instance.
 """
-from math import floor, ceil
+from math import floor
 
 
 class Neighborhood:
@@ -258,7 +258,6 @@ class Neighbor:
 		Informs this sprite that there's another sprite within a quadrant distance, allowing it
 		"decide" what to do with the neighboring sprite.
 		"""
-		pass
 
 
 #  end legame/neighbors.py

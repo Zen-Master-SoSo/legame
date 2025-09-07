@@ -17,11 +17,13 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-import pytest, pygame, math
 from pygame import Rect
 from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from pygame.math import Vector2 as Vector
-from legame import *
+from legame import	normal_degrees, \
+					DEGREES_EAST, DEGREES_NORTH, DEGREES_NORTHWEST, \
+					DEGREES_WEST, DEGREES_SOUTHWEST, DEGREES_SOUTH, \
+					COMPASS_WEST, COMPASS_NORTH, COMPASS_EAST, COMPASS_SOUTH
 
 
 class Boxed(BoxedInSprite, MovingSprite):
@@ -55,7 +57,7 @@ def test_motion():
 	assert thing.speed == 100
 
 def test_basic_move():
-	thing1 = MovingSprite(x=100, y=100)
+	thing1 = MovingSprite(x = 100, y = 100)
 	thing1.speed = 10
 	thing1.direction = DEGREES_EAST
 	thing1.cartesian_motion()
@@ -77,34 +79,6 @@ def test_vector_copy():
 	thing2.position = thing1.position
 	assert thing2.x == thing1.x
 	assert thing2.y == thing1.y
-
-def do_not_test_side_facing():
-	thing1 = MovingSprite(x=100, y=100)
-	thing1.direction = 0
-	thing1.speed = 10
-
-	thing2 = MovingSprite()
-	thing2.speed = 10
-
-	thing2.position = thing1.position
-	thing2.degrees = 0
-	thing2.cartesian_motion()
-	assert thing1.side_facing(thing2) == FACE_FORWARD
-
-	thing2.position = thing1.position
-	thing2.degrees = 90
-	thing2.cartesian_motion()
-	assert thing1.side_facing(thing2) == FACE_RIGHT
-
-	thing2.position = thing1.position
-	thing2.degrees = 180
-	thing2.cartesian_motion()
-	assert thing1.side_facing(thing2) == FACE_BEHIND
-
-	thing2.position = thing1.position
-	thing2.degrees = 270
-	thing2.cartesian_motion()
-	assert thing1.side_facing(thing2) == FACE_LEFT
 
 def test_boundary():
 
@@ -152,7 +126,7 @@ def test_turn_towards():
 	tolerance = 0.0001
 
 	# Setup subject in the middle of imaginary space
-	subject = MovingSprite(x = 0.0, y = 0.0, direction=DEGREES_EAST, speed=1.0)
+	subject = MovingSprite(x = 0.0, y = 0.0, direction = DEGREES_EAST, speed = 1.0)
 	subject.max_turning_speed = 22.5
 
 	# Setup target:

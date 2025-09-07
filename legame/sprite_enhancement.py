@@ -23,17 +23,23 @@ Provides classes for easier positioning and moving of sprites.
 import math
 from pygame import Rect
 from pygame.math import Vector2 as Vector
-from legame import *
+from legame import	triangular, turning_degrees, \
+					OFFSCREEN_LEFT, OFFSCREEN_TOP, OFFSCREEN_RIGHT, OFFSCREEN_BOTTOM, \
+					COMPASS_WEST, COMPASS_NORTH, COMPASS_EAST, COMPASS_SOUTH, \
+					SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM
 
 
-def vector(target):
+def to_vector(target):
 	"""
 	Returns a Vector from the given tuple, Vector, or CenteredSprite.
 	Raises ValueError if impossible to convert.
 	"""
-	if isinstance(target, CenteredSprite): return target.position
-	if isinstance(target, Vector): return target
-	if isinstance(target, tuple): return Vector(target)
+	if isinstance(target, CenteredSprite):
+		return target.position
+	if isinstance(target, Vector):
+		return target
+	if isinstance(target, tuple):
+		return Vector(target)
 	raise ValueError("Invalid target: %s" % target)
 
 
@@ -42,7 +48,7 @@ class CenteredSprite:
 	height				= 10
 	width				= 10
 
-	def __init__(self, x=0.0, y=0.0):
+	def __init__(self, x = 0.0, y = 0.0):
 		"""
 		CenteredSprite constructor.
 		Creates a "rect" property as used by pygame.sprite.Sprite, with the center
@@ -51,8 +57,8 @@ class CenteredSprite:
 		"""
 		self.position = Vector(x, y)
 		self.rect = Rect(
-			self.position.x - self.width / 2.0,
-			self.position.y - self.height / 2.0,
+			int(self.position.x - self.width / 2),
+			int(self.position.y - self.height / 2),
 			self.width,
 			self.height
 		)
@@ -113,7 +119,7 @@ class MovingSprite(CenteredSprite):
 	_motion_function	= None	# Function called to move this on Sprite.update()
 	_arrival_function	= None	# Function called when destination reached by seeking motion
 
-	def __init__(self, x=0.0, y=0.0, speed=None, direction=None):
+	def __init__(self, x = 0.0, y = 0.0, speed = None, direction = None):
 		"""
 		MovingSprite constructor.
 		"x" and "y" must be float values which define the position of the object.
@@ -196,13 +202,13 @@ class MovingSprite(CenteredSprite):
 		"""
 		self.motion.from_polar((magnitude, degrees))
 
-	def travel_to(self, target, on_arrival=None):
+	def travel_to(self, target, on_arrival = None):
 		"""
 		High-level command which sets this MovingSprite on a path towards a given target.
-		Each subsequent call to "move()" will move the Thing one frame closer to the target.
+		Each subsequent call to "move()" will move it one frame closer to the target.
 		When travel is complete, the optional "on_arrival" function will be called.
 		"""
-		self.destination = vector(target)
+		self.destination = to_vector(target)
 		self._motion_function = self.seek_motion
 		self._arrival_function = on_arrival
 		return self.make_heading()
@@ -239,7 +245,6 @@ class MovingSprite(CenteredSprite):
 		"""
 		A "_motion_function" which does nothing.
 		"""
-		pass
 
 	def cartesian_motion(self):
 		"""
@@ -382,7 +387,7 @@ class MovingSprite(CenteredSprite):
 		"""
 		return math.radians((vector - self.position).as_polar()[1])
 
-	def radians_to_thing(self, vector):
+	def radians_to_thing(self, thing):
 		"""
 		Returns the world angle in radians from this MovingSprite's position to the
 		given "thing-like" object's position. Returns non-normalized radians (float).

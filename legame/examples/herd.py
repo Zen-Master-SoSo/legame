@@ -20,15 +20,20 @@
 """
 Demonstrates "neighbor" detection using the Neighborhood class
 """
+import argparse, logging
 from random import seed, randrange, uniform
 from pygame.sprite import Sprite
 from pygame import Rect, Surface
 from pygame.draw import circle
-from pygame.locals import SRCALPHA, K_ESCAPE, K_q
+try:
+	from pygame.locals import SRCALPHA, K_q, K_ESCAPE
+except ImportError:
+	from pygame import SRCALPHA, K_q, K_ESCAPE
 from legame.game import Game, GameState
 from legame.sprite_enhancement import MovingSprite, BoxedInSprite
 from legame.neighbors import Neighborhood, Neighbor
-from legame import *
+from legame import	SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM, \
+					DEGREES_SOUTHEAST, DEGREES_NORTHEAST, DEGREES_NORTHWEST, DEGREES_SOUTHWEST
 
 
 class HerdDemo(Game, Neighborhood):
@@ -79,14 +84,14 @@ class HerdDemo(Game, Neighborhood):
 
 class GSWatch(GameState):
 
-	def _evt_keydown(self, event):
+	def key_down(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key pressed
 		"""
-		if event.key == K_ESCAPE or event.key == K_q:
+		if event.key in (K_ESCAPE, K_q):
 			game.shutdown()
 
-	def _evt_quit(self, event):
+	def quit_event(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
@@ -284,9 +289,16 @@ class Predator(Animal):
 
 
 if __name__ == '__main__':
-	import sys
-	seed()
-	sys.exit(HerdDemo().run())
+	p = argparse.ArgumentParser()
+	p.add_argument("--verbose", "-v", action = "store_true", help = "Show more detailed debug information")
+	p.epilog = __doc__
+	options = p.parse_args()
+	logging.basicConfig(
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
+	)
 
+	seed()
+	p.exit(HerdDemo().run())
 
 #  legame/examples/herd.py

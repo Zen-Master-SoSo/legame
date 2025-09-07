@@ -19,10 +19,10 @@
 #
 import pytest
 from pygame import Rect
-from legame.board_game import *
+from legame.board_game import BoardGame, GameBoard, AbstractGamePiece, Cell
 from legame.game import Game
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse = True)
 def game():
 	return FakeGame()
 
@@ -290,11 +290,11 @@ def test_cell_copy():
 	assert cell2.column == cell1.column
 	assert cell2.row == cell1.row - 1
 
-	cell2 = cell1.moved(row=7)
+	cell2 = cell1.moved(row = 7)
 	assert cell2.column == cell1.column
 	assert cell2.row == 7
 
-	cell2 = cell1.moved(column=5)
+	cell2 = cell1.moved(column = 5)
 	assert cell2.column == 5
 	assert cell2.row == cell1.row
 
@@ -321,20 +321,22 @@ def test_game_piece_travel():
 	piece.move_to(Cell(3,4))
 	assert piece.target_cell.column == 3
 	assert piece.target_cell.row == 4
-	piece.move_to(column=3)
+	piece.move_to(column = 3)
 	assert piece.target_cell.column == 3
 	assert piece.target_cell.row == 6
-	piece.move_to(row=1)
+	piece.move_to(row = 1)
 	assert piece.target_cell.column == 5
 	assert piece.target_cell.row == 1
-	piece.move_to(columns=-1)
+	piece.move_to(columns = -1)
 	assert piece.target_cell.column == 4
 	assert piece.target_cell.row == 6
-	piece.move_to(rows=-2)
+	piece.move_to(rows = -2)
 	assert piece.target_cell.column == 5
 	assert piece.target_cell.row == 4
 
+
 if __name__ == "__main__":
 	test_game_piece_travel()
+
 
 #  end legame/tests/board_game_test.py

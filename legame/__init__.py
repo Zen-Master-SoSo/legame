@@ -66,6 +66,28 @@ COMPASS_SOUTHWEST		= 5
 COMPASS_WEST			= 6
 COMPASS_NORTHWEST		= 7
 
+COMPASS_DEGREES			= {
+	COMPASS_NORTH: 270.0,
+	COMPASS_NORTHEAST: 315.0,
+	COMPASS_EAST: 0.0,
+	COMPASS_SOUTHEAST: 45.0,
+	COMPASS_SOUTH: 90.0,
+	COMPASS_SOUTHWEST: 135.0,
+	COMPASS_WEST: 180.0,
+	COMPASS_NORTHWEST: 225.0
+}
+
+COMPASS_STR				= {
+	COMPASS_NORTH: "N",
+	COMPASS_NORTHEAST: "NE",
+	COMPASS_EAST: "E",
+	COMPASS_SOUTHEAST: "SE",
+	COMPASS_SOUTH: "S",
+	COMPASS_SOUTHWEST: "SW",
+	COMPASS_WEST: "W",
+	COMPASS_NORTHWEST: "NW"
+}
+
 SIDE_TOP				= COMPASS_NORTH
 SIDE_RIGHT				= COMPASS_EAST
 SIDE_BOTTOM				= COMPASS_SOUTH
@@ -80,12 +102,12 @@ OFFSCREEN_TOPRIGHT		= 0b1001
 OFFSCREEN_BOTTOMLEFT	= 0b0110
 OFFSCREEN_BOTTOMRIGHT	= 0b0101
 
-def deg2vector(degrees, magnitude=1.0):
+def deg2vector(degrees, magnitude = 1.0):
 	vector = Vector()
 	vector.from_polar((magnitude, degrees))
 	return vector
 
-def rad2vector(radians, magnitude=1.0):
+def rad2vector(radians, magnitude = 1.0):
 	vector = Vector()
 	vector.from_polar((magnitude, math.degrees(radians)))
 	return vector
@@ -182,14 +204,8 @@ def compass2deg(const):
 	"""
 	Returns the value in degrees of one of the "COMPASS_<direction>" constants.
 	"""
-	if const == COMPASS_NORTH: return 270.0
-	if const == COMPASS_NORTHEAST: return 315.0
-	if const == COMPASS_EAST: return 0.0
-	if const == COMPASS_SOUTHEAST: return 45.0
-	if const == COMPASS_SOUTH: return 90.0
-	if const == COMPASS_SOUTHWEST: return 135.0
-	if const == COMPASS_WEST: return 180.0
-	if const == COMPASS_NORTHWEST: return 225.0
+	if const in COMPASS_DEGREES:
+		return COMPASS_DEGREES[const]
 	raise KeyError("Invalid value for compass constant")
 
 def compass2rad(const):
@@ -202,14 +218,8 @@ def compass_str(const):
 	"""
 	Returns a string, such as "N", "NW", for the given compass direction constant.
 	"""
-	if const == COMPASS_NORTH: return "N"
-	if const == COMPASS_NORTHEAST: return "NE"
-	if const == COMPASS_EAST: return "E"
-	if const == COMPASS_SOUTHEAST: return "SE"
-	if const == COMPASS_SOUTH: return "S"
-	if const == COMPASS_SOUTHWEST: return "SW"
-	if const == COMPASS_WEST: return "W"
-	if const == COMPASS_NORTHWEST: return "NW"
+	if const in COMPASS_STR:
+		return COMPASS_STR[const]
 	raise KeyError("Invalid value for compass constant")
 
 def triangular(value, reduction):
@@ -224,7 +234,14 @@ def triangular(value, reduction):
 	return _inner_triangular(value + reduction, reduction)
 
 def _inner_triangular(remainder, reduction):
-	if remainder <= reduction: return reduction
+	if remainder <= reduction:
+		return reduction
 	return remainder + _inner_triangular(remainder - reduction, reduction)
+
+def vint(vector):
+	"""
+	Return a tuple (int) x, (int) y from a pygame.Vector2
+	"""
+	return int(vector.x), int(vector.y)
 
 #  end legame/__init__.py

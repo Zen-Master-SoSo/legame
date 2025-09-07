@@ -20,12 +20,10 @@
 """
 Provides the NetworkGame class, a framework for games played over a network.
 """
-import importlib, cable_car
-from time import time, sleep
+import importlib
+from time import time
 from legame.game import Game, GameState
 from legame.joiner import BroadcastJoiner, DirectJoiner
-from legame.exit_states import GSQuit
-from cable_car.messenger import Messenger
 
 
 class NetworkGame(Game):
@@ -49,7 +47,7 @@ class NetworkGame(Game):
 	xfer_interval	= 0.125		# Number of seconds between calls to service the messenger
 	connect_timeout	= 10.0		# Number of seconds to wait before giving up when connecting
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		"""
 		Network game constructor.
 		.
@@ -108,7 +106,6 @@ class NetworkGame(Game):
 			while message is not None:
 				self._state.handle_message(message)
 				message = self.messenger.get()
-
 
 # Dynamically append "handle_message" method used by NetworkGame to the GameState class:
 

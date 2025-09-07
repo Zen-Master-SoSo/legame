@@ -20,7 +20,6 @@
 """
 Provides GameState classes which exit a game after showing an animated message.
 """
-from pygame.time import wait
 from pygame.sprite import Sprite
 from legame.game import Game, GameStateFinal
 

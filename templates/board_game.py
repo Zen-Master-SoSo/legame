@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-#  legame/templates/network-game.py
+#  legame/templates/board-game.py
 #
 #  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
 #
@@ -18,21 +17,38 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
-from pygame import Rect
-from pygame.sprite import Sprite
-from legame.game import *
-from legame.board_game import *
-from legame.network_game import NetworkGame
-from legame.flipper import *
-from legame.exit_states import *
-from cable_car.json_messages import *
+"""
+Demonstrates board game moves, jumps, state changes, and animations
+"""
+try:
+	from pygame.locals import K_q, K_ESCAPE
+except ImportError:
+	from pygame import K_q, K_ESCAPE
+from legame.game import Game, GameState
+from legame.board_game import BoardGame, GameBoard, GamePiece
+from legame.flipper import Flipper, FlipThrough, FlipNone
 
 
-class MyGame(NetworkGame):
+class MyGame(BoardGame):
 
+	fps 				= 30
+	caption				= "MyGame"
+
+	def __init__(self, options = None):
+		self.set_resource_dir_from_file(__file__)
+		BoardGame.__init__(self, options)
+
+	def get_board(self):
+		return MyBoard()
 
 	def initial_state(self):
-		return EmptyGameState()
+		return EmptyGameState(cell = None)
+
+
+class MyBoard(GameBoard):
+
+	columns				= 8
+	rows				= 8
 
 
 class EmptyGameState(GameState):
@@ -45,184 +61,114 @@ class EmptyGameState(GameState):
 	def enter_state(self):
 		"""
 		Function called when the Game transitions TO this state.
-		Any information needed to be passed to this GameState should be passed as keyword args to the constructor.
+		Any information needed to be passed to this GameState should be passed
+		as keyword args to the constructor.
 		"""
-		pass
-
 
 	def exit_state(self, next_state):
 		"""
 		Function called when the Game transitions OUT OF this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
-		pass
 
-
-	def handle_message(self, message):
-		"""
-		Function called when a message comes over the wire through Game.current.messenger.
-		"""
-		if isinstance(message, MsgQuit):
-			GSQuit(who = "them")
-
-
-	def _evt_keydown(self, event):
+	def key_down(self, event):
 		"""
 		Key down event passed to this GameState.
 		"event" will contain: key, mod, unicode, scancode
 		"""
-		if event.key == K_ESCAPE or event.key == K_q:
-			GSQuit(who = "me")
+		if event.key in (K_ESCAPE, K_q):
+			Game.current.shutdown()
 
-
-	def _evt_quit(self, event):
+	def quit_event(self, event):
 		"""
 		Event handler called when the user clicks the window's close button.
 		event will be empty
 		"""
-		GSQuit(who = "me")
+		Game.current.shutdown()
 
-
-	def _evt_keyup(self, event):
+	def key_up(self, event):
 		"""
 		Key up event passed to this GameState.
 		"event" will contain: key, mod
 		"""
-		pass
 
-
-	def _evt_mousemotion(self, event):
+	def mouse_motion(self, event):
 		"""
 		Mouse move event passed to this GameState.
 		"event" will contain: pos, rel, buttons
 		"""
-		pass
 
-
-	def _evt_mousebuttondown(self, event):
+	def mouse_button_down(self, event):
 		"""
 		Mouse down event passed to this GameState.
 		"event" will contain: pos, button
 		"""
-		pass
 
-
-	def _evt_mousebuttonup(self, event):
+	def mouse_button_up(self, event):
 		"""
 		Mouse up event passed to this GameState.
 		"event" will contain: pos, button
 		"""
-		pass
 
-
-	def _evt_activeevent(self, event):
+	def active_event(self, event):
 		"""
 		"event" will contain: gain, state
 		"""
-		pass
 
-
-	def _evt_joyaxismotion(self, event):
+	def joy_axis_motion(self, event):
 		"""
 		Joystick motion event passed to this GameState.
 		"event" will contain: instance_id, axis, value
 		"""
-		pass
 
-
-	def _evt_joyballmotion(self, event):
+	def joy_ball_motion(self, event):
 		"""
 		Joystick ball motion event passed to this GameState.
 		"event" will contain: instance_id, ball, rel
 		"""
-		pass
 
-
-	def _evt_joyhatmotion(self, event):
+	def joy_hat_motion(self, event):
 		"""
 		Joystick hat motion event passed to this GameState.
 		"event" will contain: instance_id, hat, value
 		"""
-		pass
 
-
-	def _evt_joybuttondown(self, event):
+	def joy_button_down(self, event):
 		"""
 		Joystick button down event passed to this GameState.
 		"event" will contain: instance_id, button
 		"""
-		pass
 
-
-	def _evt_joybuttonup(self, event):
+	def joy_button_up(self, event):
 		"""
 		Joystick button up event passed to this GameState.
 		"event" will contain: instance_id, button
 		"""
-		pass
 
-
-	def _evt_videoresize(self, event):
-		"""
-		Event handler called when the window / display is resized.
-		"event" will contain: size, w, h
-		"""
-		pass
-
-
-	def _evt_videoexpose(self, event):
-		"""
-		Event handler called when the window is exposed(?)
-		"event" will be empty
-		"""
-		pass
-
-
-	def _evt_videoresize(self, event):
+	def video_resize(self, event):
 		"""
 		Event handler called when the window / display is resized.
 		event will contain: size, w, h
 		"""
-		pass
 
-
-	def _evt_videoexpose(self, event):
+	def video_expose(self, event):
 		"""
 		Event handler called when the window is exposed(?)
 		event will be empty
 		"""
-		pass
 
 
-class GSQuit(GameStateFinal):
+class Piece(GamePiece, Flipper):
 
-	def enter_state(self):
-		if self.who == "me":
-			Game.current.messenger.send(MsgQuit())
+	def __init__(self, cell, color):
+		self.color = color
+		GamePiece.__init__(self, cell, color)
+		self.image_folder = "Piece/" + color
+		Flipper.__init__(self, FlipThrough("enter"), FlipNone())
 
-
-class MsgPositionUpdate(Message):
-	"""
-	Suggested Message subclass.
-	.
-	If you're using JSON-encoded messages, you don't need to encode a messsage
-	whose __dict__ contains only built-in types. A message like this one could
-	contain something like three integers: "id", "x", "y". If that's the case,
-	there's no need to add any encoding or decoding function.
-
-	Byte-encoded messages, on the other hand, do require an "encode" and "decode"
-	function if they contain any data at all.
-	"""
-	pass
-
-
-class EmptySprite(MovingSprite, Flipper, Sprite):
-
-	def __init__(self, x, y):
-		MovingSprite.__init__(self, x, y)
-		Flipper.__init__(self, FlipThrough("appear"), FlipBetween("walking"))
-		Sprite.__init__(self, Game.current.sprites)
-		Game.current.sprites.change_layer(self, Game.LAYER_PLAYER)
+	def update(self):
+		GamePiece.update(self)
+		Flipper.update(self)
 
 
 if __name__ == '__main__':
@@ -232,10 +178,12 @@ if __name__ == '__main__':
 	p.epilog = """
 	Describe your game here.
 	"""
-	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
-	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	p.add_argument("--resource-dump", "-r", action="store_true", help="Show sound and image resources for debugging")
-	p.add_argument("--direct", "-d", action="store_true", help="Connect by ip address instead of using udp broadcast discovery.")
+	p.add_argument("--quiet", "-q", action = "store_true",
+		help = "Don't make sound")
+	p.add_argument("--verbose", "-v", action = "store_true",
+		help = "Show more detailed debug information")
+	p.add_argument("--resource-dump", "-r", action = "store_true",
+		help = "Show sound and image resources for debugging")
 	options = p.parse_args()
 	logging.basicConfig(
 		level = logging.DEBUG if options.verbose else logging.ERROR,
@@ -251,4 +199,4 @@ if __name__ == '__main__':
 		sys.exit(game.run())
 
 
-#  end legame/templates/network-game.py
+#  end legame/templates/board-game.py

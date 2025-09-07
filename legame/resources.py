@@ -21,12 +21,14 @@
 Provides the Resources class which loads images and sounds on demand, allowing
 access to these based on keywords and indexes.
 """
-import os, re, pygame
+import os, re
+from pygame.image import load as image_load
+from pygame.mixer import Sound
 
 
 class Resources:
 
-	def __init__(self, path=None, resource_dump=False):
+	def __init__(self, path = None, resource_dump = False):
 		self.image_folder = os.path.join(path, "images")
 		self.sounds_folder = os.path.join(path, "sounds")
 		self.resource_dump = resource_dump
@@ -43,7 +45,7 @@ class Resources:
 			if self.resource_dump:
 				self.sounds[name] = path
 			else:
-				self.sounds[name] = pygame.mixer.Sound(path)
+				self.sounds[name] = Sound(path)
 		return self.sounds[name]
 
 	def image(self, name, **kwargs):
@@ -75,7 +77,7 @@ class Resources:
 				self.images[name] = path
 			else:
 				title, ext = os.path.splitext(name)
-				self.images[name] = pygame.image.load(path)
+				self.images[name] = image_load(path)
 
 				convert = kwargs.get("convert", False)
 				convert_alpha = kwargs.get("convert_alpha", False)
@@ -105,7 +107,8 @@ class Resources:
 			name = path
 			variants = []
 		if name not in self.image_sets:
-			self.image_sets[name] = ImageSet(self.image_folder, name, resource_dump=self.resource_dump, **kwargs)
+			self.image_sets[name] = ImageSet(self.image_folder, name,
+				resource_dump = self.resource_dump, **kwargs)
 		imgset = self.image_sets[name]
 		for variant in variants: imgset = imgset.variants[variant]
 		return imgset
@@ -115,7 +118,7 @@ class Resources:
 		Loads all sound files found in Resources "sounds_folder".
 		"""
 		for filename in os.listdir(self.sounds_folder):
-			self.sounds[filename] = pygame.mixer.Sound(os.path.join(self.sounds_folder, filename))
+			self.sounds[filename] = Sound(os.path.join(self.sounds_folder, filename))
 
 	def dump(self):
 		"""
@@ -126,16 +129,17 @@ class Resources:
 		if len(self.sounds):
 			print("Sounds")
 			print("-" * 40)
-			for title in self.sounds: print("  %s" % title)
+			for title in self.sounds: print(f"  {title}")
 			print("")
 		if len(self.images):
 			print("Images")
 			print("-" * 40)
-			for title in self.images: print("  %s" % title)
+			for title in self.images: print(f"  {title}")
 			print("")
 		print("Image Sets")
 		print("-" * 40)
-		for img_set in self.image_sets.values(): img_set.dump()
+		for img_set in self.image_sets.values():
+			img_set.dump()
 		print("-" * 40)
 		print("""
 Note: Some resources might not be enumurated here.
@@ -269,19 +273,20 @@ class ImageSet:
 		convert_alpha = kwargs.get("convert_alpha", True)
 		color_key = kwargs.get("color_key", None)
 		my_root = os.path.join(images_dir, name)
-		if not os.path.isdir(my_root): raise NotADirectoryError(my_root)
+		if not os.path.isdir(my_root):
+			raise NotADirectoryError(my_root)
 		images = {}
 		for entry in os.scandir(my_root):
-			if entry.is_dir(follow_symlinks=True):
+			if entry.is_dir(follow_symlinks = True):
 				self.variants[entry.name] = ImageSet(my_root, entry.name, **kwargs)
-			elif entry.is_file(follow_symlinks=True):
-				filetitle, ext = os.path.splitext(entry.name)
+			elif entry.is_file(follow_symlinks = True):
+				_, ext = os.path.splitext(entry.name)
 				if ext in self.image_extensions:
 					# append image to temporary dictionary, unsorted:
 					if self.resource_dump:
 						images[entry.name] = entry.path
 					else:
-						images[entry.name] = pygame.image.load(entry.path)
+						images[entry.name] = image_load(entry.path)
 						if (convert or convert_alpha) and color_key is None:
 							if convert_alpha:
 								images[entry.name].convert_alpha()
@@ -292,7 +297,7 @@ class ImageSet:
 		self.count = len(images)
 		self.last_index = self.count - 1
 		if self.count:
-			# Create list of images from sorted keys, using "human" number sorting ("10" comes after "2")
+			# Create list of images using "human" number sorting ("10" comes after "2")
 			convert = lambda text: int(text) if text.isdigit() else text
 			alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
 			self.images = [images[key] for key in sorted(images, key = alphanum_key)]
@@ -302,18 +307,20 @@ class ImageSet:
 		Returns an ImageSet which is a variant of this ImageSet.
 		"""
 		imgset = self
-		for arg in path.split("/"): imgset = imgset.variants[arg]
+		for arg in path.split("/"):
+			imgset = imgset.variants[arg]
 		return imgset
 
 	def dump(self):
 		"""
 		Print the path names of the images loaded for debugging.
 		"""
-		self.__dump(self.name, 0)
+		self._dump(self.name, 0)
 
-	def __dump(self, keyname, indent):
+	def _dump(self, keyname, indent):
 		print(("   " * indent + "%s: %d images") % (keyname, self.count))
-		for key, imgset in self.variants.items(): imgset.__dump(key, indent + 1)
+		for key, imgset in self.variants.items():
+			imgset._dump(key, indent + 1)
 
 
 #  end legame/resources.py

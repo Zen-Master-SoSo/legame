@@ -20,19 +20,25 @@
 """
 Demonstrates sending moves over a network.
 """
+import argparse, logging
 import random
-from pygame.locals import K_ESCAPE, K_q
-from legame.game import *
-from legame.board_game import *
-from legame.flipper import *
+try:
+	from pygame.locals import K_q, K_ESCAPE
+except ImportError:
+	from pygame import K_q, K_ESCAPE
+from pygame.sprite import Sprite
+from legame.game import Game, GameState, GameStateFinal
+from legame.board_game import BoardGame, GameBoard, GamePiece, Cell
+from legame.flipper import Flipper, FlipBetween, FlipThrough, FlipNone
 from legame.network_game import NetworkGame
 from legame.exit_states import ExitAnimation
+
 
 class TestGame(BoardGame, NetworkGame):
 
 	xfer_interval	= 0.1		# Number of seconds between calls to service the messenger
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		self.set_resource_dir_from_file(__file__)
 		BoardGame.__init__(self, options)
 		NetworkGame.__init__(self, options)
@@ -47,7 +53,7 @@ class TestGame(BoardGame, NetworkGame):
 		send = Game.current.messenger.send
 		return GSWhoGoesFirst()
 
-
+# ----------------------------------------
 # Game states:
 
 class GSBase(GameState):
@@ -55,11 +61,11 @@ class GSBase(GameState):
 	Used as the base class of all game states defined in this module.
 	"""
 
-	def _evt_keydown(self, event):
+	def key_down(self, event):
 		"""
 		Exit game immediately if K_ESCAPE or "q" key pressed
 		"""
-		if event.key == K_ESCAPE or event.key == K_q:
+		if event.key in (K_ESCAPE, K_q):
 			GSQuit(who = "me")
 
 
@@ -134,7 +140,7 @@ class GSMyMove(GSBase):
 				cell = Cell(x, y)
 				if board.piece_at(cell) is None:
 					Block(cell, Game.current.my_color)
-					send(MsgAdd(cell=cell))
+					send(MsgAdd(cell = cell))
 					GSWaitYourTurn()
 					return
 		GSQuit(who = "me")
@@ -163,7 +169,7 @@ class GSQuit(GameStateFinal):
 		if self.who == "me": send(MsgQuit())
 		ExitAnimation("bye-bye.png")
 
-
+# ----------------------------------------
 # Game pieces and other sprites:
 
 class Block(GamePiece, Flipper):
@@ -171,7 +177,7 @@ class Block(GamePiece, Flipper):
 	def __init__(self, cell, color):
 		self.image_folder = "Block/" + color
 		GamePiece.__init__(self, cell, color)
-		Flipper.__init__(self, FlipThrough("enter", fps=25), FlipNone())
+		Flipper.__init__(self, FlipThrough("enter", fps = 25), FlipNone())
 		self.__glow = None
 
 	def update(self):
@@ -179,7 +185,7 @@ class Block(GamePiece, Flipper):
 		Flipper.update(self)
 
 	def jiggle(self):
-		self.flip(FlipBetween("jiggle", loops=11, fps=30), FlipNone())
+		self.flip(FlipBetween("jiggle", loops = 11, fps = 30), FlipNone())
 		return self
 
 	def glow(self):
@@ -193,27 +199,24 @@ class Block(GamePiece, Flipper):
 		return self
 
 
-class Glow(Flipper, pygame.sprite.Sprite):
+class Glow(Flipper, Sprite):
 
-	def __init__(self, cell, frame=0):
+	def __init__(self, cell, frame = 0):
 		self.cell = cell
-		pygame.sprite.Sprite.__init__(self, Game.current.sprites)
+		Sprite.__init__(self, Game.current.sprites)
 		Game.current.sprites.change_layer(self, Game.LAYER_BELOW_PLAYER)
-		Flipper.__init__(self, FlipBetween(loop_forever=True, frame=frame, fps=30))
+		Flipper.__init__(self, FlipBetween(loop_forever = True, frame = frame, fps = 30))
 		self.rect = self.cell.get_rect()
 
 
 if __name__ == '__main__':
-	import argparse, logging, sys
-
 	p = argparse.ArgumentParser()
-	p.epilog = "Demonstrates network game functions."
-	p.add_argument("--transport", type=str, default="json")
-	p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
-	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	p.add_argument("--direct", "-d", action="store_true", help="Connect by ip address instead of using udp broadcast discovery.")
+	p.add_argument("--transport", type = str, default = "json")
+	p.add_argument("--quiet", "-q", action = "store_true", help = "Don't make sound")
+	p.add_argument("--verbose", "-v", action = "store_true", help = "Show more detailed debug information")
+	p.add_argument("--direct", "-d", action = "store_true", help = "Connect by ip address instead of using udp broadcast discovery.")
+	p.epilog = __doc__
 	options = p.parse_args()
-
 	logging.basicConfig(
 		level = logging.DEBUG if options.verbose else logging.ERROR,
 		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
@@ -274,9 +277,7 @@ if __name__ == '__main__':
 				"""
 				self.number, self.color = msg_data[0], msg_data[1:].decode()
 
-
-
-	sys.exit(TestGame(options).run())
+	p.exit(TestGame(options).run())
 
 
 #  end legame/examples/network-game.py

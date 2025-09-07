@@ -25,10 +25,12 @@ network.
 import importlib, re, threading
 from time import time
 from socket import socket, AF_INET, SOCK_DGRAM
-from pgdialog import Dialog, Button, Label, Textbox, Radio, HorizontalLayout, ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
+from pgdialog import 	Dialog, Button, Label, Textbox, Radio, HorizontalLayout, \
+						ALIGN_LEFT, ALIGN_CENTER
 from cable_car.broadcast_connector import BroadcastConnector
 from cable_car.direct_connect import DirectClient, DirectServer
 from cable_car.messenger import Messenger
+
 
 def get_my_ip():
 	sock = socket(AF_INET, SOCK_DGRAM)
@@ -49,7 +51,7 @@ class JoinerDialog(Dialog):
 	foreground_color_hover		= (220,220,255)
 	shutdown_delay				= 0.5
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		"""
 		The "options" argument is expected to be a dictionary, the items of which are
 		set as attributes of the game during initialization. Some appropriate key/value
@@ -114,12 +116,12 @@ class BroadcastJoiner(JoinerDialog, BroadcastConnector):
 	but requires that you write message encoding and decoding routines yourself.
 
 	The default transport is "json", but this can be overridden by defining a class
-	variable in a subclass, or by passing "transport=byte" as an option to the
+	variable in a subclass, or by passing "transport = byte" as an option to the
 	__init__ function.
 
 	"""
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		JoinerDialog.__init__(self, options)
 		self.messengers = []
 		self.messenger = None
@@ -259,7 +261,7 @@ class DirectJoiner(JoinerDialog):
 	__connect_exc		= None		# Exception raised in self.__connector thread
 	__connect_failed	= False
 
-	def __init__(self, options=None):
+	def __init__(self, options = None):
 		JoinerDialog.__init__(self, options)
 		self.messenger = None
 		self.append(HorizontalLayout(
@@ -315,7 +317,7 @@ class DirectJoiner(JoinerDialog):
 		if Radio.selected_value("mode") == "Client":
 			if re.match("^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$", self.ip_entry.text):
 				self.disable_widgets()
-				self.__connect_thread = threading.Thread(target=self.client_connect)
+				self.__connect_thread = threading.Thread(target = self.client_connect)
 				self.statusbar.text = "Connecting to %s ..." % self.ip_entry.text
 			else:
 				self.ip_entry.focus()
@@ -323,7 +325,7 @@ class DirectJoiner(JoinerDialog):
 				return
 		else:
 			self.disable_widgets()
-			self.__connect_thread = threading.Thread(target=self.server_connect)
+			self.__connect_thread = threading.Thread(target = self.server_connect)
 			self.statusbar.text = "Listening for client connection ..."
 		self.__connect_thread.start()
 
@@ -380,14 +382,14 @@ class DirectJoiner(JoinerDialog):
 
 
 if __name__ == '__main__':
-	import argparse, logging, sys
+	import argparse, logging
 
 	p = argparse.ArgumentParser()
-	p.add_argument("--transport", type=str, default="json")
-	p.add_argument("--verbose", "-v", action="store_true", help="Show more detailed debug information")
-	p.add_argument("--udp-port", type=int, default=8222)
-	p.add_argument("--tcp-port", type=int, default=8223)
-	p.add_argument("--direct", "-d", action="store_true", help="Connect by ip address instead of using udp broadcast discovery.")
+	p.add_argument("--transport", type = str, default = "json")
+	p.add_argument("--verbose", "-v", action = "store_true", help = "Show more detailed debug information")
+	p.add_argument("--udp-port", type = int, default = 8222)
+	p.add_argument("--tcp-port", type = int, default = 8223)
+	p.add_argument("--direct", "-d", action = "store_true", help = "Connect by ip address instead of using udp broadcast discovery.")
 	options = p.parse_args()
 
 	logging.basicConfig(

@@ -39,7 +39,7 @@ class Callout(Sprite):
 		self.texts = []
 		self.rect.width = 0
 
-	def write(self, text, color=(255, 255, 255)):
+	def write(self, text, color = (255, 255, 255)):
 		self.texts.append(self.font.render(text, True, color))
 		width, height = self.font.size(text)
 		if width > self.rect.width:

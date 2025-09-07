@@ -1,4 +1,4 @@
-#  legame/examples/steering-demo.py
+#  legame/examples/seeking-demo.py
 #
 #  Copyright 2020 - 2025 Leon Dionne <ldionne@dridesign.sh.cn>
 #
@@ -18,28 +18,32 @@
 #  MA 02110-1301, USA.
 #
 """
-Simple demo which points an arrow at the mouse cursor.
+Demonstrates seeking behavior of the MovingSprite class found in the
+"sprite_enhancement" module.
 """
-import random, pygame
-from pygame import Rect, Surface
+import argparse, logging
+import pygame
+from pygame import Surface
 from pygame.draw import polygon, circle, line
 from pygame.sprite import Sprite
 from pygame.math import Vector2 as Vector
-from pygame.locals import SRCALPHA, K_ESCAPE, K_q
+try:
+	from pygame.locals import SRCALPHA, K_q, K_ESCAPE
+except ImportError:
+	from pygame import SRCALPHA, K_q, K_ESCAPE
+from legame import vint
 from legame.game import Game, GameState
-from legame.flipper import Flipper, FlipNone, FlipThrough, FlipBetween
-from legame.sprite_enhancement import CenteredSprite, MovingSprite, BoxedInSprite
-from legame import *
+from legame.sprite_enhancement import MovingSprite
 
 
-class SteeringDemo(Game):
+class SeekingDemo(Game):
 	"""
 	Describe your game class here.
 	"""
 
 	fps	= 30
 
-	def __init__ (self, options=None):
+	def __init__ (self, options = None):
 		self.set_resource_dir_from_file(__file__)
 		Game.__init__(self, options)
 
@@ -60,14 +64,14 @@ class ChaseState(GameState):
 		mx, my = pygame.mouse.get_pos()
 		Chaser(cx, cy, Mouse(mx, my))
 
-	def _evt_keydown(self, event):
+	def key_down(self, event):
 		"""
 		Exit game immediately if K_ESCAPE key or "Q" key pressed
 		"""
-		if event.key == K_ESCAPE or event.key == K_q:
+		if event.key in (K_ESCAPE, K_q):
 			Game.current.shutdown()
 
-	def _evt_quit(self, event):
+	def quit_event(self, event):
 		Game.current.shutdown()
 
 
@@ -95,7 +99,7 @@ class Chaser(MovingSprite, Sprite):
 
 	height				= 24
 	width				= 24
-	max_turning_speed	= 6
+	max_turning_speed	= 10
 
 	def __init__(self, x, y, mouse):
 		MovingSprite.__init__(self, x, y)
@@ -114,14 +118,23 @@ class Chaser(MovingSprite, Sprite):
 	def update(self):
 		self.turn_towards(self.target.position)
 		self.image = Surface(self.rect.size)
-		rot = lambda point: Vector(point).rotate(self.direction) + self.center_point
-		polygon(self.image, self.color, [rot(p) for p in self.points])
-		MovingSprite.update(self)
+		polygon(self.image, self.color, [vint(Vector(p).rotate(self.direction) + self.center_point) \
+			for p in self.points])
+		self.destination = self.target.position
+		self.seek_motion()
 
 
 if __name__ == '__main__':
-	import sys
-	sys.exit(SteeringDemo().run())
+	p = argparse.ArgumentParser()
+	p.add_argument("--verbose", "-v", action = "store_true", help = "Show more detailed debug information")
+	p.epilog = __doc__
+	options = p.parse_args()
+	logging.basicConfig(
+		level = logging.DEBUG if options.verbose else logging.ERROR,
+		format = "[%(filename)24s:%(lineno)-4d] %(message)s"
+	)
+
+	p.exit(SeekingDemo().run())
 
 
-#  end legame/examples/steering-demo.py
+#  end legame/examples/seeking-demo.py

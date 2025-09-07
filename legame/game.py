@@ -20,10 +20,15 @@
 """
 Provides the Game and GameState classes, a framework for writing games.
 """
-import os, pygame, logging
-from time import time
-from pygame.locals import *
+import os, logging
+import pygame
+try:
+	from pygame.locals import FULLSCREEN, SCALED, DOUBLEBUF, USEREVENT, NUMEVENTS
+except ImportError:
+	from pygame import FULLSCREEN, DOUBLEBUF, USEREVENT, NUMEVENTS
+	SCALED = 0
 from pygame.event import event_name
+from pygame import Surface
 from legame.resources import Resources
 
 
@@ -41,11 +46,12 @@ class Game:
 	# Game options:
 	quiet				= False		# Inhibit sound; mixer is not initialized
 	fullscreen			= False
-	resource_dump		= False		# Special debugging mode used by Resources; loads filenames instead of files
+	resource_dump		= False		# Resources debugging mode; load filenames instead of files
 
 	# resource manager settings:
-	resource_dir		= None		# Directory where game data is located, should contain subfolders "images" and "sounds"
-									# Call "set_resource_dir_from_file(__file__)" from your game before Game.__init__
+	resource_dir		= None		# Directory where game data is located,
+									# should contain subfolders "images" and "sounds"
+									# See "set_resource_dir_from_file(__file__)"
 	# display settings:
 	fps 				= 60
 	display_flags		= DOUBLEBUF
@@ -66,10 +72,13 @@ class Game:
 	sprites				= None
 	resources			= None
 
+	# timer options:
+	max_timers			= 8
+
 	# internal state management:
 	_state				= None		# It's pretty important to keep this managed, hence, it's "protected"
 	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
-	__next_state		= None		# Next game state waiting for change at end of main loop
+	_next_state		= None		# Next game state waiting for change at end of main loop
 
 	LAYER_BG			= 1			#
 	LAYER_ABOVE_BG		= 2			#
@@ -106,8 +115,8 @@ class Game:
 
 			import argparse
 			p = argparse.ArgumentParser()
-			p.add_argument("--quiet", "-q", action="store_true", help="Don't make sound")
-			p.add_argument("--fullscreen", "-f", action="store_true", help="Show fullscreen")
+			p.add_argument("--quiet", "-q", action = "store_true", help = "Don't make sound")
+			p.add_argument("--fullscreen", "-f", action = "store_true", help = "Show fullscreen")
 			options = p.parse_args()
 			# Setup logging, etc...
 			.
@@ -119,28 +128,27 @@ class Game:
 		if options is not None:
 			for varname, value in options.__dict__.items():
 				setattr(self, varname, value)
-		if self.resource_dir is None: self.resource_dir = "resources"
+		if self.resource_dir is None:
+			self.resource_dir = "resources"
 		self.resources = Resources(self.resource_dir, self.resource_dump)
 		if not self.quiet:
-			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize, self.mixer_channels, self.mixer_buffer)
+			pygame.mixer.pre_init(self.mixer_frequency, self.mixer_bitsize,
+			self.mixer_channels, self.mixer_buffer)
 		pygame.init()
 		self.sprites = pygame.sprite.LayeredUpdates()
 
 		# Event handler mapping.
-		self._event_handlers = {
-			const:func for (const, func) in [
-				( getattr(pygame.locals, const), getattr(self, "_evt_" + const.lower()) )
-				for const in dir(pygame.locals) if hasattr(self, "_evt_" + const.lower())
-			]
-		}
-		#pygame.event.set_allowed(list(self._event_handlers.keys()))
+		self._event_handlers = dict([
+			(getattr(pygame.locals, const), getattr(self, '_evt_' + const.lower())) \
+			for const in dir(pygame.locals) \
+			if hasattr(self, '_evt_' + const.lower())])
 
 		# Fill-in the remaining timer events:
 		for event_type in range(USEREVENT, NUMEVENTS + 1):
 			self._event_handlers[event_type] = self.__timer_event
-		self.__timer_callbacks = [None for x in range(8)]
-		self.__timer_arguments = [None for x in range(8)]
-		self.__timer_recur_flag = [None for x in range(8)]
+		self.__timer_callbacks = [None for x in range(self.max_timers)]
+		self.__timer_arguments = [None for x in range(self.max_timers)]
+		self.__timer_recur_flag = [None for x in range(self.max_timers)]
 
 	def set_resource_dir_from_file(self, filename):
 		"""
@@ -157,6 +165,7 @@ class Game:
 							("Use the defaults, Luke")
 		"""
 		self.resource_dir = os.path.join(os.path.dirname(os.path.realpath(filename)), "resources")
+		logging.debug('set resource dir to %s', self.resource_dir)
 
 	def run(self):
 		"""
@@ -166,29 +175,28 @@ class Game:
 		self.show()
 		self._state = self.initial_state()
 		self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
-		self.__next_state = None	# Clear this, as it was set in "change_state()"
+		self._next_state = None	# Clear this, as it was set in "change_state()"
 		self._main_loop()
 		return 0
 
-	def show(self, background=None):
+	def show(self):
 		"""
-		Initilizes the screen, setting a background.
-		You don't need to call this function, as it is called in Game.run(). Just make
-		sure that you implement "initial_background".
+		Initilizes the screen.
+
+		Make sure that you implement "initial_background", as that is what will be shown.
+
 		It is safe to call this function multiple times.
 		"""
-		if background is None:
-			display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
-			self.background = self.initial_background(display_size)
-		else:
-			self.background = background
+		display_size = pygame.display.Info().current_w, pygame.display.Info().current_h
+		self.background = self.initial_background(display_size)
 		self.screen_rect = self.background.get_rect()
 		if self.fullscreen:
 			self.display_flags |= (FULLSCREEN | SCALED)
 		else:
 			os.environ['SDL_VIDEO_CENTERED'] = '1'
 		if self.icon is not None:
-			pygame.display.set_icon(pygame.image.load(os.path.join(self.resources.image_folder, self.icon)))
+			pygame.display.set_icon(pygame.image.load(os.path.join(
+				self.resources.image_folder, self.icon)))
 		pygame.display.set_caption(self.caption)
 		self.screen = pygame.display.set_mode(
 			self.screen_rect.size,
@@ -197,6 +205,18 @@ class Game:
 		)
 		self.screen.blit(self.background, (0,0))
 		pygame.display.flip()
+
+	def initial_background(self, display_size):
+		"""
+		Returns a pygame.Surface to use to fill the screen at startup.
+		"""
+		return Surface(display_size)
+
+	def initial_state(self):
+		"""
+		Returns a GameState object which will take over as soon as the game is initialized.
+		"""
+		return GameState()
 
 	def shutdown(self):
 		"""
@@ -219,38 +239,38 @@ class Game:
 		one caveat. If any game state subclasses GameStateFinal, the game state may not
 		be changed at all.
 		"""
-		if isinstance(self.__next_state, GameStateFinal):
-			logging.warn("Changing game state when current state is GameStateFinal is not allowed")
+		if isinstance(self._next_state, GameStateFinal):
+			logging.warning("Cannot change game state when current state is GameStateFinal")
 		else:
-			self.__next_state = game_state
+			self._next_state = game_state
 
-	##################################################################################################################
+	###############################################################################################
 
 	def _main_loop(self):
-		self.clock = pygame.time.Clock()
+		clock = pygame.time.Clock()
 		while self._stay_in_loop:
 			self._state.loop_start()
 			for event in pygame.event.get():
 				try:
 					self._event_handlers[event.type](event)
 				except KeyError:
-					logging.warn('Unknown event "%s"' % event_name(event.type))
+					logging.warning('Unknown event "%s"', event_name(event.type))
 
 			self._end_loop()
 			self.sprites.update()
 			self.sprites.clear(self.screen, self.background)
 			pygame.display.update(self.sprites.draw(self.screen))
-			if self.__next_state:
-				self._state.exit_state(self.__next_state);
-				self._state = self.__next_state
-				self.__next_state = None	# MUST clear __next_state before calling "enter_state()", in case
-				self._state.enter_state()	# enter_state() calls "change_state()" and lines up a new "__next_state"
-			self.clock.tick(self.fps)
+			if self._next_state:
+				self._state.exit_state(self._next_state)
+				self._state = self._next_state
+				self._next_state = None
+				self._state.enter_state()
+			clock.tick(self.fps)
 		for cls in self.__class__.mro():
 			if "exit_loop" in cls.__dict__:
 				cls.exit_loop(self)
 
-	##################################################################################################################
+	###############################################################################################
 
 	def _end_loop(self):
 		"""
@@ -265,172 +285,170 @@ class Game:
 		Called when _main_loop() exits, after the final round of moving sprites and
 		updating the display.
 		"""
-		pass
 
 	# Event handlers:
 
 	def _evt_activeevent(self, event):
-		self._state._evt_activeevent(event)
+		self._state.active_event(event)
 
 	def _evt_audiodeviceadded(self, event):
-		self._state._evt_audiodeviceadded(event)
+		self._state.audio_device_added(event)
 
 	def _evt_audiodeviceremoved(self, event):
-		self._state._evt_audiodeviceremoved(event)
+		self._state.audio_device_removed(event)
 
 	def _evt_controlleraxismotion(self, event):
-		self._state._evt_controlleraxismotion(event)
+		self._state.controller_axis_motion(event)
 
 	def _evt_controllerbuttondown(self, event):
-		self._state._evt_controllerbuttondown(event)
+		self._state.controller_button_down(event)
 
 	def _evt_controllerbuttonup(self, event):
-		self._state._evt_controllerbuttonup(event)
+		self._state.controller_button_up(event)
 
 	def _evt_controllerdeviceadded(self, event):
-		self._state._evt_controllerdeviceadded(event)
+		self._state.controller_device_added(event)
 
 	def _evt_controllerdeviceremapped(self, event):
-		self._state._evt_controllerdeviceremapped(event)
+		self._state.controller_device_remapped(event)
 
 	def _evt_controllerdeviceremoved(self, event):
-		self._state._evt_controllerdeviceremoved(event)
+		self._state.controller_device_removed(event)
 
 	def _evt_dropbegin(self, event):
-		self._state._evt_dropbegin(event)
+		self._state.drop_begin_event(event)
 
 	def _evt_dropcomplete(self, event):
-		self._state._evt_dropcomplete(event)
+		self._state.drop_complete_event(event)
 
 	def _evt_dropfile(self, event):
-		self._state._evt_dropfile(event)
+		self._state.drop_file_event(event)
 
 	def _evt_droptext(self, event):
-		self._state._evt_droptext(event)
+		self._state.drop_text_event(event)
 
 	def _evt_fingerdown(self, event):
-		self._state._evt_fingerdown(event)
+		self._state.finger_down(event)
 
 	def _evt_fingermotion(self, event):
-		self._state._evt_fingermotion(event)
+		self._state.finger_motion(event)
 
 	def _evt_fingerup(self, event):
-		self._state._evt_fingerup(event)
+		self._state.finger_up(event)
 
 	def _evt_joyaxismotion(self, event):
-		self._state._evt_joyaxismotion(event)
+		self._state.joy_axis_motion(event)
 
 	def _evt_joyballmotion(self, event):
-		self._state._evt_joyballmotion(event)
+		self._state.joy_ball_motion(event)
 
 	def _evt_joybuttondown(self, event):
-		self._state._evt_joybuttondown(event)
+		self._state.joy_button_down(event)
 
 	def _evt_joybuttonup(self, event):
-		self._state._evt_joybuttonup(event)
+		self._state.joy_button_up(event)
 
 	def _evt_joydeviceadded(self, event):
-		self._state._evt_joydeviceadded(event)
+		self._state.joy_device_added(event)
 
 	def _evt_joydeviceremoved(self, event):
-		self._state._evt_joydeviceremoved(event)
+		self._state.joy_device_removed(event)
 
 	def _evt_joyhatmotion(self, event):
-		self._state._evt_joyhatmotion(event)
+		self._state.joy_hat_motion(event)
 
 	def _evt_keydown(self, event):
-		self._state._evt_keydown(event)
+		self._state.key_down(event)
 
 	def _evt_keyup(self, event):
-		self._state._evt_keyup(event)
+		self._state.key_up(event)
 
 	def _evt_midiin(self, event):
-		self._state._evt_midiin(event)
+		self._state.midi_in(event)
 
 	def _evt_midiout(self, event):
-		self._state._evt_midiout(event)
+		self._state.midi_out(event)
 
 	def _evt_mousebuttondown(self, event):
-		self._state._evt_mousebuttondown(event)
+		self._state.mouse_button_down(event)
 
 	def _evt_mousebuttonup(self, event):
-		self._state._evt_mousebuttonup(event)
+		self._state.mouse_button_up(event)
 
 	def _evt_mousemotion(self, event):
-		self._state._evt_mousemotion(event)
+		self._state.mouse_motion(event)
 
 	def _evt_mousewheel(self, event):
-		self._state._evt_mousewheel(event)
+		self._state.mouse_wheel(event)
 
 	def _evt_multigesture(self, event):
-		self._state._evt_multigesture(event)
+		self._state.multi_gesture_event(event)
 
 	def _evt_quit(self, event):
-		self._state._evt_quit(event)
+		self._state.quit_event(event)
 
 	def _evt_syswmevent(self, event):
-		self._state._evt_syswmevent(event)
+		self._state.sys_wm_event(event)
 
 	def _evt_textediting(self, event):
-		self._state._evt_textediting(event)
+		self._state.text_editing_event(event)
 
 	def _evt_textinput(self, event):
-		self._state._evt_textinput(event)
+		self._state.text_input_event(event)
 
 	def _evt_videoexpose(self, event):
-		self._state._evt_videoexpose(event)
+		self._state.video_expose(event)
 
 	def _evt_videoresize(self, event):
-		self._state._evt_videoresize(event)
+		self._state.video_resize(event)
 
 	def _evt_windowclose(self, event):
-		self._state._evt_windowclose(event)
+		self._state.window_close_event(event)
 
 	def _evt_windowenter(self, event):
-		self._state._evt_windowenter(event)
+		self._state.window_enter(event)
 
 	def _evt_windowexposed(self, event):
-		self._state._evt_windowexposed(event)
+		self._state.window_exposed(event)
 
 	def _evt_windowfocusgained(self, event):
-		self._state._evt_windowfocusgained(event)
+		self._state.window_focus_gained(event)
 
 	def _evt_windowfocuslost(self, event):
-		self._state._evt_windowfocuslost(event)
+		self._state.window_focus_lost(event)
 
 	def _evt_windowhidden(self, event):
-		self._state._evt_windowhidden(event)
+		self._state.window_hidden(event)
 
 	def _evt_windowhittest(self, event):
-		self._state._evt_windowhittest(event)
+		self._state.window_hit_test(event)
 
 	def _evt_windowleave(self, event):
-		self._state._evt_windowleave(event)
+		self._state.window_leave(event)
 
 	def _evt_windowmaximized(self, event):
-		self._state._evt_windowmaximized(event)
+		self._state.window_maximized(event)
 
 	def _evt_windowminimized(self, event):
-		self._state._evt_windowminimized(event)
+		self._state.window_minimized(event)
 
 	def _evt_windowmoved(self, event):
-		self._state._evt_windowmoved(event)
+		self._state.window_moved(event)
 
 	def _evt_windowresized(self, event):
-		self._state._evt_windowresized(event)
+		self._state.window_resized(event)
 
 	def _evt_windowrestored(self, event):
-		self._state._evt_windowrestored(event)
+		self._state.window_restored(event)
 
 	def _evt_windowshown(self, event):
-		self._state._evt_windowshown(event)
+		self._state.window_shown(event)
 
 	def _evt_windowsizechanged(self, event):
-		self._state._evt_windowsizechanged(event)
+		self._state.window_size_changed(event)
 
 	def _evt_windowtakefocus(self, event):
-		self._state._evt_windowtakefocus(event)
-
+		self._state.window_take_focus(event)
 
 	# Timers:
 
@@ -470,21 +488,21 @@ class Game:
 		self.__timer_callbacks[timer_index] = None
 
 	def __set_timeout(self, callback, milliseconds, arguments, recur):
-		for timer_index in range(8):
+		for timer_index in range(self.max_timers):
 			if self.__timer_callbacks[timer_index] is None:
 				self.__timer_callbacks[timer_index] = callback
 				self.__timer_arguments[timer_index] = arguments
 				self.__timer_recur_flag[timer_index] = recur
 				pygame.time.set_timer(USEREVENT + timer_index, milliseconds)
 				return timer_index
-		raise Exception("Too many timers!")
+		raise RuntimeError("Too many timers!")
 
 	def __timer_event(self, event):
 		"""
 		Called from the pygame event pump when a timer times out.
 		Executes a timer event.
 		"""
-		timer_index = event.type - USEREVENT	# Subtract USEREVENT constant since our indexes start with 0
+		timer_index = event.type - USEREVENT	# Subtract USEREVENT constant; indexes start with 0
 		if self.__timer_callbacks[timer_index] is None:
 			logging.warning("Timer event raised when corresponding callback not set")
 		else:
@@ -499,7 +517,8 @@ class Game:
 		"""
 		Play a sound identified by "sound_name". If Game.quiet is True, does nothing.
 		"""
-		if not self.quiet: self.resources.sound(sound_name).play()
+		if not self.quiet:
+			self.resources.sound(sound_name).play()
 
 
 class GameState:
@@ -511,7 +530,8 @@ class GameState:
 		If the current game state is an instance of "GameStateFinal", the current game
 		state will not be changed.
 		"""
-		for varname, value in kwargs.items(): setattr(self, varname, value)
+		for varname, value in kwargs.items():
+			setattr(self, varname, value)
 		Game.current.change_state(self)
 
 	def enter_state(self):
@@ -520,14 +540,12 @@ class GameState:
 		Any information needed to be passed to this GameState should be passed as
 		keyword args to the constructor.
 		"""
-		pass
 
 	def exit_state(self, next_state):
 		"""
 		Function called when the Game transitions out of this state.
 		The "next_state" parameter is the GameState object which will replace this one.
 		"""
-		pass
 
 	# Early / late Game._main_loop() events:
 
@@ -542,7 +560,6 @@ class GameState:
 		5. update the display
 		6. change to new game state (if needed)
 		"""
-		pass
 
 	def loop_end(self):
 		"""
@@ -555,387 +572,332 @@ class GameState:
 		5. update the display
 		6. change to new game state (if needed)
 		"""
-		pass
 
 	# Event handlers called from Game._main_loop():
 
-	def _evt_activeevent(self, event):
+	def active_event(self, event):
 		"""
 		The "event" object has the following members:
 			gain, state
 		"""
-		pass
 
-	def _evt_audiodeviceadded(self, event):
+	def audio_device_added(self, event):
 		"""
 		The "event" object has the following members:
 			which, iscapture
 		"""
-		pass
 
-	def _evt_audiodeviceremoved(self, event):
+	def audio_device_removed(self, event):
 		"""
 		The "event" object has the following members:
 			which, iscapture
 		"""
-		pass
 
-	def _evt_controlleraxismotion(self, event):
+	def controller_axis_motion(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_controllerbuttondown(self, event):
+	def controller_button_down(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_controllerbuttonup(self, event):
+	def controller_button_up(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_controllerdeviceadded(self, event):
+	def controller_device_added(self, event):
 		"""
 		The "event" object has the following members:
 			device_index
 		"""
-		pass
 
-	def _evt_controllerdeviceremapped(self, event):
+	def controller_device_remapped(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id
 		"""
-		pass
 
-	def _evt_controllerdeviceremoved(self, event):
+	def controller_device_removed(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id
 		"""
-		pass
 
-	def _evt_dropbegin(self, event):
+	def drop_begin_event(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_dropcomplete(self, event):
+	def drop_complete_event(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_dropfile(self, event):
+	def drop_file_event(self, event):
 		"""
 		The "event" object has the following members:
 			file
 		"""
-		pass
 
-	def _evt_droptext(self, event):
+	def drop_text_event(self, event):
 		"""
 		The "event" object has the following members:
 			text
 		"""
-		pass
 
-	def _evt_fingerdown(self, event):
+	def finger_down(self, event):
 		"""
 		The "event" object has the following members:
 			touch_id, finger_id, x, y, dx, dy
 		"""
-		pass
 
-	def _evt_fingermotion(self, event):
+	def finger_motion(self, event):
 		"""
 		The "event" object has the following members:
 			touch_id, finger_id, x, y, dx, dy
 		"""
-		pass
 
-	def _evt_fingerup(self, event):
+	def finger_up(self, event):
 		"""
 		The "event" object has the following members:
 			touch_id, finger_id, x, y, dx, dy
 		"""
-		pass
 
-	def _evt_joyaxismotion(self, event):
+	def joy_axis_motion(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id, axis, value
 		"""
-		pass
 
-	def _evt_joyballmotion(self, event):
+	def joy_ball_motion(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id, ball, rel
 		"""
-		pass
 
-	def _evt_joybuttondown(self, event):
+	def joy_button_down(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id, button
 		"""
-		pass
 
-	def _evt_joybuttonup(self, event):
+	def joy_button_up(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id, button
 		"""
-		pass
 
-	def _evt_joydeviceadded(self, event):
+	def joy_device_added(self, event):
 		"""
 		The "event" object has the following members:
 			device_index
 		"""
-		pass
 
-	def _evt_joydeviceremoved(self, event):
+	def joy_device_removed(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id
 		"""
-		pass
 
-	def _evt_joyhatmotion(self, event):
+	def joy_hat_motion(self, event):
 		"""
 		The "event" object has the following members:
 			instance_id, hat, value
 		"""
-		pass
 
-	def _evt_keydown(self, event):
+	def key_down(self, event):
 		"""
 		The "event" object has the following members:
 			key, mod, unicode, scancode
 		"""
-		pass
 
-	def _evt_keyup(self, event):
+	def key_up(self, event):
 		"""
 		The "event" object has the following members:
 			key, mod
 		"""
-		pass
 
-	def _evt_midiin(self, event):
+	def midi_in(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_midiout(self, event):
+	def midi_out(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_mousebuttondown(self, event):
+	def mouse_button_down(self, event):
 		"""
 		The "event" object has the following members:
 			pos, button
 		"""
-		pass
 
-	def _evt_mousebuttonup(self, event):
+	def mouse_button_up(self, event):
 		"""
 		The "event" object has the following members:
 			pos, button
 		"""
-		pass
 
-	def _evt_mousemotion(self, event):
+	def mouse_motion(self, event):
 		"""
 		The "event" object has the following members:
 			pos, rel, buttons
 		"""
-		pass
 
-	def _evt_mousewheel(self, event):
+	def mouse_wheel(self, event):
 		"""
 		The "event" object has the following members:
 			which, flipped, x, y
 		"""
-		pass
 
-	def _evt_multigesture(self, event):
+	def multi_gesture_event(self, event):
 		"""
 		The "event" object has the following members:
 			touch_id, x, y, pinched, rotated, num_fingers
 		"""
-		pass
 
-	def _evt_quit(self, event):
+	def quit_event(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_syswmevent(self, event):
+	def sys_wm_event(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_textediting(self, event):
+	def text_editing_event(self, event):
 		"""
 		The "event" object has the following members:
 			text, start, length
 		"""
-		pass
 
-	def _evt_textinput(self, event):
+	def text_input_event(self, event):
 		"""
 		The "event" object has the following members:
 			text
 		"""
-		pass
 
-	def _evt_videoexpose(self, event):
+	def video_expose(self, event):
 		"""
 		The "event" object has the following members:
 			none
 		"""
-		pass
 
-	def _evt_videoresize(self, event):
+	def video_resize(self, event):
 		"""
 		The "event" object has the following members:
 			size, w, h
 		"""
-		pass
 
-	def _evt_windowclose(self, event):
+	def window_close_event(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowenter(self, event):
+	def window_enter(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowexposed(self, event):
+	def window_exposed(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowfocusgained(self, event):
+	def window_focus_gained(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowfocuslost(self, event):
+	def window_focus_lost(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowhidden(self, event):
+	def window_hidden(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowhittest(self, event):
+	def window_hit_test(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowleave(self, event):
+	def window_leave(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowmaximized(self, event):
+	def window_maximized(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowminimized(self, event):
+	def window_minimized(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowmoved(self, event):
+	def window_moved(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowresized(self, event):
+	def window_resized(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowrestored(self, event):
+	def window_restored(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowshown(self, event):
+	def window_shown(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowsizechanged(self, event):
+	def window_size_changed(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
-	def _evt_windowtakefocus(self, event):
+	def window_take_focus(self, event):
 		"""
 		The "event" object has the following members:
 			[unknown]
 		"""
-		pass
 
 
 class GameStateFinal(GameState):
@@ -943,7 +905,6 @@ class GameStateFinal(GameState):
 	Final GameState; cannot be replaced even if a new GameState is instantiated
 	after this one. See exit_states.py for an example.
 	"""
-	pass
 
 
 #  end legame/game.py
