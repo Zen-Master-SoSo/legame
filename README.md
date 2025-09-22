@@ -4,7 +4,11 @@ Modules which aid in creating 2-dimensional games with pygame.
 
 ## Intro
 
-Playing around with pygame, I quickly found that I was doing the same thing over and over again. I figured it'd be a good idea to make a template for a game and reuse it. That quickly devolved to an obsession with making a whole game framework, with pieces and parts which all fit together and makes everything easy. And that's what eventually led to "LeGame".
+Playing around with pygame, I quickly found that I was doing the same thing
+over and over again. I figured it'd be a good idea to make a template for a
+game and reuse it. That quickly devolved to an obsession with making a whole
+game framework, with pieces and parts which all fit together and makes
+everything easy. And that's what eventually led to "LeGame".
 
 Here's what's included (so far) and what each part does:
 

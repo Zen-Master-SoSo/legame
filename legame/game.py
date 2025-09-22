@@ -78,7 +78,7 @@ class Game:
 	# internal state management:
 	_state				= None		# It's pretty important to keep this managed, hence, it's "protected"
 	_stay_in_loop		= True		# Setting this to "False" exits the game, calling "exit_loop()"
-	_next_state		= None		# Next game state waiting for change at end of main loop
+	_next_state			= None		# Next game state waiting for change at end of main loop
 
 	LAYER_BG			= 1			#
 	LAYER_ABOVE_BG		= 2			#
@@ -177,6 +177,7 @@ class Game:
 		self._state.enter_state()	# Immediately enter state, not waiting for "_main_loop()"
 		self._next_state = None	# Clear this, as it was set in "change_state()"
 		self._main_loop()
+		pygame.quit()
 		return 0
 
 	def show(self):
