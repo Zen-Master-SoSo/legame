@@ -23,7 +23,7 @@ Modules which aid in creating 2-dimensional games with pygame.
 import math
 from pygame.math import Vector2 as Vector
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 PI						= math.pi
 HALF_PI					= PI / 2.0
