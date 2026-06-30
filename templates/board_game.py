@@ -18,7 +18,7 @@
 #  MA 02110-1301, USA.
 #
 """
-Demonstrates board game moves, jumps, state changes, and animations
+Describe your game here.
 """
 try:
 	from pygame.locals import K_q, K_ESCAPE
@@ -175,9 +175,7 @@ if __name__ == '__main__':
 	import argparse, sys, logging
 
 	p = argparse.ArgumentParser()
-	p.epilog = """
-	Describe your game here.
-	"""
+	p.epilog = __doc__
 	p.add_argument("--quiet", "-q", action = "store_true",
 		help = "Don't make sound")
 	p.add_argument("--verbose", "-v", action = "store_true",

@@ -17,6 +17,9 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #
+"""
+Describe your game here.
+"""
 from pygame import Surface
 from pygame.sprite import Sprite
 try:
@@ -166,9 +169,7 @@ if __name__ == '__main__':
 	import argparse, sys, logging
 
 	p = argparse.ArgumentParser()
-	p.epilog = """
-	Describe your game here.
-	"""
+	p.epilog = __doc__
 	p.add_argument("--quiet", "-q", action = "store_true", help = "Don't make sound")
 	p.add_argument("--verbose", "-v", action = "store_true", help = "Show more detailed debug information")
 	p.add_argument("--resource-dump", "-r", action = "store_true", help = "Show sound and image resources for debugging")
